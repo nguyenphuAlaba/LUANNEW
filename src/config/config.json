@@ -1,0 +1,14 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "12345678",
+    "database": "test",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "logging": false,
+    "query": {
+      "raw": true
+    },
+    "timezone": "+07:00"
+  }
+}
