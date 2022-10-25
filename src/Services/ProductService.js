@@ -62,6 +62,18 @@ let getAllProduct = (data) => {
             as: "productwarehouse_product",
             attributes: ["quantity"],
           },
+          {
+            model: db.Option_Product,
+            as: "Option_Product",
+            attributes: ["name", "price", "quantity"],
+            include: [
+              {
+                model: db.Option,
+                as: "OptionProduct",
+                attributes: ["name"],
+              },
+            ],
+          },
         ],
         raw: false,
         nest: true,

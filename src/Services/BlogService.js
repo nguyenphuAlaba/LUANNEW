@@ -11,18 +11,7 @@ var cloudinary = require("cloudinary").v2;
 let getAllBlog = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      let blog = await db.Blog.findAll({
-        include: [
-          { model: db.Blog_Image, as: "BlogImage", attributes: ["img"] },
-          {
-            model: db.Categoryblog,
-            as: "CategoryBlog",
-            attributes: ["cat_name"],
-          },
-        ],
-        raw: false,
-        nest: true,
-      });
+      let blog = await db.Blog.findAll();
       resolve(blog);
     } catch (error) {
       reject(error);
@@ -34,11 +23,6 @@ let getAllBlogByCategory = (id) => {
     try {
       let blog = await db.Blog.findAll({
         where: { cat_id: id },
-        inclue: [
-          { model: db.Catergoryblog, as: "CategoryBlog" },
-          // { model: db.User, as: "UserBlog" },
-          // { model: db.Commentblog, as: "CommentBlog" },
-        ],
         raw: false,
         nest: true,
       });

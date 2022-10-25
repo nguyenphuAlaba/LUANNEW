@@ -4,14 +4,11 @@ import ProductControler from "../controllers/ProductControler";
 import UserControler from "../controllers/UserControler";
 import BrandControler from "../controllers/BrandControler";
 import CategoryControler from "../controllers/CategoryControler";
-import CategoryBlogControler from "../controllers/CategoryBlogControler";
 import CommentControler from "../controllers/CommentControler";
-import CommentblogControler from "../controllers/CommentblogControler";
 import RoleControler from "../controllers/RoleControler";
 import OrderControler from "../controllers/OrderControler";
 import BlogControler from "../controllers/BlogControler";
 import WarehouseControler from "../controllers/WarehouseControler";
-import AttributeControler from "../controllers/AttributeControler";
 
 let router = express.Router();
 const { upload } = require("../Services/ProductService");
@@ -47,12 +44,6 @@ let initWebRoutes = (app) => {
     ProductControler.handleDeleteProduct
   );
   //Attribute
-  router.post("/api/create-attribute", AttributeControler.handleCreateAtribute);
-  router.put("/api/update-attribute", AttributeControler.handleUpdateAttribute);
-  router.delete(
-    "/api/delete-attribute/:id/",
-    AttributeControler.handleDeleteAttribute
-  );
 
   //brand
   router.get("/api/get-brand/", BrandControler.handleGetAllBrand);
@@ -71,22 +62,6 @@ let initWebRoutes = (app) => {
     CategoryControler.handleDeleteCategory
   );
   //Category blog
-  router.get(
-    "/api/get-category-blog/",
-    CategoryBlogControler.handleGetAllCategoryBlog
-  );
-  router.post(
-    "/api/get-create-category-blog/",
-    CategoryBlogControler.handleCreateCategoryBlog
-  );
-  router.put(
-    "/api/update-category-blog/",
-    CategoryBlogControler.handleUpdatCategoryBlog
-  );
-  router.delete(
-    "/api/delete-categor-blogy/:id/",
-    CategoryBlogControler.handleDeleteCategoryBlog
-  );
   //comment
   router.get(
     "/api/get-comment-of-product/:id/",
@@ -99,22 +74,7 @@ let initWebRoutes = (app) => {
     CommentControler.handleDeleteComment
   );
   //commentblog
-  router.get(
-    "/api/get-comment-of-blog/:id/",
-    CommentblogControler.handleGetAllCommentblogOfProductRate
-  );
-  router.post(
-    "/api/add-comment-blog/",
-    CommentblogControler.handleAddCommentblog
-  );
-  router.put(
-    "/api/update-comment-blog/",
-    CommentblogControler.handleUpdateCommentblog
-  );
-  router.delete(
-    "/api/delete-comment-blog/:id/",
-    CommentblogControler.handleDeleteCommentBlog
-  );
+
   //user
   router.get("/api/get-all-user/", UserControler.handleGetAllUser);
   router.get("/api/get-by-Id/:id/", UserControler.handleGetById);

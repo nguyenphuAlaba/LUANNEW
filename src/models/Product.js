@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
       //   targetkey: "id",
       //   as: "ProductImg",
       // });
-
       // // 1 product chi co 1 brand
       Product.belongsTo(models.Brand, {
         foreignKey: "brand_id",
@@ -46,6 +45,10 @@ module.exports = (sequelize, DataTypes) => {
       Product.hasMany(models.Comment, {
         foreignKey: "product_id",
         as: "CommentProduct",
+      });
+      Product.hasMany(models.Option_Product, {
+        foreignKey: "product_id",
+        as: "Option_Product",
       });
     }
   }

@@ -85,7 +85,6 @@ module.exports = (sequelize, DataTypes) => {
       birthday: DataTypes.DATE,
       warehouse_id: DataTypes.INTEGER,
       store_id: DataTypes.INTEGER,
-      img: DataTypes.STRING,
     },
     {
       sequelize,
