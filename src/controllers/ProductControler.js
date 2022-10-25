@@ -102,7 +102,7 @@ let handleCreateProduct = async (request, response) => {
       // imageDetails,
     });
   } catch (error) {
-    response.status(400).json({ errorMessages: "Can't create product" });
+    response.status(400).json(error);
   }
 };
 let handleUpdateProduct = async (request, response) => {

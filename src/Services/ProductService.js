@@ -93,6 +93,23 @@ let getProductDetail = (id) => {
         include: [
           { model: db.Brand, as: "ProductBrand" },
           { model: db.Category, as: "CategoryProduct" },
+          {
+            model: db.Warehouse_product,
+            as: "productwarehouse_product",
+            attributes: ["quantity"],
+          },
+          {
+            model: db.Option_Product,
+            as: "Option_Product",
+            attributes: ["name", "price", "quantity"],
+            include: [
+              {
+                model: db.Option,
+                as: "OptionProduct",
+                attributes: ["name"],
+              },
+            ],
+          },
         ],
         raw: false,
         nest: true,
@@ -107,11 +124,9 @@ let getProductDetail = (id) => {
 let getProductByBrand = (brand_id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      // console.log("getProductByBrand" + brand_id);
       let product = await db.Product.findAll({
         include: [
           { model: db.Brand, as: "ProductBrand", where: { id: brand_id } },
-          { model: db.Product_Image, as: "ProductImg" },
           { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
         ],
         raw: false,
@@ -130,7 +145,6 @@ let findProductByCategory = (category_id) => {
       let product = await db.Product.findAll({
         include: [
           { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
-          { model: db.Product_Image, as: "ProductImg" },
           {
             model: db.Category,
             as: "CategoryProduct",
@@ -179,6 +193,7 @@ let createProduct = (product) => {
           status: product.status,
           brand_id: product.brand_id,
           category_id: product.category_id,
+          img: product.img,
         });
         resolve({
           errCode: 0,
@@ -223,6 +238,7 @@ let updateProduct = (product) => {
           fproduct.status = product.status;
           fproduct.brand_id = product.brand_id;
           fproduct.category_id = product.category_id;
+          fproduct.img = product.img;
           await fproduct.save();
 
           resolve({
@@ -257,6 +273,23 @@ let handlegetProductByKeyword = (data) => {
               {
                 model: db.Category,
                 as: "CategoryProduct",
+              },
+              {
+                model: db.Warehouse_product,
+                as: "productwarehouse_product",
+                attributes: ["quantity"],
+              },
+              {
+                model: db.Option_Product,
+                as: "Option_Product",
+                attributes: ["name", "price", "quantity"],
+                include: [
+                  {
+                    model: db.Option,
+                    as: "OptionProduct",
+                    attributes: ["name"],
+                  },
+                ],
               },
             ],
             raw: false,
