@@ -9,7 +9,7 @@ import RoleControler from "../controllers/RoleControler";
 import OrderControler from "../controllers/OrderControler";
 import BlogControler from "../controllers/BlogControler";
 import WarehouseControler from "../controllers/WarehouseControler";
-
+import OptionControler from "../controllers/OptionControler";
 let router = express.Router();
 const { upload } = require("../Services/ProductService");
 
@@ -43,8 +43,9 @@ let initWebRoutes = (app) => {
     "/api/delete-product/:id/",
     ProductControler.handleDeleteProduct
   );
-  //Attribute
-
+  //Option
+  router.post("/api/create-option", OptionControler.handleCreateOption);
+  router.delete("/api/delete-option/:id/", OptionControler.handleDeleteOption);
   //brand
   router.get("/api/get-brand/", BrandControler.handleGetAllBrand);
   router.post("/api/get-create-brand/", BrandControler.handleCreateBrand);
