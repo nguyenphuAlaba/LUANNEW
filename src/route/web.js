@@ -46,6 +46,10 @@ let initWebRoutes = (app) => {
   //Option
   router.post("/api/create-option", OptionControler.handleCreateOption);
   router.delete("/api/delete-option/:id/", OptionControler.handleDeleteOption);
+  router.post(
+    "/api/create-option-product",
+    OptionControler.handlecreateOptionProduct
+  );
   //brand
   router.get("/api/get-brand/", BrandControler.handleGetAllBrand);
   router.post("/api/get-create-brand/", BrandControler.handleCreateBrand);

@@ -77,7 +77,77 @@ let deleteOption = (id) => {
     }
   });
 };
+let createOptionProduct = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let COption = await db.Option.findOne({
+        where: {
+          id: data.option_id,
+        },
+        raw: false,
+        nest: true,
+      });
+      if (COption) {
+        let Option = await db.Option_Product.findOne({
+          where: {
+            name: data.name,
+            product_id: data.product_id,
+            option_id: data.option_id,
+          },
+          raw: false,
+          nest: true,
+        });
+        if (Option) {
+          resolve({
+            errCode: 1,
+            errMessage: "Your Option has been exists ",
+          });
+        } else {
+          await db.Option_Product.create({
+            name: data.name,
+            price: data.price,
+            quantity: data.quantity,
+            product_id: data.product_id,
+            option_id: data.option_id,
+          });
+          resolve({
+            errCode: 0,
+            errMessage: "Add option Successfully",
+          });
+        }
+      } else {
+        resolve({
+          errCode: 2,
+          errMessage: "Cann't find your option",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let deleteOptionPrpduct = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let Option = await db.Option_Product.findOne({
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      if (!Option) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cann't find your option",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   createOption,
   deleteOption,
+  createOptionProduct,
+  deleteOptionPrpduct,
 };

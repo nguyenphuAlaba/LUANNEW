@@ -18,7 +18,16 @@ let handleDeleteOption = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handlecreateOptionProduct = async (request, response) => {
+  try {
+    let Option = await OptionService.createOptionProduct(request.body);
+    return response.status(200).json(Option);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleCreateOption,
   handleDeleteOption,
+  handlecreateOptionProduct,
 };
