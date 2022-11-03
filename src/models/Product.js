@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "product_id",
         as: "Option_Product",
       });
+      Product.hasMany(models.Warranty, {
+        foreignKey: "product_id",
+        as: "ProductWarranty",
+      });
     }
   }
   Product.init(

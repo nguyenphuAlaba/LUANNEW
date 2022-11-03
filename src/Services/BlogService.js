@@ -12,7 +12,11 @@ let getAllBlog = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let blog = await db.Blog.findAll();
-      resolve(blog);
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        blog,
+      });
     } catch (error) {
       reject(error);
     }

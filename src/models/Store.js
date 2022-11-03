@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "store_id",
         as: "UserStore",
       });
+      Store.hasMany(models.Warranty, {
+        foreignKeys: "store_id",
+        as: "StoreWarranty",
+      });
     }
   }
   Store.init(
@@ -20,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       name: DataTypes.STRING,
       phone: DataTypes.STRING,
-      warOrder_id: DataTypes.INTEGER,
     },
     {
       sequelize,

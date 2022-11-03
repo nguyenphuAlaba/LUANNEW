@@ -145,9 +145,36 @@ let deleteOptionPrpduct = (id) => {
     }
   });
 };
+let getOptionByProductId = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!id) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot find Product ID",
+        });
+      } else {
+        console.log(id);
+        let Option = await db.Option_Product.findAll({
+          where: { product_id: id },
+          raw: false,
+          nest: true,
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "ok",
+          Option,
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   createOption,
   deleteOption,
   createOptionProduct,
   deleteOptionPrpduct,
+  getOptionByProductId,
 };

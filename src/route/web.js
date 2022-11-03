@@ -50,6 +50,10 @@ let initWebRoutes = (app) => {
     "/api/create-option-product",
     OptionControler.handlecreateOptionProduct
   );
+  router.get(
+    "/api/get-option-by-product-id/:id/",
+    OptionControler.handleGetOptionByProductId
+  );
   //brand
   router.get("/api/get-brand/", BrandControler.handleGetAllBrand);
   router.post("/api/get-create-brand/", BrandControler.handleCreateBrand);

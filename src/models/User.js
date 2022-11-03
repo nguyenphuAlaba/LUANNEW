@@ -47,7 +47,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_id",
         as: "UserBlog",
       });
-
+      User.hasMany(models.Warranty, {
+        foreignKey: "user_id",
+        as: "UserWarranty",
+      });
       // Quan he many to many //
       // 1 user co nhieu voucher
       // User.hasMany(models.Uservoucher, {
