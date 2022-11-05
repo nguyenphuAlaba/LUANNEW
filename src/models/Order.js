@@ -28,7 +28,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "order_id",
         as: "orderItem",
       });
-;
     }
   }
   Order.init(
@@ -39,7 +38,6 @@ module.exports = (sequelize, DataTypes) => {
       Address: DataTypes.STRING,
       phonenumber: DataTypes.INTEGER,
       voucher_id: DataTypes.INTEGER,
-      totalprice: DataTypes.DOUBLE,
       method_id: DataTypes.INTEGER,
       user_id: DataTypes.INTEGER,
     },

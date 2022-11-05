@@ -9,20 +9,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       //1 role co nhieu user
-      Warranty.belongsTo(models.Store, {
-        foreignKey: "store_id",
-        as: "StoreWarranty",
-        targetKey: "id",
-      });
+
       Warranty.belongsTo(models.Product, {
         foreignKey: "product_id",
         as: "ProductWarranty",
-        targetKey: "id",
+        targetkey: "id",
+      });
+      Warranty.belongsTo(models.Store, {
+        foreignKey: "store_id",
+        as: "StoreWarranty",
+        targetkey: "id",
       });
       Warranty.belongsTo(models.User, {
-        foreignKeys: "user_id",
+        foreignKey: "user_id",
         as: "UserWarranty",
-        targetKey: "id",
+        targetkey: "id",
       });
     }
   }

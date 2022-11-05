@@ -17,9 +17,6 @@ module.exports = {
       phone: {
         type: Sequelize.STRING,
       },
-      warOrder_id: {
-        type: Sequelize.INTEGER,
-      },
 
       createdAt: {
         allowNull: false,

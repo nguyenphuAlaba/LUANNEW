@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "UserStore",
       });
       Store.hasMany(models.Warranty, {
-        foreignKeys: "store_id",
+        foreignKey: "store_id",
         as: "StoreWarranty",
       });
     }

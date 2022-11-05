@@ -26,9 +26,6 @@ module.exports = {
       voucher_id: {
         type: Sequelize.INTEGER,
       },
-      totalprice: {
-        type: Sequelize.DOUBLE,
-      },
       method_id: {
         type: Sequelize.INTEGER,
       },

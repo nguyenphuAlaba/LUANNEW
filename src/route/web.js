@@ -10,6 +10,7 @@ import OrderControler from "../controllers/OrderControler";
 import BlogControler from "../controllers/BlogControler";
 import WarehouseControler from "../controllers/WarehouseControler";
 import OptionControler from "../controllers/OptionControler";
+import WarrantyControler from "../controllers/WarrantyControler";
 let router = express.Router();
 const { upload } = require("../Services/ProductService");
 
@@ -54,6 +55,8 @@ let initWebRoutes = (app) => {
     "/api/get-option-by-product-id/:id/",
     OptionControler.handleGetOptionByProductId
   );
+  //Warranty
+  router.get("/api/get-all-warranty/", WarrantyControler.handleGetAllWarranty);
   //brand
   router.get("/api/get-brand/", BrandControler.handleGetAllBrand);
   router.post("/api/get-create-brand/", BrandControler.handleCreateBrand);
@@ -88,7 +91,7 @@ let initWebRoutes = (app) => {
   router.get("/api/get-all-user/", UserControler.handleGetAllUser);
   router.get("/api/get-by-Id/:id/", UserControler.handleGetById);
   router.post("/api/sign-up-user/", UserControler.handleSignUp);
-  router.get("/api/get-user-login/", UserControler.handleLogin);
+  router.post("/api/get-user-login/", UserControler.handleLogin);
   router.put("/api/update-user/", UserControler.handleUpdateUser);
   //Role
   router.get("/api/get-all-role/", RoleControler.handleGetAllRole);
