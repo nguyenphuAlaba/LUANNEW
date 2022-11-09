@@ -153,7 +153,7 @@ let handeLogin = (email, password) => {
       let isExist = await checkEmail(email);
       if (isExist) {
         let user = await db.Customer.findOne({
-          where: { email: email, role_id: 3 },
+          where: { email: email },
           attributes: [
             "id",
             "email",
@@ -167,6 +167,7 @@ let handeLogin = (email, password) => {
         });
         if (user) {
           let check = bcrypt.compareSync(password, user.password);
+          console.log("password" + password, "MH password", user.password);
           if (check) {
             if (!user.isActive) {
               resolve({
