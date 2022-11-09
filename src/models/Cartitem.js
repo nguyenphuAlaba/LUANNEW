@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       Cartitem.belongsTo(models.Cart, {
         foreignKey: "cart_id",
         targetKey: "id",
-        as: "CartCartitem",
+        as: "Cartitem",
       });
     }
   }
@@ -27,7 +27,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       product_id: DataTypes.INTEGER,
       amount: DataTypes.INTEGER,
-      money: DataTypes.INTEGER,
       cart_id: DataTypes.INTEGER,
     },
     {

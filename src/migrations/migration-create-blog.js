@@ -11,7 +11,7 @@ module.exports = {
       Description: {
         type: Sequelize.STRING,
       },
-      user_id: {
+      sta_id: {
         type: Sequelize.INTEGER,
       },
       img: {

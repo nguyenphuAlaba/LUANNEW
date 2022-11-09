@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "orderItem",
       });
-      // Orderitem.hasMany(models.Product, {
-      //   foreignKey: "product_id",
-      //   targetKey: "id",
-      //   as: "oderItemProduct",
-      // });
+      Orderitem.belongsTo(models.Product, {
+        foreignKey: "product_id",
+        targetKey: "id",
+        as: "oderItemProduct",
+      });
     }
   }
   Orderitem.init(

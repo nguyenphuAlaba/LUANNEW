@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       //1 cmt chi thuoc 1 user
-      Comment.belongsTo(models.User, {
-        foreignKey: "user_id",
+      Comment.belongsTo(models.Customer, {
+        foreignKey: "cus_id",
         targetKey: "id",
         as: "commentUser",
       });
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Comment.init(
     {
-      user_id: DataTypes.INTEGER,
+      cus_id: DataTypes.INTEGER,
       product_id: DataTypes.INTEGER,
       description: DataTypes.STRING,
       rate: DataTypes.INTEGER,

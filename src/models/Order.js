@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       //1 order chi thuoc 1 user
-      Order.belongsTo(models.User, {
-        foreignKey: "user_id",
+      Order.belongsTo(models.Customer, {
+        foreignKey: "cus_id",
         targetKey: "id",
         as: "OrderUser",
       });
@@ -24,9 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "OrderVoucher",
       });
-      Order.hasMany(models.Orderitem, {
+      Order.belongsToMany(models.Product, {
         foreignKey: "order_id",
-        as: "orderItem",
+        through: models.Orderitem,
+        as: "OrderProductItem",
       });
     }
   }
@@ -39,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       phonenumber: DataTypes.INTEGER,
       voucher_id: DataTypes.INTEGER,
       method_id: DataTypes.INTEGER,
-      user_id: DataTypes.INTEGER,
+      cus_id: DataTypes.INTEGER,
     },
     {
       sequelize,

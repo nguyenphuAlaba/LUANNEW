@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       //1 role co nhieu user
-      Role.hasMany(models.User, {
+      Role.hasMany(models.Staff, {
         foreignKey: "role_id",
         as: "UserRole",
       });

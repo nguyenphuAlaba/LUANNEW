@@ -57,23 +57,8 @@ let getAllProduct = (data) => {
         include: [
           { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
           { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
-          {
-            model: db.Warehouse_product,
-            as: "productwarehouse_product",
-            attributes: ["quantity"],
-          },
-          {
-            model: db.Option_Product,
-            as: "Option_Product",
-            attributes: ["name", "price", "quantity"],
-            include: [
-              {
-                model: db.Option,
-                as: "OptionProduct",
-                attributes: ["name"],
-              },
-            ],
-          },
+          // { model: db.Option, as: "ProductOption", attributes: ["name"] },
+          // { model: db.Warehouse, as: "ProductInWarehouse" },
         ],
         raw: false,
         nest: true,
@@ -93,23 +78,8 @@ let getProductDetail = (id) => {
         include: [
           { model: db.Brand, as: "ProductBrand" },
           { model: db.Category, as: "CategoryProduct" },
-          {
-            model: db.Warehouse_product,
-            as: "productwarehouse_product",
-            attributes: ["quantity"],
-          },
-          {
-            model: db.Option_Product,
-            as: "Option_Product",
-            attributes: ["name", "price", "quantity"],
-            include: [
-              {
-                model: db.Option,
-                as: "OptionProduct",
-                attributes: ["name"],
-              },
-            ],
-          },
+          { model: db.Option, as: "ProductOption", attributes: ["name"] },
+          { model: db.Warehouse, as: "ProductInWarehouse" },
         ],
         raw: false,
         nest: true,

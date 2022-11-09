@@ -22,8 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       //mot wishlist chi thuoc ve mot user
-      Wishlist.belongsTo(models.User, {
-        foreignKey: "user_id",
+      Wishlist.belongsTo(models.Customer, {
+        foreignKey: "cus_id",
         targetkeys: "id",
         as: "UserWishlist",
       });
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Wishlist.init(
     {
-      user_id: DataTypes.INTEGER,
+      cus_id: DataTypes.INTEGER,
       product_id: DataTypes.INTEGER,
     },
     {

@@ -9,13 +9,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       //1 role co nhieu user
-      Warehouse.hasMany(models.User, {
-        foreignKey: "warehouse_id",
-        as: "Userwarehouse",
+      Warehouse.belongsToMany(models.Staff, {
+        foreignKey: "warehouses_id",
+        through: models.Warehouse_staff,
+        as: "WarehouseStaff",
       });
-      Warehouse.hasMany(models.Warehouse_product, {
+      Warehouse.belongsToMany(models.Product, {
         foreignKey: "warehouse_id",
-        as: "UserwarehouseProduct",
+        through: models.Warehouse_product,
+        as: "WarehouseProduct",
       });
     }
   }

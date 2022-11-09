@@ -26,10 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         targetkey: "id",
         as: "CategoryProduct",
       });
-      Product.hasMany(models.Warehouse_product, {
-        foreignKey: "product_id",
-        as: "productwarehouse_product",
-      });
+
       Product.hasMany(models.Viewed, {
         foreignKey: "product_id",
         as: "ViewProduct",
@@ -38,21 +35,33 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "product_id",
         as: "ProductWishlist",
       });
-      Product.hasMany(models.Cartitem, {
-        foreignKey: "product_id",
-        as: "CartItemProduct",
-      });
       Product.hasMany(models.Comment, {
         foreignKey: "product_id",
         as: "CommentProduct",
       });
-      Product.hasMany(models.Option_Product, {
-        foreignKey: "product_id",
-        as: "Option_Product",
-      });
       Product.hasMany(models.Warranty, {
         foreignKey: "product_id",
         as: "ProductWarranty",
+      });
+      Product.belongsToMany(models.Warehouse, {
+        foreignKey: "product_id",
+        through: models.Warehouse_product,
+        as: "ProductInWarehouse",
+      });
+      Product.belongsToMany(models.Order, {
+        foreignKey: "product_id",
+        as: "ProductInOrder",
+        through: models.Orderitem,
+      });
+      Product.belongsToMany(models.Cart, {
+        foreignKey: "product_id",
+        through: models.Cartitem,
+        as: "ProductInCart",
+      });
+      Product.belongsToMany(models.Option, {
+        foreignKey: "product_id",
+        through: models.Option_Product,
+        as: "ProductOption",
       });
     }
   }

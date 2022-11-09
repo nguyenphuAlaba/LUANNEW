@@ -17,14 +17,16 @@ module.exports = (sequelize, DataTypes) => {
       //   as: "userVoucher",
       // });
 
-
-      Voucher.belongsToMany(models.User, { as: 'VoucherForUser', through: models.Uservoucher, foreignKey: 'voucher_id' });
-
+      Voucher.belongsToMany(models.Customer, {
+        as: "VoucherForCustomer",
+        through: models.Uservoucher,
+        foreignKey: "voucher_id",
+      });
 
       //1 voucher thuoc 1 event
       Voucher.belongsTo(models.Event, {
         foreignKey: "event_id",
-        targetKey: 'id',
+        targetKey: "id",
         as: "VoucherEvent",
       });
     }
@@ -35,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       voucher_name: DataTypes.STRING,
       sale: DataTypes.INTEGER,
       expire: DataTypes.DATE,
-      event_id: DataTypes.INTEGER
+      event_id: DataTypes.INTEGER,
     },
     {
       sequelize,

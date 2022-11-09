@@ -168,7 +168,7 @@ let handeLogin = (email, password) => {
       let isExist = await checkEmail(email);
       if (isExist) {
         let user = await db.User.findOne({
-          where: { email: email, role_id: 4 },
+          where: { email: email, role_id: 3 },
           attributes: [
             "id",
             "email",
@@ -178,13 +178,14 @@ let handeLogin = (email, password) => {
             "isActive",
           ],
           raw: false,
+          nest: true,
         });
         if (user) {
           let check = bcrypt.compareSync(password, user.password);
           if (check) {
             if (!user.isActive) {
               resolve({
-                errCode: -1,
+                errCode: 1,
                 errMessage: "Your account is not Active",
               });
               return;

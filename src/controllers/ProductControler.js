@@ -108,7 +108,6 @@ let handleCreateProduct = async (request, response) => {
 let handleUpdateProduct = async (request, response) => {
   try {
     // console.log(request.body);
-    console.log("aaaaaaaa");
     let product = await ProductService.updateProduct(request.body);
     // console.log(request.body);
     response.status(200).json({

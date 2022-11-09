@@ -29,7 +29,7 @@ module.exports = {
       method_id: {
         type: Sequelize.INTEGER,
       },
-      user_id: {
+      cus_id: {
         type: Sequelize.INTEGER,
       },
 

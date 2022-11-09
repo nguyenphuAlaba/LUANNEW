@@ -15,16 +15,16 @@ module.exports = (sequelize, DataTypes) => {
         as: "Voucher",
       });
       //1 uservoucher thuoc 1 user
-      Uservoucher.belongsTo(models.User, {
-        foreignKey: "user_id",
+      Uservoucher.belongsTo(models.Customer, {
+        foreignKey: "cus_id",
         targetKey: "id",
-        as: "User",
+        as: "Customer",
       });
     }
   }
   Uservoucher.init(
     {
-      user_id: DataTypes.INTEGER,
+      cus_id: DataTypes.INTEGER,
       voucher_id: DataTypes.INTEGER,
     },
     {
