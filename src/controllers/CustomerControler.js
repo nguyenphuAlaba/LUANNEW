@@ -25,7 +25,6 @@ let handleGetById = async (request, response) => {
 };
 let handleSignUp = async (request, response) => {
   try {
-    console.log("request.body: ", request.body);
     let message = await CustomerService.handleSignUpUser(request.body);
     return response.status(200).json(message);
   } catch (error) {
@@ -54,9 +53,9 @@ let handleLogin = async (req, res) => {
 let handleUpdateUser = async (request, response) => {
   try {
     let userId = await CustomerService.updateUser(request.body);
-    response.status(200).json(userId);
+    return response.status(200).json(userId);
   } catch (error) {
-    response.status(error);
+    return response.status(400).json(error);
   }
 };
 module.exports = {

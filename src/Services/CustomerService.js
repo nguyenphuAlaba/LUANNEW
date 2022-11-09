@@ -213,12 +213,10 @@ let handeLogin = (email, password) => {
 let updateUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("data", data);
       let cuser = await db.Customer.findOne({
         where: { id: data.id },
       });
       if (cuser) {
-        console.log("user", cuser);
         cuser.fullname = data.fullname;
         cuser.phonenumber = data.phonenumber;
         await cuser.save();
