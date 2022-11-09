@@ -37,13 +37,8 @@ let uploadCloud = (image, fName) => {
 let getAllUser = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      let customer = db.User.findAll({
-        include: [
-          { model: db.Role, as: "UserRole", attributes: ["rolename"] },
-          { model: db.Address, as: "UserAddress" },
-          { model: db.Warehouse, as: "Userwarehouse", attributes: ["name"] },
-          { model: db.Store, as: "UserStore", attributes: ["name"] },
-        ],
+      let customer = db.Customer.findAll({
+        include: [{ model: db.Order, as: "OrderUser" }],
         raw: false,
         nest: true,
       });
@@ -58,16 +53,8 @@ let getUserById = (user_id) => {
   return new Promise(async (resolve, reject) => {
     try {
       console.log("getUserById", user_id);
-      let user = await db.User.findOne({
+      let user = await db.Customer.findOne({
         where: { id: user_id },
-        include: [
-          { model: db.Role, as: "UserRole" },
-          { model: db.Viewed, as: "UserView" },
-          { model: db.Wishlist, as: "UserWishlist" },
-          { model: db.Cart, as: "UserCart" },
-          { model: db.Address, as: "UserAddress" },
-          { model: db.Blog, as: "UserBlog" },
-        ],
         raw: false,
         nest: true,
       });
@@ -93,7 +80,7 @@ let checkEmail = (email) => {
   return new Promise(async (resolve, reject) => {
     try {
       console.log("email: ", email);
-      let user = await db.User.findOne({
+      let user = await db.Customer.findOne({
         where: { email: email },
       });
 
@@ -135,7 +122,7 @@ let handleSignUpUser = (data) => {
           });
         } else {
           let hashPass = await hashUserPassword(data.password);
-          await db.User.create({
+          await db.Customer.create({
             email: data.email,
             password: hashPass,
             fullname: data.fullname,
@@ -144,8 +131,6 @@ let handleSignUpUser = (data) => {
             avatar: data.avatar,
             isActive: true,
             birthday: data.birthday,
-            warehouse_id: 1,
-            store_id: 1,
           });
         }
 
@@ -167,7 +152,7 @@ let handeLogin = (email, password) => {
       let userdata = {};
       let isExist = await checkEmail(email);
       if (isExist) {
-        let user = await db.User.findOne({
+        let user = await db.Customer.findOne({
           where: { email: email, role_id: 3 },
           attributes: [
             "id",
@@ -193,7 +178,7 @@ let handeLogin = (email, password) => {
             userdata.errorCode = 0;
             userdata.errMessage = `Ok`;
 
-            let cus = await db.User.findOne({
+            let cus = await db.Customer.findOne({
               where: { id: user.id },
             });
 
@@ -212,7 +197,7 @@ let handeLogin = (email, password) => {
           }
         } else {
           userdata.errorCode = 2;
-          userdata.errMessage = `User isn't exist`;
+          userdata.errMessage = `Customer isn't exist`;
         }
       } else {
         userdata.errorCode = 1;
@@ -228,7 +213,7 @@ let updateUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       console.log("data", data);
-      let cuser = await db.User.findOne({
+      let cuser = await db.Customer.findOne({
         where: { id: data.id },
       });
       if (cuser) {

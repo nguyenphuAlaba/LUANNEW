@@ -1,9 +1,9 @@
 import db from "../models/index";
-import UserService from "../Services/UserService";
+import CustomerService from "../Services/CustomerService";
 
 let handleGetAllUser = async (request, response) => {
   try {
-    let Customer = await UserService.getAllUser();
+    let Customer = await CustomerService.getAllUser();
     return response.status(200).json(Customer);
   } catch (error) {
     return response.status(500).json(error);
@@ -13,20 +13,20 @@ let handleGetById = async (request, response) => {
   try {
     let id = await request.params.id;
     console.log("id: " + id);
-    let customer = await UserService.getUserById(id);
+    let customer = await CustomerService.getUserById(id);
     return response.status(200).json({
       errCode: 0,
       errMessage: "Customer has found",
       customer,
     });
   } catch (error) {
-    return response.status(500).json(error);
+    return response.status(400).json(error);
   }
 };
 let handleSignUp = async (request, response) => {
   try {
     console.log("request.body: ", request.body);
-    let message = await UserService.handleSignUpUser(request.body);
+    let message = await CustomerService.handleSignUpUser(request.body);
     return response.status(200).json(message);
   } catch (error) {
     response.status(500).json(error.message);
@@ -43,7 +43,7 @@ let handleLogin = async (req, res) => {
       message: "Missing inputs parameter!",
     });
   }
-  let userdata = await UserService.handeLogin(email, password);
+  let userdata = await CustomerService.handeLogin(email, password);
 
   return res.status(200).json({
     errorCode: userdata.errorCode,
@@ -53,7 +53,7 @@ let handleLogin = async (req, res) => {
 };
 let handleUpdateUser = async (request, response) => {
   try {
-    let userId = await UserService.updateUser(request.body);
+    let userId = await CustomerService.updateUser(request.body);
     response.status(200).json(userId);
   } catch (error) {
     response.status(error);
