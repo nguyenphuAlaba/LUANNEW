@@ -58,10 +58,19 @@ let handleUpdateUser = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleChangePassword = async (request, response) => {
+  try {
+    let User = await CustomerService.changePassword(request.body);
+    return response.status(200).json(User);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllUser,
   handleGetById,
   handleSignUp,
   handleLogin,
   handleUpdateUser,
+  handleChangePassword,
 };

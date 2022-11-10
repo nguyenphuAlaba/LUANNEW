@@ -15,7 +15,7 @@ let getAllCommentOfProductRate = (Product) => {
       let Comment = await db.Comment.findAll({
         include: [
           { model: db.Product, as: "CommentProduct", where: { id: Product } },
-          { model: db.User, as: "commentUser", attributes: ["fullname"] },
+          { model: db.Customer, as: "commentUser", attributes: ["fullname"] },
         ],
         raw: false,
         nest: true,
@@ -30,7 +30,7 @@ let addComment = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       await db.Comment.create({
-        user_id: data.user_id,
+        cus_id: data.cus_id,
         product_id: data.product_id,
         description: data.description,
         rate: data.rate,
@@ -50,7 +50,7 @@ let updateComment = (comment) => {
   return new Promise(async (resolve, reject) => {
     try {
       let fcomment = await db.Comment.findOne({
-        where: { id: comment.id, user_id: comment.user_id },
+        where: { id: comment.id, cus_id: comment.cus_id },
         raw: false,
         nest: true,
       });

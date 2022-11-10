@@ -42,6 +42,8 @@ let getAllUser = () => {
         raw: false,
         nest: true,
       });
+      delete customer.password;
+      delete customer.id;
       resolve(customer);
     } catch (error) {
       reject(error);
@@ -108,17 +110,17 @@ let hashUserPassword = (password) => {
 let handleSignUpUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let check = await checkEmail(data.email);
-      if (check) {
-        resolve({
-          errCode: 1,
-          message: "Email has been exist",
+      if (!data.email || !data.password) {
+        reject({
+          errCode: 2,
+          errMessage: "Missing Email and password",
         });
       } else {
-        if (!data.email || !data.password) {
-          resolve({
-            errCode: 2,
-            errMessage: "Missing Email and password",
+        let check = await checkEmail(data.email);
+        if (check) {
+          reject({
+            errCode: 1,
+            message: "Email has been exist",
           });
         } else {
           let hashPass = await hashUserPassword(data.password);
@@ -167,10 +169,9 @@ let handeLogin = (email, password) => {
         });
         if (user) {
           let check = bcrypt.compareSync(password, user.password);
-          console.log("password" + password, "MH password", user.password);
           if (check) {
             if (!user.isActive) {
-              resolve({
+              reject({
                 errCode: 1,
                 errMessage: "Your account is not Active",
               });
@@ -210,16 +211,23 @@ let handeLogin = (email, password) => {
     }
   });
 };
-let updateUser = (data) => {
+let updateUser = async (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let cuser = await db.Customer.findOne({
-        where: { id: data.id },
+      // let cuser = await db.Customer.findOne({
+      //   where: { id: 2 },
+      //   raw: false,
+      //   nest: true,
+      // });
+      let test = await db.Customer.findOne({
+        where: { id: +data.id },
+        raw: false,
       });
-      if (cuser) {
-        cuser.fullname = data.fullname;
-        cuser.phonenumber = data.phonenumber;
-        await cuser.save();
+      if (test) {
+        test.fullname = data.fullname;
+        test.phonenumber = data.phonenumber;
+        test.avatar = data.avatar;
+        await test.save();
         resolve({
           errCode: 0,
           errMessage: "Update success",
@@ -228,6 +236,39 @@ let updateUser = (data) => {
         resolve({
           errCode: 1,
           errMessage: "Can't find user",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let changePassword = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let Customer = await db.Customer.findOne({
+        where: { id: +data.id },
+        raw: false,
+        nest: true,
+      });
+      if (data.newpassword == data.repassword) {
+        let checkPass = await bcrypt.compareSync(
+          data.oldpassword,
+          Customer.password
+        );
+        if (checkPass) {
+          let hashPas = await hashUserPassword(data.newpassword);
+          Customer.password = hashPas;
+          await Customer.save();
+          resolve({
+            errCode: 0,
+            errMessage: "Your password has been Update",
+          });
+        }
+      } else {
+        reject({
+          errCode: 1,
+          errMessage: "Your new password and re-password not correct",
         });
       }
     } catch (error) {
@@ -244,4 +285,5 @@ module.exports = {
   getAllUser,
   getUserById,
   updateUser,
+  changePassword,
 };
