@@ -35,9 +35,18 @@ let handleGetOptionByProductId = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleFindByOptionId = async (request, response) => {
+  try {
+    let option = await OptionService.findByOptionId(request.query);
+    return response.status(200).json(option);
+  } catch (error) {
+    return response.status(404).json(error);
+  }
+};
 module.exports = {
   handleCreateOption,
   handleDeleteOption,
   handlecreateOptionProduct,
   handleGetOptionByProductId,
+  handleFindByOptionId,
 };

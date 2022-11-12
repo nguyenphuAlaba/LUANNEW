@@ -133,6 +133,7 @@ let handleSignUpUser = (data) => {
             avatar: data.avatar,
             isActive: true,
             birthday: data.birthday,
+            address: data.address,
           });
         }
 

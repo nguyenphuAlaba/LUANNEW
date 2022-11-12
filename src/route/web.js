@@ -59,6 +59,10 @@ let initWebRoutes = (app) => {
     "/api/get-option-by-product-id/:id/",
     OptionControler.handleGetOptionByProductId
   );
+  router.get(
+    "/api/get-option-by-optionid/",
+    OptionControler.handleFindByOptionId
+  );
   //Warranty
   router.get("/api/get-all-warranty/", WarrantyControler.handleGetAllWarranty);
   //brand

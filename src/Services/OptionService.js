@@ -154,12 +154,16 @@ let getOptionByProductId = (id) => {
           errMessage: "Cannot find Product ID",
         });
       } else {
-        let OptionPr = await db.Option_Product.findAll({
-          where: { product_id: id },
-          raw: false,
-          nest: true,
-        });
         let Option = await db.Option.findAll({
+          attributes: ["name"],
+          include: [
+            {
+              model: db.Product,
+              as: "OptionInProduct",
+              where: { id: id },
+              attributes: ["name"],
+            },
+          ],
           raw: false,
           nest: true,
         });
@@ -167,9 +171,29 @@ let getOptionByProductId = (id) => {
           errCode: 0,
           errMessage: "ok",
           Option,
-          OptionPr,
         });
       }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let findByOptionId = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let when = {};
+      if (data.option_id) when.option_id = data.option_id;
+      if (data.product_id) when.product_id = data.product_id;
+      let Option = await db.Option_Product.findAll({
+        where: when,
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        Option,
+      });
     } catch (error) {
       reject(error);
     }
@@ -181,4 +205,5 @@ module.exports = {
   createOptionProduct,
   deleteOptionPrpduct,
   getOptionByProductId,
+  findByOptionId,
 };
