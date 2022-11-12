@@ -154,10 +154,15 @@ let getOptionByProductId = (id) => {
           errMessage: "Cannot find Product ID",
         });
       } else {
-        console.log(id);
-        let Option = await db.Option.findAll({
+        let OptionPr = await db.Option_Product.findAll({
+          where: { product_id: id },
+          attributes: ["name", "quantity", "price"],
           include: [
-            { model: db.Product, as: "OptionInProduct", where: { id: id } },
+            {
+              model: db.Option,
+              as: "OptionProduct",
+              attributes: ["name"],
+            },
           ],
           raw: false,
           nest: true,
@@ -165,7 +170,7 @@ let getOptionByProductId = (id) => {
         resolve({
           errCode: 0,
           errMessage: "ok",
-          Option,
+          OptionPr,
         });
       }
     } catch (error) {
