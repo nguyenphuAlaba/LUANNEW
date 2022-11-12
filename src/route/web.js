@@ -11,6 +11,7 @@ import BlogControler from "../controllers/BlogControler";
 import WarehouseControler from "../controllers/WarehouseControler";
 import OptionControler from "../controllers/OptionControler";
 import WarrantyControler from "../controllers/WarrantyControler";
+import CartControler from "../controllers/CartControler";
 let router = express.Router();
 const { upload } = require("../Services/ProductService");
 
@@ -44,6 +45,9 @@ let initWebRoutes = (app) => {
     "/api/delete-product/:id/",
     ProductControler.handleDeleteProduct
   );
+  //Cart
+  router.post("/api/add-to-cart", CartControler.handleAddProductToCart);
+  router.get("/api/get-all-cart", CartControler.handleGetAllCat);
   //Option
   router.post("/api/create-option", OptionControler.handleCreateOption);
   router.delete("/api/delete-option/:id/", OptionControler.handleDeleteOption);

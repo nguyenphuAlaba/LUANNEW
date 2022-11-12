@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "cus_id",
         as: "UserWishlist",
       });
+      Customer.hasOne(models.Cart, {
+        foreignKey: "cus_id",
+        as: "UserCart",
+      });
       Customer.hasMany(models.Warranty, {
         foreignKey: "cus_id",
         as: "UserWarranty",
