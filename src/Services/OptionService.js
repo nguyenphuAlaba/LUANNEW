@@ -155,8 +155,10 @@ let getOptionByProductId = (id) => {
         });
       } else {
         console.log(id);
-        let Option = await db.Option_Product.findAll({
-          where: { product_id: id },
+        let Option = await db.Option.findAll({
+          include: [
+            { model: db.Product, as: "OptionInProduct", where: { id: id } },
+          ],
           raw: false,
           nest: true,
         });

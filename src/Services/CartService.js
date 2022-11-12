@@ -29,28 +29,52 @@ let addProductToCart = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let checkCart = await db.Cart.findOne({
-        where: { id: data.cart_id },
+        where: { id: data.cus_id },
         raw: false,
         nest: true,
       });
       if (!checkCart) {
-        await db.Cart.create({
-          cus_id: data.cus_id,
-        });
-        let cCart = await db.Cart.findOne({
-          where: { cus_id: data.cus_id },
+        let cUser = await db.Customer.findOne({
+          where: { id: data.cus_id },
           raw: false,
           nest: true,
         });
-        if (cCart) {
-          await db.Cartitem.create({
-            product_id: data.product_id,
-            amount: 1,
-            cart_id: data.cart_id,
+        if (cUser) {
+          await db.Cart.create({
+            cus_id: data.cus_id,
           });
-          resolve({
-            errCode: 0,
-            errMessage: "Add Cart Successfully",
+          let cCart = await db.Cart.findOne({
+            where: { cus_id: data.cus_id },
+            raw: false,
+            nest: true,
+          });
+          if (cCart) {
+            let chProduct = await db.Product.findOne({
+              where: { id: data.product_id },
+              raw: false,
+              nest: true,
+            });
+            if (chProduct) {
+              await db.Cartitem.create({
+                product_id: data.product_id,
+                amount: 1,
+                cart_id: cCart.id,
+              });
+              resolve({
+                errCode: 0,
+                errMessage: "Add Cart Successfully",
+              });
+            } else {
+              reject({
+                errCode: 2,
+                errMessage: "Your Product Not Found",
+              });
+            }
+          }
+        } else {
+          reject({
+            errCode: 1,
+            errMessage: "Your Customer not exist",
           });
         }
       } else {
@@ -69,7 +93,7 @@ let addProductToCart = (data) => {
             await db.Cartitem.create({
               product_id: data.product_id,
               amount: 1,
-              cart_id: data.cart_id,
+              cart_id: checkCart.id,
             });
             resolve({
               errCode: -1,
@@ -77,13 +101,13 @@ let addProductToCart = (data) => {
             });
           } else {
             reject({
-              errCode: 1,
+              errCode: 3,
               errMessage: "Your Product not exist",
             });
           }
         } else {
           let Upcart = await db.Cartitem.findOne({
-            where: { cart_id: data.cart_id, product_id: data.product_id },
+            where: { cart_id: checkCart.id, product_id: data.product_id },
             raw: false,
             nest: true,
           });
