@@ -156,20 +156,17 @@ let getOptionByProductId = (id) => {
       } else {
         let OptionPr = await db.Option_Product.findAll({
           where: { product_id: id },
-          attributes: ["name", "quantity", "price"],
-          include: [
-            {
-              model: db.Option,
-              as: "OptionProduct",
-              attributes: ["name"],
-            },
-          ],
+          raw: false,
+          nest: true,
+        });
+        let Option = await db.Option.findAll({
           raw: false,
           nest: true,
         });
         resolve({
           errCode: 0,
           errMessage: "ok",
+          Option,
           OptionPr,
         });
       }
