@@ -11,17 +11,12 @@ var cloudinary = require("cloudinary").v2;
 let getAllWarehouse = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      let Warehouse = await db.Warehouse.findAll({
-        include: [
-          {
-            model: db.Warehouse_product,
-            as: "UserwarehouseProduct",
-          },
-          { model: db.User, as: "Userwarehouse" },
-        ],
-        raw: false,
-        nest: true,
-      });
+      // let Warehouse = await db.Warehouse.findAll({
+      //   // include: [{ model: db.Staff, as: "WarehouseStaff" }],
+      //   raw: false,
+      //   nest: true,
+      // });
+      let Warehouse = await db.Warehouse_staff.findAll();
       resolve({
         errCode: 0,
         errMessage: "Warehouse get success",
@@ -102,15 +97,8 @@ let deleteWarehouse = (id) => {
           errMessage: "Cann't find your warehouse_id",
         });
       } else {
-        let cwarehouse = await db.Warehouse.findOne({
-          where: { id: id },
-          include: [
-            {
-              model: db.User,
-              as: "Userwarehouse",
-              where: { warehouse_id: id },
-            },
-          ],
+        let cwarehouse = await db.Warehouse_staff.findOne({
+          where: { warehouse_id: id },
           raw: false,
           nest: true,
         });

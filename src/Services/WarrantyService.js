@@ -16,7 +16,6 @@ let getAllWarranty = () => {
         include: [
           { model: db.Product, as: "ProductWarranty" },
           { model: db.Store, as: "StoreWarranty" },
-          { model: db.User, as: "UserWarranty" },
         ],
         raw: false,
         nest: true,

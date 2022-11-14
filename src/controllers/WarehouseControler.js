@@ -4,6 +4,7 @@ import WarehouseService from "../Services/WarehouseService";
 
 let handleGetAllWarehouse = async (request, response) => {
   try {
+    console.log("aaaaaaaaa");
     let warehouse = await WarehouseService.getAllWarehouse();
     return response.status(200).json(warehouse);
   } catch (error) {
