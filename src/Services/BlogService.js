@@ -53,8 +53,7 @@ let createBlog = (data) => {
       } else {
         await db.Blog.create({
           Description: data.Description,
-          user_id: data.user_id,
-          cat_id: data.cat_id,
+          sta_id: data.sta_id,
           name: data.name,
         });
         resolve({
@@ -77,13 +76,12 @@ let updateBlog = (data) => {
           nest: true,
         });
         if (blog) {
-          if (data.user_id == blog.user_id) {
+          if (data.sta_id == blog.sta_id) {
             // console.log(data.user_id, blog.user_id);
             // console.log(data.Description, blog.Description);
             // console.log(data.cat_id, blog.cat_id);
             // console.log(data.name, blog.name);
             blog.Description = data.Description;
-            blog.cat_id = data.cat_id;
             blog.name = data.name;
             console.log(blog);
             await blog.save();

@@ -12,7 +12,7 @@ let getAllRole = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let role = await db.Role.findAll({
-        include: [{ model: db.User, as: "UserRole" }],
+        include: [{ model: db.Staff, as: "UserRole" }],
         raw: false,
         nest: true,
       });
@@ -25,7 +25,7 @@ let getAllRole = () => {
 let getUserByIdRole = (roleId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let User = await db.User.findAll({
+      let User = await db.Staff.findAll({
         where: { role_id: roleId },
         include: [{ model: db.Role, as: "UserRole" }],
         raw: false,

@@ -1,6 +1,7 @@
 import db from "../models/index";
 import bcrypt from "bcryptjs";
 import { raw } from "body-parser";
+import Product from "../models/Product";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
@@ -73,19 +74,40 @@ let getAllProduct = (data) => {
 let getProductDetail = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let product = await db.Product.findOne({
+      let product = await db.Product.findAll({
         where: { id: id },
         include: [
           { model: db.Brand, as: "ProductBrand" },
           { model: db.Category, as: "CategoryProduct" },
-          { model: db.Option, as: "ProductOption", attributes: ["name"] },
           { model: db.Warehouse, as: "ProductInWarehouse" },
         ],
         raw: false,
         nest: true,
       });
-      console.log("Product", id);
-      resolve(product);
+      let option = await db.Product.findAll({
+        include: [
+          {
+            model: db.Option,
+            as: "ProductOption",
+            attributes: ["name"],
+            through: { attributes: [] },
+          },
+        ],
+        attributes: ["name"],
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      let Optionproduct = await db.Option_Product.findAll({
+        where: { product_id: id },
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        product,
+        option,
+        Optionproduct,
+      });
     } catch (e) {
       reject(e);
     }

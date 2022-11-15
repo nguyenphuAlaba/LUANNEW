@@ -16,7 +16,10 @@ let getAllWarehouse = () => {
       //   raw: false,
       //   nest: true,
       // });
-      let Warehouse = await db.Warehouse_staff.findAll();
+      let Warehouse = await db.Warehouse_staff.findAll({
+        raw: false,
+        nest: true,
+      });
       resolve({
         errCode: 0,
         errMessage: "Warehouse get success",

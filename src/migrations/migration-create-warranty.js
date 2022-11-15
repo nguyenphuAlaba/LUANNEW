@@ -20,7 +20,10 @@ module.exports = {
       product_id: {
         type: Sequelize.INTEGER,
       },
-      user_id: {
+      cus_id: {
+        type: Sequelize.INTEGER,
+      },
+      sta_id: {
         type: Sequelize.INTEGER,
       },
 
