@@ -12,7 +12,9 @@ let getAllRole = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let role = await db.Role.findAll({
-        include: [{ model: db.Staff, as: "UserRole" }],
+        include: [
+          { model: db.Staff, as: "UserRole", attributes: ["fullname"] },
+        ],
         raw: false,
         nest: true,
       });

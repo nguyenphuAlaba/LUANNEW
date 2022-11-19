@@ -17,8 +17,18 @@ let handleAddProductToCart = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetCartByCustomer = async (request, response) => {
+  try {
+    let id = await request.params.id;
+    let Cart = await CartService.getCartByCustomer(id);
+    return response.status(200).json(Cart);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 
 module.exports = {
   handleAddProductToCart,
   handleGetAllCat,
+  handleGetCartByCustomer,
 };

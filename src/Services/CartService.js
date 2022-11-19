@@ -4,7 +4,6 @@ import { raw } from "body-parser";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-
 var salt = bcrypt.genSaltSync(10);
 var cloudinary = require("cloudinary").v2;
 let getAllCart = () => {
@@ -96,7 +95,7 @@ let addProductToCart = (data) => {
               cart_id: checkCart.id,
             });
             resolve({
-              errCode: -1,
+              errCode: 0,
               errMessage: "Add to cart successfully",
             });
           } else {
@@ -114,7 +113,7 @@ let addProductToCart = (data) => {
           Upcart.amount = Upcart.amount + 1;
           await Upcart.save();
           resolve({
-            errCode: -2,
+            errCode: 0,
             errMessage: "Your Product has +1 amount",
           });
         }
@@ -124,7 +123,32 @@ let addProductToCart = (data) => {
     }
   });
 };
+let getCartByCustomer = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let cart = await db.Cartitem.findAll({
+        where: { cart_id: id },
+        attributes: [
+          "cart_id",
+          "product_id",
+          "amount",
+          [db.Sequelize.fn("sum", db.Sequelize.col("amount")), "total_amount"],
+        ],
+        raw: true,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        cart,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   addProductToCart,
   getAllCart,
+  getCartByCustomer,
 };

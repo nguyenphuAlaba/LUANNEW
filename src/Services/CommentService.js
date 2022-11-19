@@ -14,13 +14,22 @@ let getAllCommentOfProductRate = (Product) => {
       console.log(Product);
       let Comment = await db.Comment.findAll({
         include: [
-          { model: db.Product, as: "CommentProduct", where: { id: Product } },
+          {
+            model: db.Product,
+            as: "CommentProduct",
+            where: { id: Product },
+            attributes: ["name"],
+          },
           { model: db.Customer, as: "commentUser", attributes: ["fullname"] },
         ],
         raw: false,
         nest: true,
       });
-      resolve(Comment);
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        Comment,
+      });
     } catch (error) {
       reject(error);
     }
@@ -34,7 +43,7 @@ let addComment = (data) => {
         product_id: data.product_id,
         description: data.description,
         rate: data.rate,
-        status: data.status,
+        status: 1,
       });
       resolve({
         errCode: 0,

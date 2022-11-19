@@ -18,22 +18,22 @@ let getAllOrder = () => {
             as: "MethodOrder",
           },
           {
-            model: db.User,
+            model: db.Customer,
             as: "OrderUser",
           },
           {
             model: db.Voucher,
             as: "OrderVoucher",
           },
-          {
-            model: db.Orderitem,
-            as: "orderItem",
-          },
         ],
         raw: false,
         nest: true,
       });
-      resolve(order);
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        order,
+      });
     } catch (error) {
       reject(error);
     }
@@ -61,32 +61,64 @@ let allOrderByStatus = (Order) => {
     }
   });
 };
-let getCreateOrderByUser = (data) => {
+let getCreateOrderByUser = async (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      // console.log("userId ", data.user_id);
-      let user = await db.User.findOne({
-        where: { id: data.user_id },
+      let checkCart = await db.Cart.findOne({
+        where: { cus_id: data.cus_id },
+        raw: false,
+        nest: true,
       });
-      console.log("userId ", user);
-      if (user) {
-        await db.User.create({
+      if (!checkCart) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cann't add to order because cart not found",
+        });
+      } else {
+        await db.Order.create({
           fullname: data.fullname,
           email: data.email,
-          status: data.status,
+          status: 1,
           Address: data.Address,
           phonenumber: data.phonenumber,
           voucher_id: 1,
-          user_id: data.user_id,
+          method_id: 1,
+          cus_id: 1,
+        }).then(async function (x) {
+          if (x.id) {
+            let cartitem = data.cartitem;
+            let listOrder = [];
+            if (cartitem.length > 0) {
+              await Promise.all(
+                cartitem.map(async (item) => {
+                  let Cart = await db.Cartitem.findOne({
+                    where: { id: item },
+                  });
+                  let checkAmount = await db.Warehouse_product.findOne({
+                    where: {
+                      warehouse_id: data.warehouse_id,
+                      product_id: Cart.product_id,
+                    },
+                    raw: false,
+                    nest: true,
+                  });
+                  if (checkAmount.quantity > Cart.amount) {
+                    let obj = {};
+                    obj.order_id = x.id;
+                    obj.product_id = 1;
+                    obj.TotalQuantity = 1;
+                    obj.price = 123;
+                    listOrder.push(obj);
+                  }
+                })
+              );
+              db.Orderitem.bulkCreate(listOrder);
+            }
+          }
         });
         resolve({
           errCode: 0,
           errMessage: "Create Order Successfully",
-        });
-      } else {
-        resolve({
-          errCode: 1,
-          errMessage: "Your user not exists",
         });
       }
     } catch (error) {
@@ -97,8 +129,7 @@ let getCreateOrderByUser = (data) => {
 let getAllOrderByUser = (user) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("userId: " + user);
-      let checkUser = await db.User.findOne({
+      let checkUser = await db.Customer.findOne({
         where: { id: user },
         raw: false,
         nest: true,
@@ -106,7 +137,7 @@ let getAllOrderByUser = (user) => {
       if (checkUser) {
         let findOrder = await db.Order.findAll({
           where: {
-            user_id: user,
+            cus_id: user,
           },
           raw: false,
           nest: true,

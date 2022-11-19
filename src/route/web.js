@@ -48,6 +48,10 @@ let initWebRoutes = (app) => {
   //Cart
   router.post("/api/add-to-cart", CartControler.handleAddProductToCart);
   router.get("/api/get-all-cart", CartControler.handleGetAllCat);
+  router.get(
+    "/api/get-cart-by-customer-id/:id/",
+    CartControler.handleGetCartByCustomer
+  );
   //Option
   router.post("/api/create-option", OptionControler.handleCreateOption);
   router.delete("/api/delete-option/:id/", OptionControler.handleDeleteOption);
