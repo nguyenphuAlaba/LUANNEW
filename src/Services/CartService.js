@@ -95,7 +95,7 @@ let addProductToCart = (data) => {
               cart_id: checkCart.id,
             });
             resolve({
-              errCode: 0,
+              errCode: -1,
               errMessage: "Add to cart successfully",
             });
           } else {
@@ -113,7 +113,7 @@ let addProductToCart = (data) => {
           Upcart.amount = Upcart.amount + 1;
           await Upcart.save();
           resolve({
-            errCode: 0,
+            errCode: -2,
             errMessage: "Your Product has +1 amount",
           });
         }
