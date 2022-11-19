@@ -126,15 +126,23 @@ let addProductToCart = (data) => {
 let getCartByCustomer = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let cart = await db.Cartitem.findAll({
-        where: { cart_id: id },
+      let cart = await db.Cart.findOne({
+        where: { cus_id: id },
+        include: [
+          {
+            model: db.Customer,
+            as: "UserCart",
+          },
+        ],
         raw: true,
         nest: true,
       });
       // attributes: [
       //   [db.Sequelize.fn("sum", db.Sequelize.col("amount")), "total_amount"],
       // ],
-      let Sum = await db.Cartitem.sum("amount", { where: { cart_id: id } });
+      let Sum = await db.Cartitem.sum("amount", {
+        where: { cart_id: cart.id },
+      });
       resolve({
         errCode: 0,
         errMessage: "Ok",
