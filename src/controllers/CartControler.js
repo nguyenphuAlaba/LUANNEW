@@ -26,9 +26,26 @@ let handleGetCartByCustomer = async (request, response) => {
     return response.status(400).json(error);
   }
 };
-
+let handleUpdateAmount = async (request, response) => {
+  try {
+    let Cart = await CartService.updateAmount(request.body);
+    return response.status(200).json(Cart);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
+let handlPlusMinusAmount = async (request, response) => {
+  try {
+    let Cart = await CartService.plusMinusAmount(request.body);
+    return response.status(200).json(Cart);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleAddProductToCart,
+  handleUpdateAmount,
   handleGetAllCat,
   handleGetCartByCustomer,
+  handlPlusMinusAmount,
 };

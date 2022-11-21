@@ -38,7 +38,6 @@ let getAllUser = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let customer = db.Customer.findAll({
-        include: [{ model: db.Order, as: "OrderUser" }],
         raw: false,
         nest: true,
       });

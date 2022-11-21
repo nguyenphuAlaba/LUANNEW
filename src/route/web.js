@@ -52,6 +52,8 @@ let initWebRoutes = (app) => {
     "/api/get-cart-by-customer-id/:id/",
     CartControler.handleGetCartByCustomer
   );
+  router.put("/api/update-amount-cart", CartControler.handleUpdateAmount);
+  router.put("/api/plusminus-amount", CartControler.handlPlusMinusAmount);
   //Option
   router.post("/api/create-option", OptionControler.handleCreateOption);
   router.delete("/api/delete-option/:id/", OptionControler.handleDeleteOption);

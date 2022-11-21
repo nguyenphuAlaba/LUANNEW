@@ -154,8 +154,72 @@ let getCartByCustomer = (id) => {
     }
   });
 };
+let updateAmount = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let Cart = await db.Cartitem.findOne({
+        where: { cart_id: data.cart_id },
+        raw: false,
+        nest: true,
+      });
+      if (Cart) {
+        Cart.amount = data.amount;
+        Cart.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Update success",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Can't find Cartitem",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let plusMinusAmount = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let checkCart = await db.Cartitem.findOne({
+        where: { cart_id: data.cart_id },
+        raw: false,
+        nest: true,
+      });
+      if (!checkCart) {
+        resolve({
+          errCode: 1,
+          errMessage: "Can't find your cart",
+        });
+      } else {
+        if (data.key == "+") {
+          checkCart.amount = checkCart.amount + 1;
+          await checkCart.save();
+          resolve({
+            errCode: 0,
+            errMessage: "Amount have been +1",
+          });
+        }
+        if (data.key == "-") {
+          checkCart.amount = checkCart.amount - 1;
+          await checkCart.save();
+          resolve({
+            errCode: 0,
+            errMessage: "Amount have been -1",
+          });
+        }
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   addProductToCart,
   getAllCart,
+  updateAmount,
   getCartByCustomer,
+  plusMinusAmount,
 };
