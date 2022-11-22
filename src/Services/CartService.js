@@ -1,6 +1,7 @@
 import db from "../models/index";
 import bcrypt, { setRandomFallback } from "bcryptjs";
 import { raw } from "body-parser";
+import Product from "../models/Product";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
@@ -28,7 +29,7 @@ let addProductToCart = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let checkCart = await db.Cart.findOne({
-        where: { id: data.cus_id },
+        where: { cus_id: data.cus_id },
         raw: false,
         nest: true,
       });
@@ -128,18 +129,26 @@ let getCartByCustomer = (id) => {
     try {
       let cart = await db.Cart.findOne({
         where: { cus_id: id },
-        include: [
-          {
-            model: db.Customer,
-            as: "UserCart",
-          },
-        ],
         raw: true,
         nest: true,
       });
+      //tinh bang ham
+      // let Sum = await db.Cartitem.sum("amount", {
+      //   where: { cart_id: cart.id },
+      // });
+      // tinh trong thuoc tinh
       // attributes: [
-      //   [db.Sequelize.fn("sum", db.Sequelize.col("amount")), "total_amount"],
+      //   "cart_id",
+      //   [
+      //     (db.Sequelize.fn("sum", db.Sequelize.col("amount")),
+      //     "TotalQuantity"),
+      //   ],
       // ],
+      // group: ["cart_id"],
+      let Cartitem = await db.Cartitem.findAll({
+        where: { cart_id: cart.id },
+        attributes: ["product_id", "amount"],
+      });
       let Sum = await db.Cartitem.sum("amount", {
         where: { cart_id: cart.id },
       });
@@ -147,6 +156,7 @@ let getCartByCustomer = (id) => {
         errCode: 0,
         errMessage: "Ok",
         cart,
+        Cartitem,
         Sum,
       });
     } catch (error) {
@@ -158,7 +168,7 @@ let updateAmount = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let Cart = await db.Cartitem.findOne({
-        where: { cart_id: data.cart_id },
+        where: { cart_id: data.cart_id, product_id: data.product_id },
         raw: false,
         nest: true,
       });
