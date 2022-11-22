@@ -54,6 +54,14 @@ let initWebRoutes = (app) => {
   );
   router.put("/api/update-amount-cart", CartControler.handleUpdateAmount);
   router.put("/api/plusminus-amount", CartControler.handlPlusMinusAmount);
+  router.delete(
+    "/api/handle-Delete-Cartitem/:cart_id/",
+    CartControler.handleDeleteCartitem
+  );
+  router.delete(
+    "/api/handle-Delete-All-Cartitem/:cart_id/",
+    CartControler.handleDeleteAllCartitem
+  );
   //Option
   router.post("/api/create-option", OptionControler.handleCreateOption);
   router.delete("/api/delete-option/:id/", OptionControler.handleDeleteOption);

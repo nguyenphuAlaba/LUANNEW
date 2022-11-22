@@ -42,10 +42,30 @@ let handlPlusMinusAmount = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleDeleteCartitem = async (request, response) => {
+  try {
+    let cart_id = request.params.cart_id;
+    let cart = await CartService.deleteCartitem(cart_id);
+    return response.status(200).json(cart);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
+let handleDeleteAllCartitem = async (request, response) => {
+  try {
+    let cart_id = request.params.cart_id;
+    let cart = await CartService.deleteAllCartitem(cart_id);
+    return response.status(200).json(cart);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleAddProductToCart,
   handleUpdateAmount,
   handleGetAllCat,
   handleGetCartByCustomer,
   handlPlusMinusAmount,
+  handleDeleteCartitem,
+  handleDeleteAllCartitem,
 };

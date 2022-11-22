@@ -28,96 +28,72 @@ let getAllCart = () => {
 let addProductToCart = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let checkCart = await db.Cart.findOne({
-        where: { cus_id: data.cus_id },
-        raw: false,
-        nest: true,
+      let checkUser = await db.Customer.findOne({
+        where: { id: data.cus_id },
       });
-      if (!checkCart) {
-        let cUser = await db.Customer.findOne({
-          where: { id: data.cus_id },
-          raw: false,
-          nest: true,
+      if (checkUser) {
+        let checkProduct = await db.Product.findOne({
+          where: { id: data.product_id },
         });
-        if (cUser) {
-          await db.Cart.create({
-            cus_id: data.cus_id,
-          });
-          let cCart = await db.Cart.findOne({
+        if (checkProduct) {
+          let checkCart = await db.Cart.findOne({
             where: { cus_id: data.cus_id },
-            raw: false,
-            nest: true,
           });
-          if (cCart) {
-            let chProduct = await db.Product.findOne({
-              where: { id: data.product_id },
+          if (checkCart) {
+            let checkCartitem = await db.Cartitem.findOne({
+              where: {
+                cart_id: checkCart.id,
+                product_id: data.product_id,
+              },
               raw: false,
               nest: true,
             });
-            if (chProduct) {
+            if (checkCartitem) {
+              checkCartitem.amount = checkCartitem.amount + 1;
+              await checkCartitem.save();
+              resolve({
+                errCode: 0,
+                errMessage: "+1 Amount" + data.product_id + "Successfully",
+              });
+            } else {
               await db.Cartitem.create({
                 product_id: data.product_id,
                 amount: 1,
-                cart_id: cCart.id,
+                cart_id: checkCart.id,
               });
               resolve({
-                errCode: 0,
-                errMessage: "Add Cart Successfully",
-              });
-            } else {
-              reject({
-                errCode: 2,
-                errMessage: "Your Product Not Found",
+                errCode: -1,
+                errMessage: "Create cartitem by cart_id success",
               });
             }
+          } else {
+            await db.Cart.create({
+              cus_id: data.cus_id,
+            }).then(async function (x) {
+              if (x.id) {
+                await db.Cartitem.create({
+                  product_id: data.product_id,
+                  amount: 1,
+                  cart_id: x.id,
+                });
+                resolve({
+                  errCode: -2,
+                  errMessage: "Create Cart And Create Cartitem Successfully",
+                });
+              }
+            });
           }
         } else {
-          reject({
+          resolve({
             errCode: 1,
-            errMessage: "Your Customer not exist",
+            errMessage: "Product not found",
           });
         }
       } else {
-        let checkProduct = await db.Cartitem.findOne({
-          where: { product_id: data.product_id },
-          raw: false,
-          nest: true,
+        resolve({
+          errCode: 2,
+          errMessage: "Customer not found",
         });
-        if (!checkProduct) {
-          let cp = await db.Product.findAll({
-            where: { id: data.product_id },
-            raw: false,
-            nest: true,
-          });
-          if (cp) {
-            await db.Cartitem.create({
-              product_id: data.product_id,
-              amount: 1,
-              cart_id: checkCart.id,
-            });
-            resolve({
-              errCode: -1,
-              errMessage: "Add to cart successfully",
-            });
-          } else {
-            reject({
-              errCode: 3,
-              errMessage: "Your Product not exist",
-            });
-          }
-        } else {
-          let Upcart = await db.Cartitem.findOne({
-            where: { cart_id: checkCart.id, product_id: data.product_id },
-            raw: false,
-            nest: true,
-          });
-          Upcart.amount = Upcart.amount + 1;
-          await Upcart.save();
-          resolve({
-            errCode: -2,
-            errMessage: "Your Product has +1 amount",
-          });
-        }
       }
     } catch (error) {
       reject(error);
@@ -226,10 +202,66 @@ let plusMinusAmount = (data) => {
     }
   });
 };
+let deleteCartitem = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let checkCartitem = await db.Cartitem.findOne({
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      if (checkCartitem) {
+        await db.Cartitem.destroy({
+          where: { id: id },
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "OK",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Can't find cart item",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let deleteAllCartitem = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let checkCartitem = await db.Cartitem.findOne({
+        where: { cart_id: id },
+        raw: false,
+        nest: true,
+      });
+      if (checkCartitem) {
+        await db.Cartitem.destroy({
+          where: { cart_id: id },
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "OK",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Can't find cart item",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   addProductToCart,
   getAllCart,
   updateAmount,
   getCartByCustomer,
   plusMinusAmount,
+  deleteCartitem,
+  deleteAllCartitem,
 };
