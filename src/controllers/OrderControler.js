@@ -40,9 +40,19 @@ let handleGetAllOrderByUser = async (request, response) => {
     response.status(400).json(error);
   }
 };
+let handleDeleteOrder = async (request, response) => {
+  try {
+    let oderid = request.params.order_id;
+    let order = await OrderService.deleteOrder(oderid);
+    return response.status(200).json(order);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllOrder,
   handleAllOrderByStatus,
   handleGetCreateOrderByUser,
   handleGetAllOrderByUser,
+  handleDeleteOrder,
 };

@@ -139,6 +139,10 @@ let initWebRoutes = (app) => {
     "/api/get-order-by-user/:id/",
     OrderControler.handleGetAllOrderByUser
   );
+  router.delete(
+    "/api/delete-order-by-Oder-id/:order_id/",
+    OrderControler.handleDeleteOrder
+  );
   //Blog
   router.get("/api/get-all-blog/", BlogControler.handleGetAllBlog);
   router.get(

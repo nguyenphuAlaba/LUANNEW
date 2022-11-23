@@ -102,13 +102,32 @@ let getCreateOrderByUser = async (data) => {
                     raw: false,
                     nest: true,
                   });
+                  let warehouse = await db.Warehouse.findOne({
+                    where: { id: data.warehouse_id },
+                  });
+                  let product = await db.Product.findOne({
+                    where: {
+                      id: Cart.product_id,
+                    },
+                    raw: false,
+                  });
                   if (checkAmount.quantity > Cart.amount) {
                     let obj = {};
                     obj.order_id = x.id;
-                    obj.product_id = 1;
-                    obj.TotalQuantity = 1;
-                    obj.price = 123;
+                    obj.product_id = product.id;
+                    obj.TotalQuantity = Cart.amount;
+                    obj.price = product.unitprice;
                     listOrder.push(obj);
+                  } else {
+                    resolve({
+                      errCode: 2,
+                      errMessage:
+                        "Product : " +
+                        product.name +
+                        " in Warehouse : " +
+                        warehouse.name +
+                        " Are Not enough quantity ",
+                    });
                   }
                 })
               );
@@ -158,10 +177,49 @@ let getAllOrderByUser = (user) => {
     }
   });
 };
-
+let deleteOrder = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let checkOrder = await db.Order.findOne({
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      if (checkOrder) {
+        if (checkOrder.status == 1 || checkOrder.status == 2) {
+          await db.Orderitem.destroy({
+            where: { order_id: id },
+          }).then(
+            await db.Order.destroy({
+              where: { id: id },
+            })
+          );
+          resolve({
+            errCode: 0,
+            errMessage: "Your order has been deleted",
+          });
+        } else {
+          resolve({
+            errCode: 1,
+            errMessage:
+              "You Cannot Delete Your Order Because it has been delivery",
+          });
+        }
+      } else {
+        resolve({
+          errCode: 2,
+          errMessage: "Oder not found",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllOrder,
   allOrderByStatus,
   getCreateOrderByUser,
   getAllOrderByUser,
+  deleteOrder,
 };
