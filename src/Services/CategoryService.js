@@ -15,7 +15,11 @@ let getAllCategory = () => {
         raw: false,
         nest: true,
       });
-      resolve(category);
+      resolve({
+        errCode: 0,
+        errMessage: "ok",
+        category,
+      });
     } catch (error) {
       reject(error);
     }

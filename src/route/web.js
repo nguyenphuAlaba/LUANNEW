@@ -45,6 +45,18 @@ let initWebRoutes = (app) => {
     "/api/delete-product/:id/",
     ProductControler.handleDeleteProduct
   );
+  router.post(
+    "/api/add-product-quantity-in-warehouse/",
+    ProductControler.handleUpdateAmountProductWarehouse
+  );
+  router.post(
+    "/api/add-too-wish-list/",
+    ProductControler.handleAddProductWishlist
+  );
+  router.get(
+    "/api/get-all-product-by-cus/:cus_id/",
+    ProductControler.handleGetAllProductWislishByCusID
+  );
   //Cart
   router.post("/api/add-to-cart", CartControler.handleAddProductToCart);
   router.get("/api/get-all-cart", CartControler.handleGetAllCat);

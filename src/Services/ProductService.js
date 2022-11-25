@@ -179,10 +179,10 @@ let createProduct = (product) => {
         await db.Product.create({
           name: product.name,
           unitprice: product.unitprice,
-          currentQuantity: product.currentQuantity,
-          IntialQuantity: product.IntialQuantity,
+          currentQuantity: 0,
+          IntialQuantity: 0,
           Description: product.Description,
-          status: product.status,
+          status: 4,
           brand_id: product.brand_id,
           category_id: product.category_id,
           img: product.img,
@@ -224,8 +224,6 @@ let updateProduct = (product) => {
         } else {
           fproduct.name = product.name;
           fproduct.unitprice = product.unitprice;
-          fproduct.currentQuantity = product.currentQuantity;
-          fproduct.IntialQuantity = product.IntialQuantity;
           fproduct.Description = product.Description;
           fproduct.status = product.status;
           fproduct.brand_id = product.brand_id;
@@ -314,6 +312,154 @@ let deleteProduct = (product_id) => {
     }
   });
 };
+let updateAmountProductWarehouse = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (data.quantity == 0) {
+        reject({
+          errCode: 500,
+          errMessage: "Dont have Quantity",
+        });
+      } else {
+        let checkProduct = await db.Product.findOne({
+          where: { id: data.product_id },
+          raw: false,
+          nest: true,
+        });
+        if (!checkProduct) {
+          resolve({
+            errCode: 1,
+            errMessage: "Your product not found",
+          });
+        } else {
+          let checkWarehouse = await db.Warehouse.findOne({
+            where: { id: data.warehouse_id },
+            raw: false,
+            nest: true,
+          });
+          if (!checkWarehouse) {
+            resolve({
+              errCode: 2,
+              errMessage: "Warehouse not found",
+            });
+          } else {
+            console.log("aaaaaaaaaaaaaa");
+            let checkWP = await db.Warehouse_product.findOne({
+              where: {
+                product_id: data.product_id,
+                warehouse_id: data.warehouse_id,
+              },
+              raw: false,
+              nest: true,
+            });
+            if (checkWP) {
+              checkWP.quantity = checkWP.quantity + data.quantity;
+              console.log(checkWP.quantity);
+              await checkWP.save();
+              let totalQ = await db.Warehouse_product.sum("quantity", {
+                where: {
+                  product_id: data.product_id,
+                },
+              });
+              console.log(totalQ);
+              checkProduct.currentQuantity = totalQ;
+              await checkProduct.save();
+              resolve({
+                errCode: 0,
+                errMessage: "Add success when warehouse has been added before",
+              });
+            } else {
+              console.log("ccccccccccccccc");
+              await db.Warehouse_product.create({
+                product_id: data.product_id,
+                warehouse_id: data.warehouse_id,
+              });
+              let totalQ = await db.Warehouse_product.sum("quantity", {
+                where: {
+                  product_id: data.product_id,
+                },
+                raw: false,
+                nest: true,
+              });
+              checkProduct.currentQuantity = totalQ;
+              await checkProduct.save();
+              resolve({
+                errCode: -1,
+                errMessage:
+                  "Add success and create Warehouse Product Successfully",
+              });
+            }
+          }
+        }
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let getAllProductWislishByCusID = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let product = await db.Wishlist.findAll({
+        where: { cus_id: id },
+        raw: false,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "ok",
+        product,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let addProductWishlist = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let checkUser = await db.Customer.findOne({
+        where: { id: data.cus_id },
+      });
+      if (!checkUser) {
+        resolve({
+          errCode: 1,
+          errMessage: "Your customer not found",
+        });
+      } else {
+        let checkProduct = await db.Product.findOne({
+          where: { id: data.product_id },
+        });
+        if (!checkProduct) {
+          resolve({
+            errCode: 2,
+            errMessage: "Product not found",
+          });
+        } else {
+          let Wishlist = await db.Wishlist.findOne({
+            where: { cus_id: data.cus_id, product_id: data.product_id },
+          });
+          if (Wishlist) {
+            resolve({
+              errCode: 3,
+              errMessage: "Your wishlist has exsist",
+            });
+          } else {
+            await db.Wishlist.create({
+              cus_id: data.cus_id,
+              product_id: data.product_id,
+            });
+            resolve({
+              errCode: 0,
+              errMessage: "add to wishlist successfully",
+            });
+          }
+        }
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllProduct,
   getProductDetail,
@@ -325,5 +471,8 @@ module.exports = {
   handlegetProductByKeyword,
   deleteProduct,
   uploadToCloudinary,
+  updateAmountProductWarehouse,
+  addProductWishlist,
+  getAllProductWislishByCusID,
   upload,
 };

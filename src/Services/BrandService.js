@@ -16,7 +16,7 @@ let getAllBrand = () => {
         raw: false,
         nest: true,
       });
-      resolve(brand);
+      resolve({ errCode: 0, errMessage: "Ok", brand });
     } catch (error) {
       reject(error);
     }

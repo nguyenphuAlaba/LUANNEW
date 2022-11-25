@@ -43,7 +43,11 @@ let getAllUser = () => {
       });
       delete customer.password;
       delete customer.id;
-      resolve(customer);
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        customer,
+      });
     } catch (error) {
       reject(error);
     }
@@ -59,7 +63,7 @@ let getUserById = (user_id) => {
         raw: false,
         nest: true,
       });
-      resolve(user);
+      resolve({ errCode: 0, errMessage: "Ok", user });
     } catch (error) {
       reject(error);
     }
@@ -205,7 +209,7 @@ let handeLogin = (email, password) => {
         userdata.errorCode = 1;
         userdata.errMessage = `Your's email isn't exist in our system`;
       }
-      resolve(userdata);
+      resolve({ errCode: 0, errMessage: "Ok", userdata });
     } catch (error) {
       reject(error);
     }

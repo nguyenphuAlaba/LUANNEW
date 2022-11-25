@@ -137,6 +137,33 @@ let handleDeleteProduct = async (request, response) => {
     response.status(404).json(error);
   }
 };
+let handleUpdateAmountProductWarehouse = async (request, response) => {
+  try {
+    let product = await ProductService.updateAmountProductWarehouse(
+      request.body
+    );
+    return response.status(200).json(product);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
+let handleAddProductWishlist = async (request, response) => {
+  try {
+    let product = await ProductService.addProductWishlist(request.body);
+    return response.status(200).json(product);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
+let handleGetAllProductWislishByCusID = async (request, response) => {
+  try {
+    let cusId = await request.params.cus_id;
+    let wishlist = await ProductService.getAllProductWislishByCusID(cusId);
+    return response.status(200).json(wishlist);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handlegetallProduct,
   handlegetbyidProduct,
@@ -147,4 +174,7 @@ module.exports = {
   getProductByKeyword,
   handleDeleteProduct,
   handleUploadImg,
+  handleUpdateAmountProductWarehouse,
+  handleAddProductWishlist,
+  handleGetAllProductWislishByCusID,
 };
