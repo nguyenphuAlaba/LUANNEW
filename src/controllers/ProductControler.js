@@ -164,6 +164,15 @@ let handleGetAllProductWislishByCusID = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleDeleteProductinWishlist = async (request, response) => {
+  try {
+    let id = await request.params.wishlist_id;
+    let wishlist = await ProductService.deleteProductinWishlist(id);
+    return response.status(200).json(wishlist);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handlegetallProduct,
   handlegetbyidProduct,
@@ -177,4 +186,5 @@ module.exports = {
   handleUpdateAmountProductWarehouse,
   handleAddProductWishlist,
   handleGetAllProductWislishByCusID,
+  handleDeleteProductinWishlist,
 };

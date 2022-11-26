@@ -460,6 +460,40 @@ let addProductWishlist = (data) => {
     }
   });
 };
+let deleteProductinWishlist = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (id) {
+        let Wishlist = await db.Wishlist.findOne({
+          where: { id: id },
+          nest: true,
+          raw: false,
+        });
+        if (Wishlist) {
+          await db.Wishlist.destroy({
+            where: { id: id },
+          });
+          resolve({
+            errCode: 0,
+            errMessage: "Delete Wishlist Successfully",
+          });
+        } else {
+          resolve({
+            errCode: 2,
+            errMessage: "Cannot find your Wishlist ID",
+          });
+        }
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing ID",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllProduct,
   getProductDetail,
@@ -474,5 +508,6 @@ module.exports = {
   updateAmountProductWarehouse,
   addProductWishlist,
   getAllProductWislishByCusID,
+  deleteProductinWishlist,
   upload,
 };

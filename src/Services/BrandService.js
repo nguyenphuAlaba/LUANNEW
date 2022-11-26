@@ -38,21 +38,27 @@ let checkBrand = (brand) => {
 let createBrand = (brand) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let check = await checkBrand(brand.name);
-      console.log("brand " + brand.name);
-      if (check) {
+      if (!brand.name) {
         resolve({
-          errCode: 1,
-          errMessage: "This brand already exists",
+          errCode: 2,
+          errMessage: "Missing Your Brand Name",
         });
       } else {
-        await db.Brand.create({
-          name: brand.name,
-        });
-        resolve({
-          errCode: 0,
-          errMessage: "add brand successfully",
-        });
+        let check = await checkBrand(brand.name);
+        if (check) {
+          resolve({
+            errCode: 1,
+            errMessage: "This brand already exists",
+          });
+        } else {
+          await db.Brand.create({
+            name: brand.name,
+          });
+          resolve({
+            errCode: 0,
+            errMessage: "add brand successfully",
+          });
+        }
       }
     } catch (error) {
       reject(error);

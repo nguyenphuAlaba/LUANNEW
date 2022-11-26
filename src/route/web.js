@@ -57,6 +57,10 @@ let initWebRoutes = (app) => {
     "/api/get-all-product-by-cus/:cus_id/",
     ProductControler.handleGetAllProductWislishByCusID
   );
+  router.delete(
+    "/api/delete-wishlist/:wishlist_id/",
+    ProductControler.handleDeleteProductinWishlist
+  );
   //Cart
   router.post("/api/add-to-cart", CartControler.handleAddProductToCart);
   router.get("/api/get-all-cart", CartControler.handleGetAllCat);
