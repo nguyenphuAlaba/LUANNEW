@@ -173,6 +173,23 @@ let handleDeleteProductinWishlist = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleAddProductView = async (request, response) => {
+  try {
+    let viewed = await ProductService.addProductView(request.body);
+    return response.status(200).json(viewed);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
+let handleGetAllProductView = async (request, response) => {
+  try {
+    let cusId = await request.params.cus_id;
+    let viewlist = await ProductService.getAllProductView(cusId);
+    return response.status(200).json(viewlist);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handlegetallProduct,
   handlegetbyidProduct,
@@ -187,4 +204,6 @@ module.exports = {
   handleAddProductWishlist,
   handleGetAllProductWislishByCusID,
   handleDeleteProductinWishlist,
+  handleAddProductView,
+  handleGetAllProductView,
 };

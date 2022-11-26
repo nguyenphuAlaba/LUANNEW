@@ -82,8 +82,8 @@ let getCreateOrderByUser = async (data) => {
           Address: data.Address,
           phonenumber: data.phonenumber,
           voucher_id: 1,
-          method_id: 1,
-          cus_id: 1,
+          method_id: data.method_id,
+          cus_id: data.cus_id,
         }).then(async function (x) {
           if (x.id) {
             let cartitem = data.cartitem;

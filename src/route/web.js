@@ -12,6 +12,7 @@ import WarehouseControler from "../controllers/WarehouseControler";
 import OptionControler from "../controllers/OptionControler";
 import WarrantyControler from "../controllers/WarrantyControler";
 import CartControler from "../controllers/CartControler";
+import EventControler from "../controllers/EventControler";
 let router = express.Router();
 const { upload } = require("../Services/ProductService");
 
@@ -60,6 +61,11 @@ let initWebRoutes = (app) => {
   router.delete(
     "/api/delete-wishlist/:wishlist_id/",
     ProductControler.handleDeleteProductinWishlist
+  );
+  router.post("/api/add-to-view/", ProductControler.handleAddProductView);
+  router.get(
+    "/api/get-product-view-by-customer-id/:cus_id/",
+    ProductControler.handleGetAllProductView
   );
   //Cart
   router.post("/api/add-to-cart", CartControler.handleAddProductToCart);
@@ -183,6 +189,7 @@ let initWebRoutes = (app) => {
     "/api/delete-warehouse/:id/",
     WarehouseControler.handleDeleteWarehouse
   );
+  router.post("/api/create-event/", EventControler.handleCreateEvent);
   return app.use("/", router);
 };
 

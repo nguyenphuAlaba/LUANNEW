@@ -102,6 +102,7 @@ let getProductDetail = (id) => {
         where: { product_id: id },
         raw: false,
         nest: true,
+        order: ["option_id"],
       });
       resolve({
         product,
@@ -480,7 +481,7 @@ let deleteProductinWishlist = (id) => {
         } else {
           resolve({
             errCode: 2,
-            errMessage: "Cannot find your Wishlist ID",
+            errMessage: "Cannot find your Wishlist ",
           });
         }
       } else {
@@ -494,6 +495,63 @@ let deleteProductinWishlist = (id) => {
     }
   });
 };
+let addProductView = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let checkUser = await db.Customer.findOne({
+        where: { id: data.cus_id },
+      });
+      let checkProduct = await db.Product.findOne({
+        where: { id: data.product_id },
+      });
+      if (!checkUser || !checkProduct) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing require",
+        });
+      } else {
+        let checkview = await db.Viewed.findOne({
+          where: { cus_id: data.cus_id, product_id: data.product_id },
+        });
+        if (checkview) {
+          resolve({
+            errCode: 1,
+            errMessage: "already have view",
+          });
+        } else {
+          await db.Viewed.create({
+            cus_id: data.cus_id,
+            product_id: data.product_id,
+          });
+          resolve({
+            errCode: 0,
+            errMessage: "Add to view successfully",
+          });
+        }
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let getAllProductView = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let findP = await db.Viewed.findAll({
+        where: { cus_id: id },
+        raw: false,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        findP,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 module.exports = {
   getAllProduct,
   getProductDetail,
@@ -509,5 +567,7 @@ module.exports = {
   addProductWishlist,
   getAllProductWislishByCusID,
   deleteProductinWishlist,
+  addProductView,
+  getAllProductView,
   upload,
 };

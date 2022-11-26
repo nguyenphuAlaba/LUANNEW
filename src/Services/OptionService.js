@@ -188,6 +188,7 @@ let findByOptionId = (data) => {
         where: when,
         raw: false,
         nest: true,
+        attributes: ["id", "name", "price", "product_id", "option_id"],
       });
       resolve({
         errCode: 0,

@@ -124,6 +124,17 @@ let getCartByCustomer = (id) => {
       let Cartitem = await db.Cartitem.findAll({
         where: { cart_id: cart.id },
         attributes: ["product_id", "amount"],
+        include: [
+          {
+            model: db.Product,
+            as: "CartItemProduct",
+            attributes: ["name"],
+            include: [
+              { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
+            ],
+          },
+        ],
+        raw: false,
       });
       let Sum = await db.Cartitem.sum("amount", {
         where: { cart_id: cart.id },

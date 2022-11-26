@@ -8,13 +8,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      date: {
+      datestart: {
         type: Sequelize.DATE,
       },
-      totalprice: {
-        type: Sequelize.DOUBLE,
+      dateend: {
+        type: Sequelize.DATE,
       },
-
+      name: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

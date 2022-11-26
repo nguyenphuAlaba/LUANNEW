@@ -41,22 +41,28 @@ let checkCategory = (category) => {
 let createCategory = (category) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let check = await checkCategory(category.name);
-      console.log("category " + category.name);
-      if (check) {
+      if (!category.name) {
         resolve({
-          errCode: 1,
-          errMessage: "This category already exists",
+          errCode: 2,
+          errMessage: "Your category name missing",
         });
       } else {
-        await db.Category.create({
-          name: category.name,
-          parent_id: category.parent_id,
-        });
-        resolve({
-          errCode: 0,
-          errMessage: "add category successfully",
-        });
+        let check = await checkCategory(category.name);
+        if (check) {
+          resolve({
+            errCode: 1,
+            errMessage: "This category already exists",
+          });
+        } else {
+          await db.Category.create({
+            name: category.name,
+            parent_id: category.parent_id,
+          });
+          resolve({
+            errCode: 0,
+            errMessage: "add category successfully",
+          });
+        }
       }
     } catch (error) {
       reject(error);
@@ -86,6 +92,7 @@ let updateCategory = (category) => {
         } else {
           fcategory.name = category.name;
           fcategory.parent_id = category.parent_id;
+          fcategory.description = category.description;
           await fcategory.save();
           //delete category old
           resolve({
