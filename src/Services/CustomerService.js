@@ -209,7 +209,7 @@ let handeLogin = (email, password) => {
         userdata.errorCode = 1;
         userdata.errMessage = `Your's email isn't exist in our system`;
       }
-      resolve({ errCode: 0, errMessage: "Ok", userdata });
+      resolve(userdata);
     } catch (error) {
       reject(error);
     }
