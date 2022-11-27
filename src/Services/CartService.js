@@ -123,14 +123,18 @@ let getCartByCustomer = (id) => {
       // group: ["cart_id"],
       let Cartitem = await db.Cartitem.findAll({
         where: { cart_id: cart.id },
-        attributes: ["product_id", "amount"],
+        attributes: ["product_id", "amount", "id"],
         include: [
           {
             model: db.Product,
             as: "CartItemProduct",
-            attributes: ["name"],
+            attributes: ["name", "unitprice"],
             include: [
-              { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
+              {
+                model: db.Brand,
+                as: "ProductBrand",
+                attributes: ["name"],
+              },
             ],
           },
         ],

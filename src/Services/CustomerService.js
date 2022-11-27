@@ -37,7 +37,7 @@ let uploadCloud = (image, fName) => {
 let getAllUser = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      let customer = db.Customer.findAll({
+      let customer = await db.Customer.findAll({
         raw: false,
         nest: true,
       });
