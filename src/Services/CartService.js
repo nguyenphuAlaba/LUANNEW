@@ -206,15 +206,25 @@ let getCartByCustomer = (id) => {
         ],
         raw: false,
       });
-      // let option;
-      // await Promise.all(
-      //   Cartitem.optionvalue.map(async (item) => {
-      //     option = await db.Option_Product.findOne({
-      //       where: { id: 1 },
-      //       raw: false,
-      //     });
-      //   })
-      // );
+      let options = [];
+      await Promise.all(
+        Cartitem.map(async (item) => {
+          item.optionvalue.map(async (x) => {
+            console.log(x);
+            let option = await db.Option_Product.findOne({
+              where: { id: x },
+              attributes: ["name", "option_id", "id"],
+              raw: false,
+              order: ["product_id"],
+            });
+            if (option) {
+              // console.log(option);
+              options.push(option);
+            }
+          });
+        })
+      );
+      console.log(Cartitem.optionvalue);
       let Sum = await db.Cartitem.sum("amount", {
         where: { cart_id: cart.id },
       });
@@ -229,7 +239,7 @@ let getCartByCustomer = (id) => {
         errMessage: "Ok",
         cart,
         Cartitem,
-        option,
+        options,
         Sum,
         Count,
         Totalprice,
