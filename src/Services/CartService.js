@@ -62,7 +62,6 @@ let addProductToCart = (data) => {
                   errMessage: "+1 Amount" + data.product_id + "Successfully",
                 });
               } else {
-                console.log("aaaaaaaaaaaaaa");
                 console.log(data);
                 let optionvalue = data.optionvalue;
                 let optionsum = 0;
@@ -86,13 +85,14 @@ let addProductToCart = (data) => {
                     }
                   })
                 );
+                console.log(checkProduct.unitprice + optionsum);
                 console.log("aaaaaaaaaaaaa");
                 await db.Cartitem.create({
                   product_id: data.product_id,
                   amount: 1,
                   cart_id: checkCart.id,
-                  optionvalue: [data.optionvalue],
-                  price: (checkProduct.unitprice + optionsum) * amount,
+                  optionvalue: data.optionvalue,
+                  price: checkProduct.unitprice + optionsum,
                 });
                 resolve({
                   errCode: -1,
