@@ -63,6 +63,7 @@ let addProductToCart = (data) => {
                 });
               } else {
                 console.log(data);
+                let checkPOExist = true;
                 let optionvalue = data.optionvalue;
                 let optionsum = 0;
                 await Promise.all(
@@ -74,58 +75,76 @@ let addProductToCart = (data) => {
                       optionsum = optionsum + checkPO.price;
                       console.log(optionsum);
                     } else {
-                      resolve({
+                      reject({
                         errCode: 4,
                         errMessage:
                           "Your Option: " +
                           item +
-                          "Not matching with product : " +
+                          " Not matching with product : " +
                           checkProduct.id,
                       });
+                      // chi 1 thang loi => dung` chay ham
+                      checkPOExist = false;
                     }
                   })
                 );
-                console.log(checkProduct.unitprice + optionsum);
-                console.log("aaaaaaaaaaaaa");
-                await db.Cartitem.create({
-                  product_id: data.product_id,
-                  amount: 1,
-                  cart_id: checkCart.id,
-                  optionvalue: data.optionvalue,
-                  price: checkProduct.unitprice + optionsum,
-                });
-                resolve({
-                  errCode: -1,
-                  errMessage: "Create cartitem by cart_id success",
-                });
+                if (checkPOExist) {
+                  await db.Cartitem.create({
+                    product_id: data.product_id,
+                    amount: 1,
+                    cart_id: checkCart.id,
+                    optionvalue: data.optionvalue,
+                    price: checkProduct.unitprice + optionsum,
+                  });
+                  resolve({
+                    errCode: -1,
+                    errMessage: "Create cartitem by cart_id success",
+                  });
+                }
               }
             } else {
               await db.Cart.create({
                 cus_id: data.cus_id,
               }).then(async function (x) {
                 if (x.id) {
-                  console.log("cccccccccccccc");
                   let optionsum;
+                  let checkPOExist = true;
                   await Promise.all(
                     optionvalue.map(async (item) => {
-                      optionsum = await db.OptionProduct.sum("price", {
-                        where: { id: item },
-                        raw: false,
-                        nest: true,
+                      let checkPO = await db.Option_Product.findOne({
+                        where: { id: item, product_id: data.product_id },
                       });
+                      if (checkPO) {
+                        optionsum = optionsum + checkPO.price;
+                        console.log(optionsum);
+                      } else {
+                        reject({
+                          errCode: 4,
+                          errMessage:
+                            "Your Option: " +
+                            item +
+                            " Not matching with product : " +
+                            checkProduct.id,
+                        });
+                        // chi 1 thang loi => dung` chay ham
+                        checkPOExist = false;
+                      }
                     })
                   );
-                  await db.Cartitem.create({
-                    product_id: data.product_id,
-                    amount: 1,
-                    cart_id: x.id,
-                    optionvalue: data.optionvalue,
-                    price: checkProduct.unitprice + optionsum,
-                  });
-                  resolve({
-                    errCode: -2,
-                    errMessage: "Create Cart And Create Cartitem Successfully",
-                  });
+                  if (checkPOExist) {
+                    await db.Cartitem.create({
+                      product_id: data.product_id,
+                      amount: 1,
+                      cart_id: checkCart.id,
+                      optionvalue: data.optionvalue,
+                      price: checkProduct.unitprice + optionsum,
+                    });
+                    resolve({
+                      errCode: -2,
+                      errMessage:
+                        "Create Cart And Create Cartitem Successfully",
+                    });
+                  }
                 }
               });
             }
@@ -170,12 +189,12 @@ let getCartByCustomer = (id) => {
       // group: ["cart_id"],
       let Cartitem = await db.Cartitem.findAll({
         where: { cart_id: cart.id },
-        attributes: ["product_id", "amount", "id"],
+        attributes: ["product_id", "amount", "id", "price", "optionvalue"],
         include: [
           {
             model: db.Product,
             as: "CartItemProduct",
-            attributes: ["name", "unitprice"],
+            attributes: ["name"],
             include: [
               {
                 model: db.Brand,
@@ -187,10 +206,22 @@ let getCartByCustomer = (id) => {
         ],
         raw: false,
       });
+      // let option;
+      // await Promise.all(
+      //   Cartitem.optionvalue.map(async (item) => {
+      //     option = await db.Option_Product.findOne({
+      //       where: { id: 1 },
+      //       raw: false,
+      //     });
+      //   })
+      // );
       let Sum = await db.Cartitem.sum("amount", {
         where: { cart_id: cart.id },
       });
       let Count = await db.Cartitem.count("id", {
+        where: { cart_id: cart.id },
+      });
+      let Totalprice = await db.Cartitem.sum("price", {
         where: { cart_id: cart.id },
       });
       resolve({
@@ -198,8 +229,10 @@ let getCartByCustomer = (id) => {
         errMessage: "Ok",
         cart,
         Cartitem,
+        option,
         Sum,
         Count,
+        Totalprice,
       });
     } catch (error) {
       reject(error);
