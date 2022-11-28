@@ -17,6 +17,12 @@ module.exports = {
       cart_id: {
         type: Sequelize.INTEGER,
       },
+      optionvalue: {
+        type: Sequelize.ARRAY(Sequelize.INTEGER),
+      },
+      price: {
+        type: Sequelize.DOUBLE,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

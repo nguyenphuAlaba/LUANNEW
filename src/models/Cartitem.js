@@ -28,6 +28,8 @@ module.exports = (sequelize, DataTypes) => {
       product_id: DataTypes.INTEGER,
       amount: DataTypes.INTEGER,
       cart_id: DataTypes.INTEGER,
+      optionvalue: DataTypes.ARRAY(DataTypes.INTEGER),
+      price: DataTypes.DOUBLE,
     },
     {
       sequelize,
