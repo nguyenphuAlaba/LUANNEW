@@ -41,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       voucher_id: DataTypes.INTEGER,
       method_id: DataTypes.INTEGER,
       cus_id: DataTypes.INTEGER,
+      paymentstatus: DataTypes.INTEGER,
     },
     {
       sequelize,

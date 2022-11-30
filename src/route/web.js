@@ -9,7 +9,6 @@ import RoleControler from "../controllers/RoleControler";
 import OrderControler from "../controllers/OrderControler";
 import BlogControler from "../controllers/BlogControler";
 import WarehouseControler from "../controllers/WarehouseControler";
-import OptionControler from "../controllers/OptionControler";
 import WarrantyControler from "../controllers/WarrantyControler";
 import CartControler from "../controllers/CartControler";
 import EventControler from "../controllers/EventControler";
@@ -84,21 +83,7 @@ let initWebRoutes = (app) => {
     "/api/handle-Delete-All-Cartitem/:cart_id/",
     CartControler.handleDeleteAllCartitem
   );
-  //Option
-  router.post("/api/create-option", OptionControler.handleCreateOption);
-  router.delete("/api/delete-option/:id/", OptionControler.handleDeleteOption);
-  router.post(
-    "/api/create-option-product",
-    OptionControler.handlecreateOptionProduct
-  );
-  router.get(
-    "/api/get-option-by-product-id/:id/",
-    OptionControler.handleGetOptionByProductId
-  );
-  router.get(
-    "/api/get-option-by-optionid/",
-    OptionControler.handleFindByOptionId
-  );
+
   //Warranty
   router.get("/api/get-all-warranty/", WarrantyControler.handleGetAllWarranty);
   router.post("/api/create-warranty/", WarrantyControler.handleCreateWarranty);
@@ -165,6 +150,8 @@ let initWebRoutes = (app) => {
     "/api/delete-order-by-Oder-id/:order_id/",
     OrderControler.handleDeleteOrder
   );
+  router.post("/api/get-momo-payment-link/", OrderControler.getMomoPaymentLink);
+  router.post("/api/handle-order/", OrderControler.handleOrderPayment);
   //Blog
   router.get("/api/get-all-blog/", BlogControler.handleGetAllBlog);
   router.get(

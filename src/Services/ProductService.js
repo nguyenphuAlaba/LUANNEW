@@ -2,6 +2,8 @@ import db from "../models/index";
 import bcrypt from "bcryptjs";
 import { raw } from "body-parser";
 import Product from "../models/Product";
+import Option_Product from "../models/Option_Product";
+import { dataError } from "./jsonFormat";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
@@ -75,39 +77,33 @@ let getProductDetail = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       let product = await db.Product.findAll({
-        where: { id: id },
+        where: { id: 1 },
         include: [
-          { model: db.Brand, as: "ProductBrand" },
-          { model: db.Category, as: "CategoryProduct" },
-          { model: db.Warehouse, as: "ProductInWarehouse" },
-        ],
-        raw: false,
-        nest: true,
-      });
-      let option = await db.Product.findAll({
-        include: [
+          { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
+          { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
+          {
+            model: db.Warehouse,
+            as: "ProductInWarehouse",
+            attributes: ["name"],
+          },
           {
             model: db.Option,
             as: "ProductOption",
             attributes: ["name"],
-            through: { attributes: [] },
+            through: {
+              attributes: ["id", "name", "product_id"],
+              // where: { product_id: id },
+            },
           },
         ],
-        attributes: ["name"],
-        where: { id: id },
         raw: false,
         nest: true,
       });
-      let Optionproduct = await db.Option_Product.findAll({
-        where: { product_id: id },
-        raw: false,
-        nest: true,
-        order: ["option_id"],
-      });
+      console.log(product);
       resolve({
+        errCode: 0,
+        errMessage: "OK",
         product,
-        option,
-        Optionproduct,
       });
     } catch (e) {
       reject(e);
@@ -316,81 +312,67 @@ let deleteProduct = (product_id) => {
 let updateAmountProductWarehouse = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (data.quantity == 0) {
-        reject({
-          errCode: 500,
-          errMessage: "Dont have Quantity",
+      let checkProduct = await db.Product.findOne({
+        where: { id: data.product_id },
+        raw: false,
+        nest: true,
+      });
+      let checkWarehouse = await db.Warehouse.findOne({
+        where: { id: data.warehouse_id },
+        raw: false,
+        nest: true,
+      });
+      if (!checkProduct || !checkWarehouse) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot Find Your Product Or Warehouse",
         });
       } else {
-        let checkProduct = await db.Product.findOne({
-          where: { id: data.product_id },
+        console.log("aaaaaaaaaaaaa");
+        let OP = await db.Option_Product.findOne({
+          where: { id: data.color_id, product_id: data.product_id },
           raw: false,
           nest: true,
         });
-        if (!checkProduct) {
-          resolve({
-            errCode: 1,
-            errMessage: "Your product not found",
-          });
-        } else {
-          let checkWarehouse = await db.Warehouse.findOne({
-            where: { id: data.warehouse_id },
+        if (OP.option_id == 1) {
+          console.log("aaaaaaaaaaaaa");
+          let checkWare = await db.Warehouse_product.findOne({
+            where: { product_id: data.product_id, color_id: data.color_id },
             raw: false,
             nest: true,
           });
-          if (!checkWarehouse) {
-            resolve({
-              errCode: 2,
-              errMessage: "Warehouse not found",
-            });
-          } else {
-            console.log("aaaaaaaaaaaaaa");
-            let checkWP = await db.Warehouse_product.findOne({
-              where: {
-                product_id: data.product_id,
-                warehouse_id: data.warehouse_id,
-              },
-              raw: false,
+          if (checkWare) {
+            console.log("bbbbbbbb");
+            checkWare.quantity = checkWare.quantity + data.quantity;
+            await checkWare.save();
+            let sum = await db.Warehouse_product.sum("quantity", {
+              where: { product_id: data.product_id },
               nest: true,
             });
-            if (checkWP) {
-              checkWP.quantity = checkWP.quantity + data.quantity;
-              console.log(checkWP.quantity);
-              await checkWP.save();
-              let totalQ = await db.Warehouse_product.sum("quantity", {
-                where: {
-                  product_id: data.product_id,
-                },
-              });
-              console.log(totalQ);
-              checkProduct.currentQuantity = totalQ;
-              await checkProduct.save();
-              resolve({
-                errCode: 0,
-                errMessage: "Add success when warehouse has been added before",
-              });
-            } else {
-              console.log("ccccccccccccccc");
-              await db.Warehouse_product.create({
-                product_id: data.product_id,
-                warehouse_id: data.warehouse_id,
-              });
-              let totalQ = await db.Warehouse_product.sum("quantity", {
-                where: {
-                  product_id: data.product_id,
-                },
-                raw: false,
-                nest: true,
-              });
-              checkProduct.currentQuantity = totalQ;
-              await checkProduct.save();
-              resolve({
-                errCode: -1,
-                errMessage:
-                  "Add success and create Warehouse Product Successfully",
-              });
-            }
+            checkProduct.quantity = sum;
+            await checkProduct.save();
+            resolve({
+              errCode: 0,
+              errMessage: "Update amount successfully",
+            });
+          } else {
+            console.log("ccccccccccc");
+            await db.Warehouse_product.create({
+              product_id: data.product_id,
+              warehouse_id: data.warehouse_id,
+              color_id: data.color_id,
+              quantity: data.quantity,
+            });
+            resolve({
+              errCode: -1,
+              errMessage: "Create Warehouse Product by color_id successfully",
+            });
           }
+        } else {
+          resolve({
+            errCode: 2,
+            errMessage: "Your Color_id are not found",
+          });
         }
       }
     } catch (error) {
@@ -403,6 +385,7 @@ let getAllProductWislishByCusID = (id) => {
     try {
       let product = await db.Wishlist.findAll({
         where: { cus_id: id },
+        include: [{ model: db.Product, as: "ProductWishlist" }],
         raw: false,
       });
       resolve({
@@ -539,7 +522,9 @@ let getAllProductView = (id) => {
     try {
       let findP = await db.Viewed.findAll({
         where: { cus_id: id },
+        include: [{ model: db.Product, as: "ViewProduct" }],
         raw: false,
+        nsst: true,
       });
       resolve({
         errCode: 0,

@@ -62,6 +62,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "product_id",
         through: models.Option_Product,
         as: "ProductOption",
+        otherKey: "option_id",
       });
     }
   }

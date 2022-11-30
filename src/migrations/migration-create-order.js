@@ -32,6 +32,9 @@ module.exports = {
       cus_id: {
         type: Sequelize.INTEGER,
       },
+      paymentstatus: {
+        type: Sequelize.INTEGER,
+      },
 
       createdAt: {
         allowNull: false,

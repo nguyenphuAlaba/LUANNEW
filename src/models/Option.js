@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "option_id",
         through: models.Option_Product,
         as: "OptionInProduct",
+        otherKey: "product_id",
       });
     }
   }

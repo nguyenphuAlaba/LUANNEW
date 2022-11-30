@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       price: DataTypes.DOUBLE,
       order_id: DataTypes.INTEGER,
       TotalQuantity: DataTypes.INTEGER,
+      optionValues: DataTypes.ARRAY(DataTypes.INTEGER),
     },
     {
       sequelize,

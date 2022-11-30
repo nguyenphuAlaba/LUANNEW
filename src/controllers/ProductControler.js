@@ -19,16 +19,9 @@ let handlegetbyidProduct = async (Request, Response) => {
   const product_id = Request.params.id;
   try {
     let product = await ProductService.getProductDetail(product_id);
-    return Response.status(200).json({
-      errCode: 0,
-      errMessage: "Successfully product Detail",
-      product,
-    });
+    return Response.status(200).json(product);
   } catch (err) {
-    return Response.status(400).json({
-      errCode: -1,
-      errMessage: "Missing required",
-    });
+    return Response.status(400).json(err);
   }
 };
 let handlegetProductByBrand = async (request, response) => {

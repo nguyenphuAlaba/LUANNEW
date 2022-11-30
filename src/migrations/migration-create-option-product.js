@@ -14,9 +14,6 @@ module.exports = {
       price: {
         type: Sequelize.DOUBLE,
       },
-      quantity: {
-        type: Sequelize.INTEGER,
-      },
       product_id: {
         type: Sequelize.INTEGER,
       },

@@ -2,6 +2,7 @@ import db from "../models/index";
 import bcrypt, { setRandomFallback } from "bcryptjs";
 import { raw } from "body-parser";
 import Product from "../models/Product";
+import Cartitem from "../models/Cartitem";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
@@ -50,16 +51,31 @@ let addProductToCart = (data) => {
                 where: {
                   cart_id: checkCart.id,
                   product_id: data.product_id,
+                  optionvalue: data.optionvalue,
                 },
+                //attributes: ["optionvalue", "amount", "ttprice", "price", "id"],
                 raw: false,
                 nest: true,
               });
               if (checkCartitem) {
-                checkCartitem.amount = checkCartitem.amount + 1;
-                await checkCartitem.save();
+                // try {
+                //   //checkCartitem.amount = checkCartitem.amount + 1;
+                //   // checkCartitem.ttprice =
+                //   //   checkCartitem.price * checkCartitem.amount;
+                //   console.log(checkCartitem.id);
+
+                //   //await checkCartitem.save();
+                //   await checkCartitem.update(
+                //     { amount: 8 },
+                //     { where: { id: 7 } }
+                //   );
+                // } catch (error) {
+                //   console.log("error: ", error);
+                // }
+
                 resolve({
                   errCode: 0,
-                  errMessage: "+1 Amount" + data.product_id + "Successfully",
+                  errMessage: "Your product already Add",
                 });
               } else {
                 console.log(data);
@@ -95,6 +111,7 @@ let addProductToCart = (data) => {
                     cart_id: checkCart.id,
                     optionvalue: data.optionvalue,
                     price: checkProduct.unitprice + optionsum,
+                    ttprice: checkProduct.unitprice + optionsum,
                   });
                   resolve({
                     errCode: -1,
@@ -138,6 +155,7 @@ let addProductToCart = (data) => {
                       cart_id: checkCart.id,
                       optionvalue: data.optionvalue,
                       price: checkProduct.unitprice + optionsum,
+                      ttprice: checkProduct.unitprice + optionsum,
                     });
                     resolve({
                       errCode: -2,
@@ -194,7 +212,7 @@ let getCartByCustomer = (id) => {
           {
             model: db.Product,
             as: "CartItemProduct",
-            attributes: ["name"],
+            attributes: ["name", "img"],
             include: [
               {
                 model: db.Brand,
@@ -224,14 +242,13 @@ let getCartByCustomer = (id) => {
           });
         })
       );
-      console.log(Cartitem.optionvalue);
       let Sum = await db.Cartitem.sum("amount", {
         where: { cart_id: cart.id },
       });
       let Count = await db.Cartitem.count("id", {
         where: { cart_id: cart.id },
       });
-      let Totalprice = await db.Cartitem.sum("price", {
+      let Totalprice = await db.Cartitem.sum("ttprice", {
         where: { cart_id: cart.id },
       });
       resolve({
@@ -253,12 +270,13 @@ let updateAmount = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let Cart = await db.Cartitem.findOne({
-        where: { cart_id: data.cart_id, product_id: data.product_id },
+        where: { id: data.cart_id, product_id: data.product_id },
         raw: false,
         nest: true,
       });
       if (Cart) {
         Cart.amount = data.amount;
+        Cart.ttprice = Cart.price * Cart.amount;
         Cart.save();
         resolve({
           errCode: 0,
@@ -291,6 +309,7 @@ let plusMinusAmount = (data) => {
       } else {
         if (data.key == "+") {
           checkCart.amount = checkCart.amount + 1;
+          checkCart.ttprice = checkCart.price * checkCart.amount;
           await checkCart.save();
           resolve({
             errCode: 0,
@@ -298,12 +317,20 @@ let plusMinusAmount = (data) => {
           });
         }
         if (data.key == "-") {
-          checkCart.amount = checkCart.amount - 1;
-          await checkCart.save();
-          resolve({
-            errCode: 0,
-            errMessage: "Amount have been -1",
-          });
+          if (checkCart.amount == 1) {
+            resolve({
+              errCode: 2,
+              errMessage: "Cannot minus more",
+            });
+          } else {
+            checkCart.amount = checkCart.amount - 1;
+            checkCart.ttprice = checkCart.price * checkCart.amount;
+            await checkCart.save();
+            resolve({
+              errCode: 0,
+              errMessage: "Amount have been -1",
+            });
+          }
         }
       }
     } catch (error) {

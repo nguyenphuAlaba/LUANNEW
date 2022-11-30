@@ -4,6 +4,22 @@ import { raw } from "body-parser";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
+const crypto = require("crypto");
+const https = require("https");
+
+//parameters
+var partnerCode = "MOMO";
+var accessKey = "F8BBA842ECF85";
+var secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+var orderInfo = "pay with MoMo";
+
+var redirectUrl = "http://localhost:3000/";
+
+// var ipnUrl = "https://57ce-2402-800-6371-a14a-ed0d-ccd6-cbe9-5ced.ngrok.io/api/handle-order";
+
+var notifyUrl = "https://fd5b-115-73-220-12.ap.ngrok.io/api/handle-order/";
+// var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
+var requestType = "captureWallet";
 
 var salt = bcrypt.genSaltSync(10);
 var cloudinary = require("cloudinary").v2;
@@ -61,6 +77,7 @@ let allOrderByStatus = (Order) => {
     }
   });
 };
+
 let getCreateOrderByUser = async (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -216,10 +233,173 @@ let deleteOrder = (id) => {
     }
   });
 };
+
+let getMomoPaymentLink = async (req) => {
+  var requestId = partnerCode + new Date().getTime();
+  var orderId = requestId;
+  //before sign HMAC SHA256 with format
+  //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
+  var rawSignature =
+    "accessKey=" +
+    accessKey +
+    "&amount=" +
+    req.body.amount +
+    "&extraData=" +
+    req.body.orderId +
+    "&ipnUrl=" +
+    notifyUrl +
+    "&orderId=" +
+    orderId +
+    "&orderInfo=" +
+    orderInfo +
+    "&partnerCode=" +
+    partnerCode +
+    "&redirectUrl=" +
+    redirectUrl +
+    "&requestId=" +
+    requestId +
+    "&requestType=" +
+    requestType;
+  //puts raw signature
+  //console.log("--------------------RAW SIGNATURE----------------");
+  console.log("rawSignature: ", rawSignature);
+  //signature
+  var signature = crypto
+    .createHmac("sha256", secretkey)
+    .update(rawSignature)
+    .digest("hex");
+  //console.log("--------------------SIGNATURE----------------");
+  console.log("signature: ", signature);
+  //json object send to MoMo endpoint
+  const requestBody = JSON.stringify({
+    partnerCode: partnerCode,
+    accessKey: accessKey,
+    requestId: requestId,
+    amount: req.body.amount,
+    orderId: orderId,
+    orderInfo: orderInfo,
+    redirectUrl: redirectUrl,
+    ipnUrl: notifyUrl,
+    extraData: req.body.orderId,
+    requestType: requestType,
+    signature: signature,
+    lang: "en",
+  });
+
+  console.log("requestBody: ", requestBody);
+
+  const options = {
+    hostname: "test-payment.momo.vn",
+    port: 443,
+    path: "/v2/gateway/api/create",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  return new Promise((resolve, reject) => {
+    // const req = https.request(options, (res) => {
+    //   console.log(`Status: ${res.statusCode}`);
+    //   console.log(`Headers: ${JSON.stringify(res.headers)}`);
+    //   res.setEncoding("utf8");
+    //   res.on("data", (body) => {
+    //     console.log("Body: ");
+    //     console.log(body);
+    //     console.log("payUrl: ");
+    //     console.log(JSON.parse(body).payUrl);
+    //     resolve(JSON.parse(body));
+    //   });
+    //   res.on("end", () => {
+    //     console.log("No more data in response.");
+    //     // var post_req = https.request(options2, function (res) {
+    //     //   res.setEncoding('utf8');
+    //     //   res.on('data', function (chunk) {
+    //     //     console.log('Response: ' + chunk);
+    //     //   });
+    //     // });
+    //     // // post the data
+    //     // post_req.write(requestBody);
+    //     // post_req.end();
+    //   });
+    // });
+
+    const req = https.request(options, (res) => {
+      console.log(`Status: ${res.statusCode}`);
+      console.log(`Headers: ${JSON.stringify(res.headers)}`);
+      res.setEncoding("utf8");
+      res.on("data", (body) => {
+        console.log("Body: ");
+        console.log(body);
+        // console.log("payUrl: ");
+        // console.log(JSON.parse(body).payUrl);
+        // resolve(body)
+        try {
+          const a = JSON.parse(body);
+          resolve(a);
+        } catch (e) {
+          console.log(e);
+          var lastChar = body.substr(body.length - 1);
+          console.log("lastChar: ", lastChar);
+          if (lastChar !== "}") body = body + "}";
+          resolve(body);
+        }
+        // resolve(JSON.parse(body));
+      });
+      res.on("end", () => {
+        console.log("No more data in response.");
+        // var post_req = https.request(options2, function (res) {
+        //   res.setEncoding('utf8');
+        //   res.on('data', function (chunk) {
+        //     console.log('Response: ' + chunk);
+        //   });
+        // });
+        // // post the data
+        // post_req.write(requestBody);
+        // post_req.end();
+      });
+    });
+    req.on("error", (e) => {
+      // console.log(`problem with request: ${e.message}`);
+    });
+    // write data to request body
+    console.log("Sending....");
+
+    req.write(requestBody);
+    req.end();
+  });
+};
+
+// Update status order //
+let handleOrderPayment = async (req) => {
+  console.log("Check order: ", req.body);
+  if (req.body.resultCode == 0) {
+    // req.body.extraData = "285";
+    const orderCurrent = await db.Order.findOne({
+      where: { id: req.body.extraData },
+      raw: false,
+      nest: true,
+    });
+    const orderCurrentData = orderCurrent.dataValues;
+    console.log("orderCurrentData dataValues: ", orderCurrentData);
+    orderCurrentData.paymentstatus = 2;
+    const result = await db.Order.update(orderCurrentData, {
+      where: { id: req.body.extraData },
+      returning: true,
+      plain: true,
+    });
+    // console.log(result);
+    return result;
+  }
+  return false;
+};
+
 module.exports = {
   getAllOrder,
   allOrderByStatus,
   getCreateOrderByUser,
   getAllOrderByUser,
   deleteOrder,
+  getMomoPaymentLink,
+  handleOrderPayment,
 };

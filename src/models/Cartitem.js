@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       cart_id: DataTypes.INTEGER,
       optionvalue: DataTypes.ARRAY(DataTypes.INTEGER),
       price: DataTypes.DOUBLE,
+      ttprice: DataTypes.DOUBLE,
     },
     {
       sequelize,

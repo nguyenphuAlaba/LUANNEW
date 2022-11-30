@@ -1,5 +1,6 @@
 import db from "../models/index";
 import OrderService from "../Services/OrderService";
+const jsonFormat = require("../services/jsonFormat");
 
 let handleGetAllOrder = async (request, response) => {
   try {
@@ -49,10 +50,54 @@ let handleDeleteOrder = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let getMomoPaymentLink = async (req, res) => {
+  try {
+    const message = await OrderService.getMomoPaymentLink(req);
+    if (message.result)
+      return res
+        .status(200)
+        .json(jsonFormat.dataSuccess("Get Link successfully", message.result));
+    if (message)
+      return res.status(200).json({
+        statusCode: 200,
+        data: message,
+      });
+  } catch (e) {
+    return res
+      .status(400)
+      .json(
+        jsonFormat.dataError(
+          e.message
+            ? e.message
+            : "Somethings gone wrong, please try again or contact Admin if the issue persists."
+        )
+      );
+  }
+};
+let handleOrderPayment = async (req, res) => {
+  try {
+    const result = await OrderService.handleOrderPayment(req);
+    return res
+      .status(200)
+      .json(jsonFormat.dataSuccess("Handle payment successfully", result));
+  } catch (e) {
+    return res
+      .status(400)
+      .json(
+        jsonFormat.dataError(
+          e.message
+            ? e.message
+            : "Somethings gone wrong, please try again or contact Admin if the issue persists."
+        )
+      );
+  }
+};
 module.exports = {
   handleGetAllOrder,
   handleAllOrderByStatus,
   handleGetCreateOrderByUser,
   handleGetAllOrderByUser,
   handleDeleteOrder,
+  getMomoPaymentLink,
+  handleOrderPayment,
 };

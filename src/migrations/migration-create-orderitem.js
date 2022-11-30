@@ -20,7 +20,9 @@ module.exports = {
       TotalQuantity: {
         type: Sequelize.INTEGER,
       },
-
+      optionValues: {
+        type: Sequelize.ARRAY(Sequelize.INTEGER),
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
