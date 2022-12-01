@@ -1,6 +1,7 @@
 import db from "../models/index";
 import bcrypt from "bcryptjs";
 import { raw } from "body-parser";
+import { ifError } from "assert";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
@@ -17,7 +18,8 @@ var redirectUrl = "http://localhost:3000/";
 
 // var ipnUrl = "https://57ce-2402-800-6371-a14a-ed0d-ccd6-cbe9-5ced.ngrok.io/api/handle-order";
 
-var notifyUrl = "https://fd5b-115-73-220-12.ap.ngrok.io/api/handle-order/";
+var notifyUrl =
+  "https://e02a-2402-800-6315-cb03-796d-e925-f7a-12d3.ap.ngrok.io/api/handle-order/";
 // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
 var requestType = "captureWallet";
 
@@ -81,82 +83,68 @@ let allOrderByStatus = (Order) => {
 let getCreateOrderByUser = async (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let checkCart = await db.Cart.findOne({
-        where: { cus_id: data.cus_id },
+      let checkCus = await db.Customer.findOne({
+        where: { id: data.cus_id },
+      });
+      let checkware = await db.Warehouse.findOne({
+        where: { id: data.warehouse_id },
         raw: false,
         nest: true,
       });
-      if (!checkCart) {
+      if (!checkCus || !checkware) {
         resolve({
           errCode: 1,
-          errMessage: "Cann't add to order because cart not found",
-        });
-      } else {
-        await db.Order.create({
-          fullname: data.fullname,
-          email: data.email,
-          status: 1,
-          Address: data.Address,
-          phonenumber: data.phonenumber,
-          voucher_id: 1,
-          method_id: data.method_id,
-          cus_id: data.cus_id,
-        }).then(async function (x) {
-          if (x.id) {
-            let cartitem = data.cartitem;
-            let listOrder = [];
-            if (cartitem.length > 0) {
-              await Promise.all(
-                cartitem.map(async (item) => {
-                  let Cart = await db.Cartitem.findOne({
-                    where: { id: item },
-                  });
-                  let checkAmount = await db.Warehouse_product.findOne({
-                    where: {
-                      warehouse_id: data.warehouse_id,
-                      product_id: Cart.product_id,
-                    },
-                    raw: false,
-                    nest: true,
-                  });
-                  let warehouse = await db.Warehouse.findOne({
-                    where: { id: data.warehouse_id },
-                  });
-                  let product = await db.Product.findOne({
-                    where: {
-                      id: Cart.product_id,
-                    },
-                    raw: false,
-                  });
-                  if (checkAmount.quantity > Cart.amount) {
-                    let obj = {};
-                    obj.order_id = x.id;
-                    obj.product_id = product.id;
-                    obj.TotalQuantity = Cart.amount;
-                    obj.price = product.unitprice;
-                    listOrder.push(obj);
-                  } else {
-                    resolve({
-                      errCode: 2,
-                      errMessage:
-                        "Product : " +
-                        product.name +
-                        " in Warehouse : " +
-                        warehouse.name +
-                        " Are Not enough quantity ",
-                    });
-                  }
-                })
-              );
-              db.Orderitem.bulkCreate(listOrder);
-            }
-          }
-        });
-        resolve({
-          errCode: 0,
-          errMessage: "Create Order Successfully",
+          errMessage: "Missing require",
         });
       }
+      let cartitem = data.cartitem;
+      await Promise.all(
+        cartitem.map(async (x) => {
+          let cart = await db.Cartitem.findOne({
+            where: { id: x },
+            raw: false,
+          });
+          let option = cart.optionvalue;
+          let check = true;
+          let list = [];
+          await Promise.all(
+            option.map(async (item) => {
+              list.push(item);
+              let checkOp = await db.Option_Product.findOne({
+                where: { id: item, option_id: 1 },
+              });
+              if (checkOp) {
+                let checkAmount = await db.Warehouse_product.findOne({
+                  where: { color_id: item },
+                });
+                if (checkAmount.quantity < cart.amount) {
+                  check = false;
+                }
+              }
+            })
+          );
+          if (check) {
+            console.log("aaaaaaaaaaaaaaaaa");
+            await db.Order.Create({
+              fullname: data.fullname,
+              email: data.email,
+              status: 1,
+              Address: data.Address,
+              phonenumber: data.phonenumber,
+              voucher_id: 1,
+              method_id: data.method_id,
+              cus_id: data.cus_id,
+              paymentstatus: 1,
+            }).then(async function (x) {});
+          }
+          if (!check) {
+            resolve({
+              errCode: 2,
+              errMessage: "Your Option Not enough quantity",
+            });
+          }
+        })
+      );
     } catch (error) {
       reject(error);
     }
@@ -237,6 +225,11 @@ let deleteOrder = (id) => {
 let getMomoPaymentLink = async (req) => {
   var requestId = partnerCode + new Date().getTime();
   var orderId = requestId;
+  let fOrder = await db.Orderitem.sum("price", {
+    where: { order_id: req.body.orderId },
+    nest: true,
+  });
+  req.body.amount = fOrder;
   //before sign HMAC SHA256 with format
   //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
   var rawSignature =

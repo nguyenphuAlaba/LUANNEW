@@ -183,6 +183,31 @@ let handleGetAllProductView = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleCreateOptionProduct = async (request, response) => {
+  try {
+    let product = await ProductService.createOptionProduct(request.body);
+    return response.status(200).json(product);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
+let handleUpdateOptionProduct = async (request, response) => {
+  try {
+    let product = await ProductService.updateOptionProduct(request.body);
+    return response.status(200).json(product);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
+let handleDeleteOption = async (request, response) => {
+  try {
+    let optionID = await request.params.optionid;
+    let option = await ProductService.deleteOption(optionID);
+    return response.status(200).json(option);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handlegetallProduct,
   handlegetbyidProduct,
@@ -199,4 +224,7 @@ module.exports = {
   handleDeleteProductinWishlist,
   handleAddProductView,
   handleGetAllProductView,
+  handleCreateOptionProduct,
+  handleUpdateOptionProduct,
+  handleDeleteOption,
 };

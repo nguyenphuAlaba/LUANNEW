@@ -184,83 +184,24 @@ let addProductToCart = (data) => {
     }
   });
 };
+//tinh bang ham
+// let Sum = await db.Cartitem.sum("amount", {
+//   where: { cart_id: cart.id },
+// });
+// tinh trong thuoc tinh
+// attributes: [
+//   "cart_id",
+//   [
+//     (db.Sequelize.fn("sum", db.Sequelize.col("amount")),
+//     "TotalQuantity"),
+//   ],
+// ],
+// group: ["cart_id"],
+//Cartitem.map(async (item) => {
+// item.optionvalue.map(async (x) => {
 let getCartByCustomer = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let cart = await db.Cart.findOne({
-        where: { cus_id: id },
-        raw: true,
-        nest: true,
-      });
-      //tinh bang ham
-      // let Sum = await db.Cartitem.sum("amount", {
-      //   where: { cart_id: cart.id },
-      // });
-      // tinh trong thuoc tinh
-      // attributes: [
-      //   "cart_id",
-      //   [
-      //     (db.Sequelize.fn("sum", db.Sequelize.col("amount")),
-      //     "TotalQuantity"),
-      //   ],
-      // ],
-      // group: ["cart_id"],
-      let Cartitem = await db.Cartitem.findAll({
-        where: { cart_id: cart.id },
-        attributes: ["product_id", "amount", "id", "price", "optionvalue"],
-        include: [
-          {
-            model: db.Product,
-            as: "CartItemProduct",
-            attributes: ["name", "img"],
-            include: [
-              {
-                model: db.Brand,
-                as: "ProductBrand",
-                attributes: ["name"],
-              },
-            ],
-          },
-        ],
-        raw: false,
-      });
-      let options = [];
-      await Promise.all(
-        Cartitem.map(async (item) => {
-          item.optionvalue.map(async (x) => {
-            console.log(x);
-            let option = await db.Option_Product.findOne({
-              where: { id: x },
-              attributes: ["name", "option_id", "id"],
-              raw: false,
-              order: ["product_id"],
-            });
-            if (option) {
-              // console.log(option);
-              options.push(option);
-            }
-          });
-        })
-      );
-      let Sum = await db.Cartitem.sum("amount", {
-        where: { cart_id: cart.id },
-      });
-      let Count = await db.Cartitem.count("id", {
-        where: { cart_id: cart.id },
-      });
-      let Totalprice = await db.Cartitem.sum("ttprice", {
-        where: { cart_id: cart.id },
-      });
-      resolve({
-        errCode: 0,
-        errMessage: "Ok",
-        cart,
-        Cartitem,
-        options,
-        Sum,
-        Count,
-        Totalprice,
-      });
     } catch (error) {
       reject(error);
     }
