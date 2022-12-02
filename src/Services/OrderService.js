@@ -97,6 +97,7 @@ let getCreateOrderByUser = async (data) => {
           errMessage: "Missing require",
         });
       }
+      let listOrder = [];
       let cartitem = data.cartitem;
       await Promise.all(
         cartitem.map(async (x) => {
@@ -123,28 +124,38 @@ let getCreateOrderByUser = async (data) => {
               }
             })
           );
-          if (check) {
-            console.log("aaaaaaaaaaaaaaaaa");
-            await db.Order.Create({
-              fullname: data.fullname,
-              email: data.email,
-              status: 1,
-              Address: data.Address,
-              phonenumber: data.phonenumber,
-              voucher_id: 1,
-              method_id: data.method_id,
-              cus_id: data.cus_id,
-              paymentstatus: 1,
-            }).then(async function (x) {});
-          }
-          if (!check) {
-            resolve({
-              errCode: 2,
-              errMessage: "Your Option Not enough quantity",
-            });
-          }
+          let obj = {};
+          obj.order_id = x.id;
+          obj.product_id = data.product_id;
+          obj.TotalQuantity = cart.amount;
+          obj.price = cart.ttprice;
+          listOrder.push(obj);
         })
       );
+      if (!check) {
+        resolve({
+          errCode: 2,
+          errMessage: "Your Option Not enough quantity",
+        });
+      }
+      if (check) {
+        console.log("aaaaaaaaaaaa");
+        await db.Order.Create({
+          fullname: data.fullname,
+          email: data.email,
+          status: 1,
+          Address: data.Address,
+          phonenumber: data.phonenumber,
+          voucher_id: 1,
+          method_id: data.method_id,
+          cus_id: data.cus_id,
+          paymentstatus: 1,
+        }).then(async function (x) {
+          if (x) {
+            db.Orderitem.bulkCreate(listOrder);
+          }
+        });
+      }
     } catch (error) {
       reject(error);
     }

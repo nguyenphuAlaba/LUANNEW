@@ -211,27 +211,32 @@ let updateProduct = (product) => {
           raw: false,
           nest: true,
         });
-        let cproduct = await checkProduct(product.name);
-        if (cproduct) {
+        // let cproduct = await checkProduct(product.name);
+        if (!product.Description) {
+          product.Description = fproduct.Description;
+        }
+        if (!product.img) {
+          product.img = fproduct.img;
+        }
+        if (!product.name) {
           resolve({
-            errCode: 1,
-            errMessage: "Product already exists",
-          });
-        } else {
-          fproduct.name = product.name;
-          fproduct.unitprice = product.unitprice;
-          fproduct.Description = product.Description;
-          fproduct.status = product.status;
-          fproduct.brand_id = product.brand_id;
-          fproduct.category_id = product.category_id;
-          fproduct.img = product.img;
-          await fproduct.save();
-
-          resolve({
-            errCode: 0,
-            errMessage: "Product have been updated successfully",
+            errCode: 2,
+            errMessage: "Missing name",
           });
         }
+        console.log("aaaaaaaaaaaaaa");
+        fproduct.name = product.name;
+        fproduct.unitprice = product.unitprice;
+        fproduct.Description = product.Description;
+        fproduct.status = product.status;
+        fproduct.brand_id = product.brand_id;
+        fproduct.category_id = product.category_id;
+        fproduct.img = product.img;
+        await fproduct.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Product have been updated successfully",
+        });
       }
     } catch (error) {
       console.log("Error");
