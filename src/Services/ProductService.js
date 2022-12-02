@@ -45,6 +45,7 @@ let getAllProduct = (data) => {
       let whereStatement = {};
       if (data.brand_id) whereStatement.brand_id = data.brand_id;
       if (data.category_id) whereStatement.category_id = data.category_id;
+      whereStatement.status = 1;
       let pr = await db.Product.findAll({
         where: whereStatement,
         // {
@@ -77,6 +78,17 @@ let getProductDetail = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       let product = await db.Product.findAll({
+        where: { id: id },
+        attributes: [
+          "id",
+          "name",
+          "unitprice",
+          "currentQuantity",
+          "Description",
+          "img",
+          "ProductOption.Option_Product.product_id",
+          "ProductOption.id",
+        ],
         include: [
           // { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
           // { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
@@ -88,14 +100,11 @@ let getProductDetail = (id) => {
           {
             model: db.Option,
             as: "ProductOption",
-            require: true,
-            through: {
-              attributes: ["id", "name", "price"],
-            },
+            order: ["option_id"],
           },
         ],
-        raw: false,
-        nest: true,
+        // group: ["Product.id"],
+        raw: true,
       });
       resolve({
         errCode: 0,

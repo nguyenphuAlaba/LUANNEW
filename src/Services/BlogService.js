@@ -55,6 +55,7 @@ let createBlog = (data) => {
           Description: data.Description,
           sta_id: data.sta_id,
           name: data.name,
+          img: data.img,
         });
         resolve({
           errCode: 0,
@@ -83,6 +84,7 @@ let updateBlog = (data) => {
             // console.log(data.name, blog.name);
             blog.Description = data.Description;
             blog.name = data.name;
+            blog.img = data.img;
             console.log(blog);
             await blog.save();
             resolve({
