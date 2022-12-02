@@ -77,8 +77,6 @@ let getProductDetail = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       let product = await db.Product.findAll({
-        where: { id: id },
-        required: true,
         include: [
           // { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
           // { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
@@ -92,7 +90,6 @@ let getProductDetail = (id) => {
             as: "ProductOption",
             require: true,
             through: {
-              where: { product_id: id },
               attributes: ["id", "name", "price"],
             },
           },
@@ -700,7 +697,7 @@ let getAllOptionProduct = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let Option = await db.Option_Product.findAll({
-        attributes: ["name", "id", "product_id", "option_id"],
+        attributes: ["name", "id", "product_id", "option_id", "price"],
         raw: false,
         nest: true,
       });
