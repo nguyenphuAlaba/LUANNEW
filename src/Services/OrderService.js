@@ -97,6 +97,7 @@ let getCreateOrderByUser = async (data) => {
           errMessage: "Missing require",
         });
       }
+      let check = true;
       let listOrder = [];
       let cartitem = data.cartitem;
       await Promise.all(
@@ -106,7 +107,6 @@ let getCreateOrderByUser = async (data) => {
             raw: false,
           });
           let option = cart.optionvalue;
-          let check = true;
           let list = [];
           await Promise.all(
             option.map(async (item) => {
@@ -124,12 +124,6 @@ let getCreateOrderByUser = async (data) => {
               }
             })
           );
-          let obj = {};
-          obj.order_id = x.id;
-          obj.product_id = data.product_id;
-          obj.TotalQuantity = cart.amount;
-          obj.price = cart.ttprice;
-          listOrder.push(obj);
         })
       );
       if (!check) {
@@ -139,8 +133,7 @@ let getCreateOrderByUser = async (data) => {
         });
       }
       if (check) {
-        console.log("aaaaaaaaaaaa");
-        await db.Order.Create({
+        await db.Order.create({
           fullname: data.fullname,
           email: data.email,
           status: 1,
@@ -151,9 +144,32 @@ let getCreateOrderByUser = async (data) => {
           cus_id: data.cus_id,
           paymentstatus: 1,
         }).then(async function (x) {
-          if (x) {
-            db.Orderitem.bulkCreate(listOrder);
+          if (x.id) {
+            let listOT = [];
+            let op = data.cartitem;
+            await Promise.all(
+              op.map(async (o) => {
+                let cc = await db.Cartitem.findOne({
+                  where: { id: o },
+                });
+                let pp = {};
+                pp.order_id = x.id;
+                pp.product_id = cc.product_id;
+                pp.amount = cc.amount;
+                pp.cart_id = cc.cart_id;
+                pp.price = cc.ttprice;
+                pp.optionValues = cc.optionvalue;
+                pp.TotalQuantity = cc.ttprice * cc.amount;
+                listOT.push(pp);
+              })
+            );
+            console.log(listOT);
+            await db.Orderitem.bulkCreate(listOT);
           }
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "Create Order successfully",
         });
       }
     } catch (error) {

@@ -198,7 +198,7 @@ let updateProduct = (product) => {
     try {
       if (!product.id) {
         resolve({
-          errCode: 2,
+          errCode: 1,
           errMessage: "Can't find product with id",
         });
       } else {
@@ -217,6 +217,12 @@ let updateProduct = (product) => {
         }
         if (!product.img) {
           product.img = fproduct.img;
+        }
+        if (!product.unitprice) {
+          resolve({
+            errCode: 3,
+            errMessage: "Missing price",
+          });
         }
         if (!product.name) {
           resolve({
