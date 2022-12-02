@@ -208,6 +208,14 @@ let handleDeleteOption = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetAllOptionProduct = async (request, response) => {
+  try {
+    let product = await ProductService.getAllOptionProduct();
+    return response.status(200).json(product);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handlegetallProduct,
   handlegetbyidProduct,
@@ -227,4 +235,5 @@ module.exports = {
   handleCreateOptionProduct,
   handleUpdateOptionProduct,
   handleDeleteOption,
+  handleGetAllOptionProduct,
 };

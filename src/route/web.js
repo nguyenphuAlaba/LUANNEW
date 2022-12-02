@@ -78,6 +78,10 @@ let initWebRoutes = (app) => {
     "/api/delete-option-product/:optionid/",
     ProductControler.handleDeleteOption
   );
+  router.get(
+    "/api/get-option-product/",
+    ProductControler.handleGetAllOptionProduct
+  );
   //Cart
   router.post("/api/add-to-cart", CartControler.handleAddProductToCart);
   router.get("/api/get-all-cart", CartControler.handleGetAllCat);
@@ -136,6 +140,7 @@ let initWebRoutes = (app) => {
   router.post("/api/get-user-login/", UserControler.handleLogin);
   router.put("/api/update-user/", UserControler.handleUpdateUser);
   router.put("/api/udate-password/", UserControler.handleChangePassword);
+  router.post("/api/login-admin/", UserControler.handleLoginAdmin);
   //Role
   router.get("/api/get-all-role/", RoleControler.handleGetAllRole);
   router.get(

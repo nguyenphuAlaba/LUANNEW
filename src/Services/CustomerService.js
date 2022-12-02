@@ -280,6 +280,64 @@ let changePassword = (data) => {
     }
   });
 };
+let loginAdmin = (email, password) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let userdata = {};
+      let isExist = await checkEmail(email);
+      if (isExist) {
+        let user = await db.Staff.findOne({
+          where: { email: email },
+          attributes: [
+            "id",
+            "email",
+            "password",
+            "fullname",
+            "phonenumber",
+            "warehouse_id",
+            "store_id",
+            "role_id",
+          ],
+          raw: false,
+          nest: true,
+        });
+        if (user) {
+          let check = password == user.password && email == user.email;
+          if (check) {
+            userdata.errorCode = 0;
+            userdata.errMessage = `Ok`;
+
+            let cus = await db.Staff.findOne({
+              where: { id: user.id },
+            });
+
+            // xoa password
+            delete user.password;
+            // xoa userid
+            delete user.id;
+
+            user.id = cus.id;
+            userdata.user = user;
+
+            //add token
+          } else {
+            userdata.errCode = 3;
+            userdata.errMessage = "Wrong password";
+          }
+        } else {
+          userdata.errorCode = 2;
+          userdata.errMessage = `Customer isn't exist`;
+        }
+      } else {
+        userdata.errorCode = 1;
+        userdata.errMessage = `Your's email isn't exist in our system`;
+      }
+      resolve(userdata);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   uploadCloud,
   encodePassword,
@@ -290,4 +348,5 @@ module.exports = {
   getUserById,
   updateUser,
   changePassword,
+  loginAdmin,
 };

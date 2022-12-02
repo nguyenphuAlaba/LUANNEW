@@ -256,6 +256,11 @@ let getMomoPaymentLink = async (req) => {
     where: { order_id: req.body.orderId },
     nest: true,
   });
+  let order = await db.Order.findOne({
+    where: {
+      id: req.body.orderId,
+    },
+  });
   req.body.amount = fOrder;
   //before sign HMAC SHA256 with format
   //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType

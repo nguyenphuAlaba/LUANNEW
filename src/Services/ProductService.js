@@ -224,7 +224,6 @@ let updateProduct = (product) => {
         if (!product.name) {
           product.name = fproduct.name;
         }
-        console.log("aaaaaaaaaaaaaa");
         fproduct.name = product.name;
         fproduct.unitprice = product.unitprice;
         fproduct.Description = product.Description;
@@ -697,6 +696,23 @@ let deleteOption = (id) => {
     }
   });
 };
+let getAllOptionProduct = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let Option = await db.Option_Product.findAll({
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        Option,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllProduct,
   getProductDetail,
@@ -717,5 +733,6 @@ module.exports = {
   createOptionProduct,
   updateOptionProduct,
   deleteOption,
+  getAllOptionProduct,
   upload,
 };

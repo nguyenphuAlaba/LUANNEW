@@ -66,6 +66,24 @@ let handleChangePassword = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleLoginAdmin = async (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      errorCode: 1,
+      message: "Missing inputs parameter!",
+    });
+  }
+  let userdata = await CustomerService.loginAdmin(email, password);
+
+  return res.status(200).json({
+    errorCode: userdata.errorCode,
+    errMessage: userdata.errMessage,
+    data: userdata.user ? userdata.user : {},
+  });
+};
 module.exports = {
   handleGetAllUser,
   handleGetById,
@@ -73,4 +91,5 @@ module.exports = {
   handleLogin,
   handleUpdateUser,
   handleChangePassword,
+  handleLoginAdmin,
 };
