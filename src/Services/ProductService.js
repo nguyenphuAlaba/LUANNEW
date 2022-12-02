@@ -219,16 +219,10 @@ let updateProduct = (product) => {
           product.img = fproduct.img;
         }
         if (!product.unitprice) {
-          resolve({
-            errCode: 3,
-            errMessage: "Missing price",
-          });
+          product.unitprice = fproduct.unitprice;
         }
         if (!product.name) {
-          resolve({
-            errCode: 2,
-            errMessage: "Missing name",
-          });
+          product.name = fproduct.name;
         }
         console.log("aaaaaaaaaaaaaa");
         fproduct.name = product.name;
