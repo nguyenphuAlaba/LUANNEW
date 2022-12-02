@@ -700,6 +700,7 @@ let getAllOptionProduct = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let Option = await db.Option_Product.findAll({
+        attributes: ["name", "id", "product_id", "option_id"],
         raw: false,
         nest: true,
       });

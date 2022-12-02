@@ -12,12 +12,12 @@ module.exports = (sequelize, DataTypes) => {
       Option_Product.belongsTo(models.Product, {
         foreignKey: "product_id",
         targetKey: "id",
-        as: "Option_Product",
+        as: "Product",
       });
       Option_Product.belongsTo(models.Option, {
         foreignKey: "option_id",
         targetKey: "id",
-        as: "OptionProduct",
+        as: "Option",
       });
     }
   }

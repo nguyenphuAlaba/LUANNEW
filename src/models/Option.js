@@ -10,10 +10,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       //1 role co nhieu user
       Option.belongsToMany(models.Product, {
-        foreignKey: "option_id",
-        through: models.Option_Product,
         as: "OptionInProduct",
-        otherKey: "product_id",
+        through: models.Option_Product,
+        foreignKey: "option_id",
       });
     }
   }
