@@ -80,14 +80,13 @@ let getProductDetail = (id) => {
       let product = await db.Product.findAll({
         where: { id: id },
         attributes: [
-          "id",
           "name",
           "unitprice",
           "currentQuantity",
           "Description",
           "img",
-          "ProductOption.Option_Product.product_id",
-          "ProductOption.id",
+          // "ProductOption.Option_Product.product_id",
+          // "ProductOption.id",
         ],
         include: [
           // { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
