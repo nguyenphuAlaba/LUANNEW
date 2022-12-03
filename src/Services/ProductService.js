@@ -77,7 +77,7 @@ let getAllProduct = (data) => {
 let getProductDetail = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let product = await db.Product.findAll({
+      let rawProduct = await db.Product.findOne({
         where: { id: id },
         attributes: [
           "name",
@@ -85,8 +85,8 @@ let getProductDetail = (id) => {
           "currentQuantity",
           "Description",
           "img",
+          "id",
           // "ProductOption.Option_Product.product_id",
-          // "ProductOption.id",
         ],
         include: [
           // { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
@@ -99,18 +99,70 @@ let getProductDetail = (id) => {
           {
             model: db.Option,
             as: "ProductOption",
-            order: ["option_id"],
+            through: {
+              attributes: ["id", "name", "option_id", "product_id"],
+            },
+            // order: ["option_id"],
           },
         ],
-        // group: ["Product.id"],
         raw: true,
+        plain: false,
+        nest: true,
       });
-      resolve({
-        errCode: 0,
-        errMessage: "OK",
-        product,
-      });
+      const result = [
+        ...rawProduct
+          .reduce((r, o) => {
+            const key = o.id;
+            const item =
+              r.get(key) ||
+              Object.assign({}, o, {
+                optionValues: [],
+              });
+            item.optionValues.push(o.ProductOption);
+            return r.set(key, item);
+          }, new Map())
+          .values(),
+      ];
+
+      try {
+        let newArr = result[0];
+        const resultValues = [
+          ...newArr.optionValues
+            .reduce((r, o) => {
+              console.log("Check o: ", o);
+
+              const key = o.id;
+              // console.log("Check key: ", key);
+              const item =
+                r.get(key) ||
+                Object.assign({}, o, {
+                  values: [],
+                });
+              item.values.push(o.Option_Product);
+              delete item.Option_Product;
+              return r.set(key, item);
+              // const { Option_Product, ...keep_data } = item;
+              // return r.push(keep_data);
+            }, new Map())
+            .values(),
+        ];
+
+        let obj = {
+          ...newArr,
+          existingOptions: resultValues,
+        };
+        delete obj.ProductOption;
+        delete obj.optionValues;
+        resolve({
+          errCode: 0,
+          errMessage: "OK",
+          data: obj,
+        });
+      } catch (error) {
+        console.log("error: ", error);
+      }
     } catch (e) {
+      console.log("e: ", e);
       reject(e);
     }
   });
@@ -326,77 +378,28 @@ let deleteProduct = (product_id) => {
 let updateAmountProductWarehouse = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
+      // console.log(data);
       let checkProduct = await db.Product.findOne({
         where: { id: data.product_id },
-        raw: false,
-        nest: true,
       });
       let checkWarehouse = await db.Warehouse.findOne({
         where: { id: data.warehouse_id },
-        raw: false,
-        nest: true,
       });
+      // let OW = await db.Warehouse_product.findOne({
+      //   where: { id: data.id },
+      //   raw: false,
+      //   nest: true,
+      // });
+      if (!data.optionvalue) {
+        data.optionvalue = OW.optionvalue;
+      }
       if (!checkProduct || !checkWarehouse) {
         resolve({
           errCode: 1,
           errMessage: "Cannot Find Your Product Or Warehouse",
         });
-      } else {
-        let OP = await db.Option_Product.findOne({
-          where: { id: data.color_id, product_id: data.product_id },
-          raw: false,
-          nest: true,
-        });
-        if (OP.option_id == 1) {
-          let checkWare = await db.Warehouse_product.findOne({
-            where: { product_id: data.product_id, color_id: data.color_id },
-            raw: false,
-            nest: true,
-          });
-          if (checkWare) {
-            checkWare.quantity = checkWare.quantity + data.quantity;
-            await checkWare.save();
-            let sum = await db.Warehouse_product.sum("quantity", {
-              where: { product_id: data.product_id },
-              nest: true,
-            });
-            checkProduct.currentQuantity = sum;
-            await checkProduct.save();
-            resolve({
-              errCode: 0,
-              errMessage: "Update amount successfully",
-            });
-          } else {
-            await db.Warehouse_product.create({
-              product_id: data.product_id,
-              warehouse_id: data.warehouse_id,
-              color_id: data.color_id,
-              quantity: data.quantity,
-            });
-            let sum = await db.Warehouse_product.sum("quantity", {
-              where: { product_id: data.product_id },
-              nest: true,
-            });
-            checkProduct.currentQuantity = sum;
-            await checkProduct.save();
-            resolve({
-              errCode: -1,
-              errMessage: "Create Warehouse Product by color_id successfully",
-            });
-          }
-        } else {
-          resolve({
-            errCode: 2,
-            errMessage: "Your Color_id are not found",
-          });
-        }
-        if (!OP) {
-          resolve({
-            errCode: 3,
-            errMessage: "Option not found",
-          });
-        }
       }
+      console.log(data);
     } catch (error) {
       reject(error);
     }

@@ -17,8 +17,8 @@ module.exports = {
       quantity: {
         type: Sequelize.INTEGER,
       },
-      color_id: {
-        type: Sequelize.INTEGER,
+      optionvalue: {
+        type: Sequelize.ARRAY(Sequelize.INTEGER),
       },
 
       createdAt: {
