@@ -89,13 +89,13 @@ let getProductDetail = (id) => {
           // "ProductOption.Option_Product.product_id",
         ],
         include: [
-          // { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
-          // { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
-          // {
-          //   model: db.Warehouse,
-          //   as: "ProductInWarehouse",
-          //   attributes: ["name"],
-          // },
+          { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
+          { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
+          {
+            model: db.Warehouse,
+            as: "ProductInWarehouse",
+            attributes: ["name"],
+          },
           {
             model: db.Option,
             as: "ProductOption",
@@ -385,11 +385,11 @@ let updateAmountProductWarehouse = (data) => {
       let checkWarehouse = await db.Warehouse.findOne({
         where: { id: data.warehouse_id },
       });
-      // let OW = await db.Warehouse_product.findOne({
-      //   where: { id: data.id },
-      //   raw: false,
-      //   nest: true,
-      // });
+      let OW = await db.Warehouse_product.findOne({
+        where: { id: data.id },
+        raw: false,
+        nest: true,
+      });
       if (!data.optionvalue) {
         data.optionvalue = OW.optionvalue;
       }
@@ -399,7 +399,12 @@ let updateAmountProductWarehouse = (data) => {
           errMessage: "Cannot Find Your Product Or Warehouse",
         });
       }
-      console.log(data);
+      if (!OW) {
+        resolve({
+          errCode: 2,
+          errMessage: "Cannot find your Warehouse_product id",
+        });
+      }
     } catch (error) {
       reject(error);
     }

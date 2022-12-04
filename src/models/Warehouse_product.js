@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       warehouse_id: DataTypes.INTEGER,
       quantity: DataTypes.INTEGER,
       optionvalue: DataTypes.ARRAY(DataTypes.INTEGER),
+      name: DataTypes.STRING,
     },
     {
       sequelize,

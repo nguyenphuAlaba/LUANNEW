@@ -20,7 +20,9 @@ module.exports = {
       optionvalue: {
         type: Sequelize.ARRAY(Sequelize.INTEGER),
       },
-
+      name: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
