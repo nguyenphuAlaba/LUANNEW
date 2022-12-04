@@ -45,7 +45,7 @@ let initWebRoutes = (app) => {
     "/api/delete-product/:id/",
     ProductControler.handleDeleteProduct
   );
-  router.post(
+  router.put(
     "/api/add-product-quantity-in-warehouse/",
     ProductControler.handleUpdateAmountProductWarehouse
   );
@@ -82,6 +82,10 @@ let initWebRoutes = (app) => {
     "/api/get-option-product/",
     ProductControler.handleGetAllOptionProduct
   );
+  router.post(
+    "/api/create-warehouse-product/",
+    ProductControler.handleCreateWareHouseProduct
+  );
   //Cart
   router.post("/api/add-to-cart", CartControler.handleAddProductToCart);
   router.get("/api/get-all-cart", CartControler.handleGetAllCat);
@@ -99,7 +103,6 @@ let initWebRoutes = (app) => {
     "/api/handle-Delete-All-Cartitem/:cart_id/",
     CartControler.handleDeleteAllCartitem
   );
-
   //Warranty
   router.get("/api/get-all-warranty/", WarrantyControler.handleGetAllWarranty);
   router.post("/api/create-warranty/", WarrantyControler.handleCreateWarranty);

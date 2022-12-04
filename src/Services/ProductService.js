@@ -386,13 +386,14 @@ let updateAmountProductWarehouse = (data) => {
         where: { id: data.warehouse_id },
       });
       let OW = await db.Warehouse_product.findOne({
-        where: { id: data.id },
+        where: {
+          id: data.id,
+          product_id: data.product_id,
+          warehouse_id: data.warehouse_id,
+        },
         raw: false,
         nest: true,
       });
-      if (!data.optionvalue) {
-        data.optionvalue = OW.optionvalue;
-      }
       if (!checkProduct || !checkWarehouse) {
         resolve({
           errCode: 1,
@@ -403,6 +404,13 @@ let updateAmountProductWarehouse = (data) => {
         resolve({
           errCode: 2,
           errMessage: "Cannot find your Warehouse_product id",
+        });
+      } else {
+        OW.quantity = data.quantity;
+        OW.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Update quantity Successfully",
         });
       }
     } catch (error) {
@@ -727,6 +735,67 @@ let getAllOptionProduct = () => {
     }
   });
 };
+let createWareHouseProduct = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let cp = await db.Product.findOne({
+        where: { id: data.product_id },
+        raw: false,
+        nest: true,
+      });
+      let cw = await db.Warehouse.findOne({
+        where: { id: data.warehouse_id },
+      });
+      if (!cp || !cw) {
+        resolve({
+          errCode: 1,
+          errMessage: "Your Product or Warehouse not exists",
+        });
+      }
+      let wp = await db.Warehouse_product.findOne({
+        where: {
+          optionvalue: data.optionvalue,
+          product_id: data.product_id,
+          warehouse_id: data.warehouse_id,
+        },
+        raw: false,
+        nest: true,
+      });
+      if (wp) {
+        wp.quantity = wp.quantity + data.quantity;
+        await wp.quantity.save();
+        resolve({
+          errCode: -1,
+          errMessage:
+            "Your Product " + wp.name + " has been update successfully",
+        });
+      } else {
+        let ot = data.optionvalue;
+        let count = 0;
+        await Promise.all(
+          ot.map(async (x) => {
+            let check = await db.Option_Product.findOne({
+              where: {
+                id: x,
+                product_id: data.product_id,
+              },
+              nest: true,
+            });
+            let che = await db.Option.findOne({
+              where: { id: check.option_id },
+              nest: true,
+            });
+            console.log(che.id);
+            console.log(check);
+            console.log("count : " + count);
+          })
+        );
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllProduct,
   getProductDetail,
@@ -748,5 +817,6 @@ module.exports = {
   updateOptionProduct,
   deleteOption,
   getAllOptionProduct,
+  createWareHouseProduct,
   upload,
 };

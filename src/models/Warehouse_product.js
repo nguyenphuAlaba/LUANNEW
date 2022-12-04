@@ -23,11 +23,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   Warehouse_product.init(
     {
+      name: DataTypes.STRING,
       product_id: DataTypes.INTEGER,
       warehouse_id: DataTypes.INTEGER,
       quantity: DataTypes.INTEGER,
       optionvalue: DataTypes.ARRAY(DataTypes.INTEGER),
-      name: DataTypes.STRING,
     },
     {
       sequelize,

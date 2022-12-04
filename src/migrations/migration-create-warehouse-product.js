@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      name: {
+        type: Sequelize.STRING,
+      },
       product_id: {
         type: Sequelize.INTEGER,
       },
@@ -20,9 +23,7 @@ module.exports = {
       optionvalue: {
         type: Sequelize.ARRAY(Sequelize.INTEGER),
       },
-      name: {
-        type: Sequelize.STRING,
-      },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
