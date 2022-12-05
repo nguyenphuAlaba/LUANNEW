@@ -653,26 +653,15 @@ let updateOptionProduct = (data) => {
         let checkOP = await db.Option_Product.findOne({
           where: { id: data.id },
           raw: false,
+          nest: true,
         });
         if (checkOP) {
-          // let checkname = await await db.Option_Product.findOne({
-          //   where: {
-          //     name: { [Op.iLike]: `%${data.name}%` },
-          //     product_id: checkOP.product_id,
-          //   },
-          //   raw: false,
-          // });
-          // if (checkname) {
-          //   resolve({
-          //     errCode: 3,
-          //     errMessage: "Your Option name has exist in your product",
-          //   });
-          // } else {
-          checkOP.name = data.name;
-          checkOP.price = data.price;
-          checkOP.option_id = data.option_id;
-          checkOP.product_id = data.product_id;
-          await checkOP.save();
+          await checkOP.update({
+            name: data.name,
+            price: data.price,
+            product_id: data.product_id,
+            option_id: data.option_id,
+          });
           resolve({
             errCode: 0,
             errMessage: "Update option successfully",
@@ -762,8 +751,9 @@ let createWareHouseProduct = (data) => {
         nest: true,
       });
       if (wp) {
+        console.log("aaaaaaaaaaaaaaaaaaaaaaa");
         wp.quantity = wp.quantity + data.quantity;
-        await wp.quantity.save();
+        await wp.save();
         resolve({
           errCode: -1,
           errMessage:
@@ -771,19 +761,47 @@ let createWareHouseProduct = (data) => {
         });
       } else {
         let list = [];
+        let listname = cp.name;
         let ot = data.optionvalue;
-        let count = 0;
         await Promise.all(
           ot.map(async (x) => {
             let option = await db.Option_Product.findOne({
               where: { id: x },
-              raw: false,
+              raw: true,
             });
-            console.log(option);
-            console.log("aaaaaaaaaaaaaaaa");
+            let obj = {};
+            listname = listname + " / " + option.name;
+            obj = option.option_id;
+            list.push(obj);
           })
         );
-        console.log("count : " + count);
+        let checkpoint = true;
+        for (let i = 0; i < list.length; i++) {
+          for (let j = i + 1; j < list.length; j++) {
+            if (list[i] == list[j]) {
+              checkpoint = false;
+            }
+          }
+        }
+        if (checkpoint) {
+          await db.Warehouse_product.create({
+            name: listname,
+            product_id: data.product_id,
+            warehouse_id: data.warehouse_id,
+            quantity: data.quantity,
+            optionvalue: data.optionvalue,
+          });
+          resolve({
+            errCode: 0,
+            errMessage: "Create Product Warehouse Successfully",
+          });
+        }
+        if (!checkpoint) {
+          resolve({
+            errCode: 2,
+            errMessage: "Your Option duplicate",
+          });
+        }
       }
     } catch (error) {
       reject(error);

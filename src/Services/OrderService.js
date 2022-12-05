@@ -86,6 +86,9 @@ let getCreateOrderByUser = async (data) => {
       let checkCus = await db.Customer.findOne({
         where: { id: data.cus_id },
       });
+      let cart = await db.Cart.findOne({
+        where: { cus_id: data.cus_id },
+      });
       let checkware = await db.Warehouse.findOne({
         where: { id: data.warehouse_id },
         raw: false,
@@ -98,7 +101,6 @@ let getCreateOrderByUser = async (data) => {
         });
       }
       let check = true;
-      let listOrder = [];
       let cartitem = data.cartitem;
       await Promise.all(
         cartitem.map(async (x) => {
@@ -112,11 +114,11 @@ let getCreateOrderByUser = async (data) => {
             option.map(async (item) => {
               list.push(item);
               let checkOp = await db.Option_Product.findOne({
-                where: { id: item, option_id: 1 },
+                where: { id: item },
               });
               if (checkOp) {
                 let checkAmount = await db.Warehouse_product.findOne({
-                  where: { color_id: item },
+                  where: { optionvalue: option },
                 });
                 if (checkAmount.quantity < cart.amount) {
                   check = false;
@@ -165,6 +167,13 @@ let getCreateOrderByUser = async (data) => {
             );
             console.log(listOT);
             await db.Orderitem.bulkCreate(listOT);
+            await Promise.all(
+              op.map(async (dcart) => {
+                await db.Cartitem.destroy({
+                  id: dcart,
+                });
+              })
+            );
           }
         });
         resolve({
