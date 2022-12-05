@@ -770,26 +770,20 @@ let createWareHouseProduct = (data) => {
             "Your Product " + wp.name + " has been update successfully",
         });
       } else {
+        let list = [];
         let ot = data.optionvalue;
         let count = 0;
         await Promise.all(
           ot.map(async (x) => {
-            let check = await db.Option_Product.findOne({
-              where: {
-                id: x,
-                product_id: data.product_id,
-              },
-              nest: true,
+            let option = await db.Option_Product.findOne({
+              where: { id: x },
+              raw: false,
             });
-            let che = await db.Option.findOne({
-              where: { id: check.option_id },
-              nest: true,
-            });
-            console.log(che.id);
-            console.log(check);
-            console.log("count : " + count);
+            console.log(option);
+            console.log("aaaaaaaaaaaaaaaa");
           })
         );
+        console.log("count : " + count);
       }
     } catch (error) {
       reject(error);

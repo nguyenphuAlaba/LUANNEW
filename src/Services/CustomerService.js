@@ -284,7 +284,9 @@ let loginAdmin = (email, password) => {
   return new Promise(async (resolve, reject) => {
     try {
       let userdata = {};
-      let isExist = await checkEmail(email);
+      let isExist = await db.Staff.findOne({
+        where: { email: email },
+      });
       if (isExist) {
         let user = await db.Staff.findOne({
           where: { email: email },
@@ -302,7 +304,13 @@ let loginAdmin = (email, password) => {
           nest: true,
         });
         if (user) {
-          let check = password == user.password && email == user.email;
+          let check = await db.Staff.findOne({
+            where: {
+              email: user.email,
+              password: user.password,
+            },
+            nest: true,
+          });
           if (check) {
             userdata.errorCode = 0;
             userdata.errMessage = `Ok`;
