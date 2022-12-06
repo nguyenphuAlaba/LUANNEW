@@ -211,14 +211,14 @@ let updateAmount = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let Cart = await db.Cartitem.findOne({
-        where: { id: data.cart_id, product_id: data.product_id },
+        where: { id: data.id },
         raw: false,
         nest: true,
       });
       if (Cart) {
         Cart.amount = data.amount;
         Cart.ttprice = Cart.price * Cart.amount;
-        Cart.save();
+        console.log(Cart);
         resolve({
           errCode: 0,
           errMessage: "Update success",

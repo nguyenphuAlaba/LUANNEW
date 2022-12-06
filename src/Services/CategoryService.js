@@ -142,9 +142,33 @@ let deleteCategory = (category_id) => {
     }
   });
 };
+let getCategory = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log(data);
+      let w = {};
+      // if (data.id) w.id = data.id;
+      if (data.parent_id) w.parent_id = data.parent_id;
+      console.log(data);
+      let Category = await db.Category.findAll({
+        where: w,
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        Category,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   createCategory,
   updateCategory,
   getAllCategory,
   deleteCategory,
+  getCategory,
 };

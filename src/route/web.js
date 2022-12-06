@@ -82,6 +82,7 @@ let initWebRoutes = (app) => {
     "/api/get-option-product/",
     ProductControler.handleGetAllOptionProduct
   );
+  router.get("/api/get-option/", ProductControler.handleGetOption);
   router.post(
     "/api/create-warehouse-product/",
     ProductControler.handleCreateWareHouseProduct
@@ -122,6 +123,7 @@ let initWebRoutes = (app) => {
     "/api/delete-Category/:id/",
     CategoryControler.handleDeleteCategory
   );
+  router.get("/api/get-category-parent/", CategoryControler.handleGetCategory);
   //Category blog
   //comment
   router.get(

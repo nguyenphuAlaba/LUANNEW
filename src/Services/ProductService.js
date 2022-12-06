@@ -7,11 +7,9 @@ import { dataError } from "./jsonFormat";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-
 var salt = bcrypt.genSaltSync(10);
 var cloudinary = require("cloudinary").v2;
 const multer = require("multer");
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -387,9 +385,11 @@ let updateAmountProductWarehouse = (data) => {
       });
       let OW = await db.Warehouse_product.findOne({
         where: {
-          id: data.id,
-          product_id: data.product_id,
-          warehouse_id: data.warehouse_id,
+          [Op.and]: [
+            { id: data.id },
+            { product_id: data.product_id },
+            { warehouse_id: data.warehouse_id },
+          ],
         },
         raw: false,
         nest: true,
@@ -406,8 +406,15 @@ let updateAmountProductWarehouse = (data) => {
           errMessage: "Cannot find your Warehouse_product id",
         });
       } else {
-        OW.quantity = data.quantity;
-        OW.save();
+        console.log(
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        );
+        let a = await Sequelize.query("SELECT * FROM Warehouse_product", {
+          // WHERE product_id = 1
+          // replacements: ["1"],
+          type: Sequelize.SELECT,
+        });
+        console.log("ghjhgjkghjgjhlhjklhjk " + a);
         resolve({
           errCode: 0,
           errMessage: "Update quantity Successfully",
@@ -724,6 +731,20 @@ let getAllOptionProduct = () => {
     }
   });
 };
+let getOption = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let option = await db.Option.findAll();
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        option,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 let createWareHouseProduct = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -751,7 +772,6 @@ let createWareHouseProduct = (data) => {
         nest: true,
       });
       if (wp) {
-        console.log("aaaaaaaaaaaaaaaaaaaaaaa");
         wp.quantity = wp.quantity + data.quantity;
         await wp.save();
         resolve({
@@ -790,6 +810,14 @@ let createWareHouseProduct = (data) => {
             warehouse_id: data.warehouse_id,
             quantity: data.quantity,
             optionvalue: data.optionvalue,
+          }).then(async function (x) {
+            if (x) {
+              let sum = await db.Warehouse_product.sum({
+                where: { product_id: data.product_id },
+              });
+              cp.currentQuantity = sum;
+              await cp.save();
+            }
           });
           resolve({
             errCode: 0,
@@ -829,6 +857,7 @@ module.exports = {
   updateOptionProduct,
   deleteOption,
   getAllOptionProduct,
+  getOption,
   createWareHouseProduct,
   upload,
 };

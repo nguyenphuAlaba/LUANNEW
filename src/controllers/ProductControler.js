@@ -216,6 +216,14 @@ let handleGetAllOptionProduct = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetOption = async (request, response) => {
+  try {
+    let product = await ProductService.getOption();
+    return response.status(200).json(product);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 let handleCreateWareHouseProduct = async (request, response) => {
   try {
     let product = await ProductService.createWareHouseProduct(request.body);
@@ -244,5 +252,6 @@ module.exports = {
   handleUpdateOptionProduct,
   handleDeleteOption,
   handleGetAllOptionProduct,
+  handleGetOption,
   handleCreateWareHouseProduct,
 };

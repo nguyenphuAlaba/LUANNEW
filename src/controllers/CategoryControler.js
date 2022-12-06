@@ -38,9 +38,21 @@ let handleDeleteCategory = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetCategory = async (request, response) => {
+  try {
+    console.log(request);
+    console.log(request.query);
+    console.log("aaaaaaaaaaaaaaaaa");
+    let category = await CategoryService.getCategory(request.query);
+    return response.status(200).json(category);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllCategory,
   handleCreateCategory,
   handleUpdatCategory,
   handleDeleteCategory,
+  handleGetCategory,
 };
