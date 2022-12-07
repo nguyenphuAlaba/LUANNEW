@@ -12,7 +12,12 @@ let getAllCart = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let Cart = await db.Cart.findAll({
-        include: [{ model: db.Product, as: "ProductItemInCart" }],
+        include: [
+          {
+            model: db.Product,
+            as: "ProductItemInCart",
+          },
+        ],
         raw: false,
         nest: true,
       });
@@ -208,7 +213,27 @@ let getCartByCustomer = (id) => {
       if (cus) {
         let cartitem = await db.Cartitem.findAll({
           where: { cart_id: cus.id },
-          include: [{ model: db.Product, as: "CartItemProduct" }],
+          include: [
+            {
+              model: db.Product,
+              as: "CartItemProduct",
+              include: [
+                { model: db.Brand, as: "ProductBrand" },
+                {
+                  model: db.Category,
+                  as: "CategoryProduct",
+                },
+              ],
+            },
+          ],
+          attributes: [
+            "id",
+            "product_id",
+            "amount",
+            "price",
+            "ttprice",
+            "optionvalue",
+          ],
           raw: false,
           nest: true,
         });
