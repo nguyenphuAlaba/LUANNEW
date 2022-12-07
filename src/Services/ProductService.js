@@ -1,4 +1,4 @@
-import db from "../models/index";
+import db, { sequelize } from "../models/index";
 import bcrypt from "bcryptjs";
 import { raw } from "body-parser";
 import Product from "../models/Product";
@@ -379,6 +379,8 @@ let updateAmountProductWarehouse = (data) => {
       // console.log(data);
       let checkProduct = await db.Product.findOne({
         where: { id: data.product_id },
+        raw: false,
+        nest: true,
       });
       let checkWarehouse = await db.Warehouse.findOne({
         where: { id: data.warehouse_id },
@@ -406,15 +408,30 @@ let updateAmountProductWarehouse = (data) => {
           errMessage: "Cannot find your Warehouse_product id",
         });
       } else {
-        console.log(
-          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        await sequelize.query(
+          'UPDATE "Warehouse_product" SET "quantity" = :ss WHERE "Warehouse_product"."id" = :ff;',
+          {
+            // WHERE product_id = 1
+            replacements: { ff: data.id, ss: data.quantity },
+            type: sequelize.UPDATE,
+            nest: true,
+            raw: false,
+          }
         );
-        let a = await Sequelize.query("SELECT * FROM Product", {
-          // WHERE product_id = 1
-          // replacements: ["1"],
-          type: Sequelize.SELECT,
+        let ttq = await db.Warehouse_product.sum("quantity", {
+          where: { product_id: data.product_id },
+          raw: false,
+          nest: true,
         });
-        console.log(await Sequelize.query("SELECT * FROM Product"));
+        if (checkProduct.status == 1) {
+          checkProduct.currentQuantity = ttq;
+          await checkProduct.save();
+        }
+        if (checkProduct.status == 4) {
+          checkProduct.currentQuantity = ttq;
+          checkProduct.status = 1;
+          await checkProduct.save();
+        }
         resolve({
           errCode: 0,
           errMessage: "Update quantity Successfully",

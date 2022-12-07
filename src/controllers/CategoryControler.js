@@ -40,9 +40,6 @@ let handleDeleteCategory = async (request, response) => {
 };
 let handleGetCategory = async (request, response) => {
   try {
-    console.log(request);
-    console.log(request.query);
-    console.log("aaaaaaaaaaaaaaaaa");
     let category = await CategoryService.getCategory(request.query);
     return response.status(200).json(category);
   } catch (error) {

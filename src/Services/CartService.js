@@ -1,4 +1,4 @@
-import db from "../models/index";
+import db, { sequelize } from "../models/index";
 import bcrypt, { setRandomFallback } from "bcryptjs";
 import { raw } from "body-parser";
 import Product from "../models/Product";
@@ -238,10 +238,18 @@ let updateAmount = (data) => {
         raw: false,
         nest: true,
       });
+      let ttprice = Cart.price * data.amount;
       if (Cart) {
-        Cart.amount = data.amount;
-        Cart.ttprice = Cart.price * Cart.amount;
-        console.log(Cart);
+        await sequelize.query(
+          'UPDATE "Cartitem" SET "amount" = :ss, "ttprice" = :tt WHERE "Cartitem"."id" = :ff;',
+          {
+            replacements: { ff: data.id, ss: data.amount, tt: ttprice },
+            type: sequelize.SELECT,
+            nest: true,
+            raw: false,
+          }
+        );
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
         resolve({
           errCode: 0,
           errMessage: "Update success",
@@ -272,9 +280,15 @@ let plusMinusAmount = (data) => {
         });
       } else {
         if (data.key == "+") {
-          checkCart.amount = checkCart.amount + 1;
-          checkCart.ttprice = checkCart.price * checkCart.amount;
-          await checkCart.save();
+          await sequelize.query(
+            'UPDATE "Cartitem" SET "amount" = :ss WHERE "Cartitem"."id" = :ff;',
+            {
+              replacements: { ff: data.cart_id, ss: checkCart.amount + 1 },
+              type: sequelize.SELECT,
+              nest: true,
+              raw: false,
+            }
+          );
           resolve({
             errCode: 0,
             errMessage: "Amount have been +1",
@@ -287,9 +301,15 @@ let plusMinusAmount = (data) => {
               errMessage: "Cannot minus more",
             });
           } else {
-            checkCart.amount = checkCart.amount - 1;
-            checkCart.ttprice = checkCart.price * checkCart.amount;
-            await checkCart.save();
+            await sequelize.query(
+              'UPDATE "Cartitem" SET "amount" = :ss WHERE "Cartitem"."id" = :ff;',
+              {
+                replacements: { ff: data.cart_id, ss: checkCart.amount - 1 },
+                type: sequelize.SELECT,
+                nest: true,
+                raw: false,
+              }
+            );
             resolve({
               errCode: 0,
               errMessage: "Amount have been -1",

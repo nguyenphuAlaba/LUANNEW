@@ -145,13 +145,23 @@ let deleteCategory = (category_id) => {
 let getCategory = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log(data);
-      let w = {};
+      // let w = {};
       // if (data.id) w.id = data.id;
-      if (data.parent_id) w.parent_id = data.parent_id;
-      console.log(data);
+      // if (data.parent_id) w.parent_id = data.parent_id;
       let Category = await db.Category.findAll({
-        where: w,
+        // where: w,
+        include: [
+          // {
+          //   model: Category,
+          //   as: "ChildrenCategoty",
+          //   require: false,
+          // },
+          // {
+          //   model: Category,
+          //   as: "parent",
+          //   require: false,
+          // },
+        ],
         raw: false,
         nest: true,
       });

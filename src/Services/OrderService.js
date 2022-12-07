@@ -86,9 +86,6 @@ let getCreateOrderByUser = async (data) => {
       let checkCus = await db.Customer.findOne({
         where: { id: data.cus_id },
       });
-      let cart = await db.Cart.findOne({
-        where: { cus_id: data.cus_id },
-      });
       let checkware = await db.Warehouse.findOne({
         where: { id: data.warehouse_id },
         raw: false,
@@ -107,6 +104,7 @@ let getCreateOrderByUser = async (data) => {
           let cart = await db.Cartitem.findOne({
             where: { id: x },
             raw: false,
+            nest: true,
           });
           let option = cart.optionvalue;
           let list = [];
@@ -120,20 +118,24 @@ let getCreateOrderByUser = async (data) => {
                 let checkAmount = await db.Warehouse_product.findOne({
                   where: { optionvalue: option },
                 });
+                if (!checkAmount) {
+                  resolve({
+                    errCode: 3,
+                    errMessage: "Cannot find your Product In warehouse",
+                  });
+                }
                 if (checkAmount.quantity < cart.amount) {
                   check = false;
+                  resolve({
+                    errCode: 2,
+                    errMessage: "Your Option Not enough quantity",
+                  });
                 }
               }
             })
           );
         })
       );
-      if (!check) {
-        resolve({
-          errCode: 2,
-          errMessage: "Your Option Not enough quantity",
-        });
-      }
       if (check) {
         await db.Order.create({
           fullname: data.fullname,
@@ -165,12 +167,12 @@ let getCreateOrderByUser = async (data) => {
                 listOT.push(pp);
               })
             );
-            console.log(listOT);
             await db.Orderitem.bulkCreate(listOT);
+            let cc = data.cartitem;
             await Promise.all(
-              op.map(async (dcart) => {
+              cc.map(async (dcart) => {
                 await db.Cartitem.destroy({
-                  id: dcart,
+                  where: { id: dcart },
                 });
               })
             );

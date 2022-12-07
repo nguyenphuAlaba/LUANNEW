@@ -15,12 +15,16 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // Danh muc cha con //
-      Category.hasMany(Category, { as: 'ChildrenCategoty', foreignKey: 'parent_id', useJunctionTable: false })
-
-      // Category.hasOne(models.Category, {
-      //   foreignKey: "parent_id",
-      //   as: "categoryParent",
-      // });
+      Category.hasMany(Category, {
+        as: "ChildrenCategoty",
+        foreignKey: "parent_id",
+        useJunctionTable: false,
+      });
+      Category.belongsTo(Category, {
+        as: "parent",
+        foreignKey: "parent_id",
+        targetKey: "id",
+      });
     }
   }
   Category.init(
