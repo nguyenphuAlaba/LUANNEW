@@ -409,12 +409,12 @@ let updateAmountProductWarehouse = (data) => {
         console.log(
           "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         );
-        let a = await Sequelize.query("SELECT * FROM Warehouse_product", {
+        let a = await Sequelize.query("SELECT * FROM Product", {
           // WHERE product_id = 1
           // replacements: ["1"],
           type: Sequelize.SELECT,
         });
-        console.log("ghjhgjkghjgjhlhjklhjk " + a);
+        console.log(await Sequelize.query("SELECT * FROM Product"));
         resolve({
           errCode: 0,
           errMessage: "Update quantity Successfully",

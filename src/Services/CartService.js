@@ -202,6 +202,29 @@ let addProductToCart = (data) => {
 let getCartByCustomer = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
+      let cus = await db.Cart.findOne({
+        where: { cus_id: id },
+      });
+      if (cus) {
+        let cartitem = await db.Cartitem.findAll({
+          where: { cart_id: cus.id },
+        });
+        let quantity = await db.Cartitem.sum("amount", {
+          where: { cart_id: cus.id },
+          nest: true,
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "Ok",
+          cartitem,
+          quantity,
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Your Cart not found",
+        });
+      }
     } catch (error) {
       reject(error);
     }
