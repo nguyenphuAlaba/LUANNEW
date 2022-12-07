@@ -30,12 +30,6 @@ let getAllWarranty = () => {
 let createWarranty = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      // infor: DataTypes.STRING,
-      // description: DataTypes.STRING,
-      // store_id: DataTypes.INTEGER,
-      // product_id: DataTypes.INTEGER,
-      // cus_id: DataTypes.INTEGER,
-      // sta_id: DataTypes.INTEGER,
       let chCustomer = await db.Customer.findOne({
         where: { id: data.cus_id },
         raw: false,

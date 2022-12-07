@@ -208,6 +208,9 @@ let getCartByCustomer = (id) => {
       if (cus) {
         let cartitem = await db.Cartitem.findAll({
           where: { cart_id: cus.id },
+          include: [{ model: db.Product, as: "CartItemProduct" }],
+          raw: false,
+          nest: true,
         });
         let quantity = await db.Cartitem.sum("amount", {
           where: { cart_id: cus.id },

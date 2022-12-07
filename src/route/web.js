@@ -20,6 +20,10 @@ let initWebRoutes = (app) => {
     return res.send("Hello world");
   });
   //product
+  router.get(
+    "/api/get-all-product-admin/",
+    ProductControler.handleGetAllProductadmin
+  );
   router.get("/api/get-all-product", ProductControler.handlegetallProduct);
   router.get("/api/get-product/:id/", ProductControler.handlegetbyidProduct);
   router.get(

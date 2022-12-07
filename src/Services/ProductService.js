@@ -72,6 +72,26 @@ let getAllProduct = (data) => {
     }
   });
 };
+let getAllProductadmin = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let pr = await db.Product.findAll({
+        include: [
+          { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
+          { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
+          // { model: db.Option, as: "ProductOption", attributes: ["name"] },
+          // { model: db.Warehouse, as: "ProductInWarehouse" },
+        ],
+        raw: false,
+        nest: true,
+      });
+
+      resolve(pr);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 let getProductDetail = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -876,5 +896,6 @@ module.exports = {
   getAllOptionProduct,
   getOption,
   createWareHouseProduct,
+  getAllProductadmin,
   upload,
 };
