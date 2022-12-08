@@ -23,6 +23,9 @@ module.exports = {
       optionValues: {
         type: Sequelize.ARRAY(Sequelize.INTEGER),
       },
+      TotalPrice: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -375,7 +375,9 @@ let getAllOrderInWarehouse = (data) => {
         nest: true,
       });
       if (staff) {
-        let order = await db.Warehouse;
+        let checkWorktime = await db.Warehouse_staff.findOne({
+          where: { staf_id: data.sta_id },
+        });
       }
     } catch (error) {
       reject(error);

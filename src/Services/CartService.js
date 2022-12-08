@@ -236,6 +236,7 @@ let getCartByCustomer = (id) => {
           ],
           attributes: [
             "id",
+            "name",
             "product_id",
             "amount",
             "price",

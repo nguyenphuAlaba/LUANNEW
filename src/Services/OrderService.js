@@ -172,7 +172,8 @@ let getCreateOrderByUser = async (data) => {
                 pp.cart_id = cc.cart_id;
                 pp.price = cc.ttprice;
                 pp.optionValues = cc.optionvalue;
-                pp.TotalQuantity = cc.ttprice * cc.amount;
+                pp.TotalQuantity = cc.amount;
+                pp.TotalPrice = cc.ttprice * cc.amount;
                 listOT.push(pp);
               })
             );
