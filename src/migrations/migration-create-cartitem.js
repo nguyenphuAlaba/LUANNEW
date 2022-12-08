@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      name: {
+        type: Sequelize.STRING,
+      },
       product_id: {
         type: Sequelize.INTEGER,
       },
@@ -26,6 +29,7 @@ module.exports = {
       ttprice: {
         type: Sequelize.DOUBLE,
       },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -109,11 +109,11 @@ let getProductDetail = (id) => {
         include: [
           { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
           { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
-          {
-            model: db.Warehouse,
-            as: "ProductInWarehouse",
-            attributes: ["name"],
-          },
+          // {
+          //   model: db.Warehouse,
+          //   as: "ProductInWarehouse",
+          //   attributes: ["name"],
+          // },
           {
             model: db.Option,
             as: "ProductOption",
@@ -805,12 +805,29 @@ let createWareHouseProduct = (data) => {
           product_id: data.product_id,
           warehouse_id: data.warehouse_id,
         },
+        attributes: ["id", "name", "quantity", "optionvalue"],
         raw: false,
         nest: true,
       });
       if (wp) {
-        wp.quantity = wp.quantity + data.quantity;
-        await wp.save();
+        console.log("aaaaaaaaaaa");
+        await sequelize.query(
+          'UPDATE "Warehouse_product" SET "quantity" = :am WHERE  "Warehouse_product"."id" = :op;',
+          {
+            replacements: {
+              am: wp.quantity + data.quantity,
+              op: wp.id,
+            },
+            type: sequelize.UPDATE,
+            raw: false,
+            nest: true,
+          }
+        );
+        let sum = await db.Warehouse_product.sum("quantity", {
+          where: { product_id: data.product_id },
+        });
+        cp.currentQuantity = sum;
+        await cp.save();
         resolve({
           errCode: -1,
           errMessage:
@@ -837,6 +854,10 @@ let createWareHouseProduct = (data) => {
           for (let j = i + 1; j < list.length; j++) {
             if (list[i] == list[j]) {
               checkpoint = false;
+              resolve({
+                errCode: 2,
+                errMessage: "Your Option duplicate",
+              });
             }
           }
         }
@@ -847,24 +868,15 @@ let createWareHouseProduct = (data) => {
             warehouse_id: data.warehouse_id,
             quantity: data.quantity,
             optionvalue: data.optionvalue,
-          }).then(async function (x) {
-            if (x) {
-              let sum = await db.Warehouse_product.sum({
-                where: { product_id: data.product_id },
-              });
-              cp.currentQuantity = sum;
-              await cp.save();
-            }
           });
+          let sum2 = await db.Warehouse_product.sum("quantity", {
+            where: { product_id: data.product_id },
+          });
+          cp.currentQuantity = sum2;
+          await cp.save();
           resolve({
             errCode: 0,
             errMessage: "Create Product Warehouse Successfully",
-          });
-        }
-        if (!checkpoint) {
-          resolve({
-            errCode: 2,
-            errMessage: "Your Option duplicate",
           });
         }
       }

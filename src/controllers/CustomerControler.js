@@ -84,6 +84,14 @@ let handleLoginAdmin = async (req, res) => {
     data: userdata.user ? userdata.user : {},
   });
 };
+let handleGetAllStaff = async (request, response) => {
+  try {
+    let Product = await CustomerService.getAllStaff();
+    return response.status(200).json(Product);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllUser,
   handleGetById,
@@ -92,4 +100,5 @@ module.exports = {
   handleUpdateUser,
   handleChangePassword,
   handleLoginAdmin,
+  handleGetAllStaff,
 };

@@ -111,9 +111,16 @@ let addProductToCart = (data) => {
                   })
                 );
                 if (checkPOExist) {
+                  let wa = await db.Warehouse_product.findOne({
+                    where: {
+                      product_id: data.product_id,
+                      optionvalue: data.optionvalue,
+                    },
+                  });
                   await db.Cartitem.create({
                     product_id: data.product_id,
                     amount: data.amount,
+                    name: wa.name,
                     cart_id: checkCart.id,
                     optionvalue: data.optionvalue,
                     price: checkProduct.unitprice + optionsum,

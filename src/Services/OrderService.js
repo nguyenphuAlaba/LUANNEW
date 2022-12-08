@@ -106,6 +106,12 @@ let getCreateOrderByUser = async (data) => {
             raw: false,
             nest: true,
           });
+          if (!cart) {
+            resolve({
+              errCode: 1,
+              errMessage: "Cart not found",
+            });
+          }
           let option = cart.optionvalue;
           let list = [];
           await Promise.all(
@@ -125,6 +131,7 @@ let getCreateOrderByUser = async (data) => {
                   });
                 }
                 if (checkAmount.quantity < cart.amount) {
+                  console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
                   check = false;
                   resolve({
                     errCode: 2,
@@ -137,6 +144,7 @@ let getCreateOrderByUser = async (data) => {
         })
       );
       if (check) {
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
         await db.Order.create({
           fullname: data.fullname,
           email: data.email,
@@ -146,6 +154,7 @@ let getCreateOrderByUser = async (data) => {
           voucher_id: 1,
           method_id: data.method_id,
           cus_id: data.cus_id,
+          warehouse_id: data.warehouse_id,
           paymentstatus: 1,
         }).then(async function (x) {
           if (x.id) {

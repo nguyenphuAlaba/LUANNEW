@@ -23,12 +23,6 @@ module.exports = {
       avatar: {
         type: Sequelize.STRING,
       },
-      warehouse_id: {
-        type: Sequelize.INTEGER,
-      },
-      store_id: {
-        type: Sequelize.INTEGER,
-      },
       role_id: {
         type: Sequelize.INTEGER,
       },

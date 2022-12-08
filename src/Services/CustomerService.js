@@ -268,6 +268,8 @@ let changePassword = (data) => {
             errCode: 0,
             errMessage: "Your password has been Update",
           });
+        } else {
+          reject({ errCode: 2, errMessage: "Your Old password not correct" });
         }
       } else {
         reject({
@@ -346,6 +348,40 @@ let loginAdmin = (email, password) => {
     }
   });
 };
+let getAllStaff = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let staff = await db.Staff.findAll({
+        Order: ["warehouse_id"],
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        staff,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let getAllOrderInWarehouse = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let staff = await db.Staff.findOne({
+        where: { id: data.sta_id },
+        raw: false,
+        nest: true,
+      });
+      if (staff) {
+        let order = await db.Warehouse;
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   uploadCloud,
   encodePassword,
@@ -357,4 +393,5 @@ module.exports = {
   updateUser,
   changePassword,
   loginAdmin,
+  getAllStaff,
 };
