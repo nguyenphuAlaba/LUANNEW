@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 import TemplateEmail from "../public/TemplateEmail";
 
 let sendSimpleEmail = async (dataSend) => {
+  console.log(dataSend);
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -14,18 +15,12 @@ let sendSimpleEmail = async (dataSend) => {
       pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
     },
   });
-
-  //   if (dataSend.price)
-  //     dataSend.price = dataSend.price.toLocaleString("it-IT", {
-  //       style: "currency",
-  //       currency: "VND",
-  //     });
-  // send mail with defined transport object
   let info = await transporter.sendMail({
     from: '"PhuThangShop" <phunguyen22052000@gmail.com>', // sender address
-    to: "anhdansgvn@gmail.com", //dataSend.reciverEmail, // list of receivers
+    to: dataSend.email, //dataSend.reciverEmail, // list of receivers
     subject: "Thông tin Bán Hàng", // Subject line
-    html: "<h1> Đơn Hàng Từ Phú Thắng Store </h1>",
+    html: TemplateEmail.templatepurchase(dataSend),
+    //TemplateEmail.templatepurchase(dateSend)
   });
 };
 

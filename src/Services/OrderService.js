@@ -189,15 +189,16 @@ let getCreateOrderByUser = async (data) => {
             let order = await db.Order.findOne({
               id: x,
             });
-            // let orderitem = await db.Orderitem.findOne({
-            //   where: {order_id: order.id},
-            // })
+            let orderitem = await db.Orderitem.findAll({
+              where: { order_id: order.id },
+            });
             let dataSend = {
               orderCus: order.id,
               nameCus: order.fullname,
               addressCus: order.Address,
               phonenumberCus: order.phonenumber,
               paymentstatus: order.paymentstatus,
+              email: order.email,
             };
             emailService.sendSimpleEmail(dataSend);
           }

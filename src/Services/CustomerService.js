@@ -4,6 +4,7 @@ import { raw } from "body-parser";
 require("dotenv").config();
 import moment from "moment";
 var salt = bcrypt.genSaltSync(10);
+import emailService from "./emailService";
 var cloudinary = require("cloudinary").v2;
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -369,25 +370,12 @@ let getAllOrderInWarehouse = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let dateToday = moment(new Date()).format("MM-DD");
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
       console.log(dateToday);
+      // emailService.sendSimpleEmail();
       resolve({
         errCode: 0,
         errMessage: "OK",
       });
-      // const dataSend = {
-      //   nae: "www",
-      // };
-      // let staff = await db.Staff.findOne({
-      //   where: { id: data.sta_id },
-      //   raw: false,
-      //   nest: true,
-      // });
-      // if (staff) {
-      //   let checkWorktime = await db.Warehouse_staff.findOne({
-      //     where: { sta_id: data.sta_id },
-      //   });
-      // }
     } catch (error) {
       reject(error);
     }

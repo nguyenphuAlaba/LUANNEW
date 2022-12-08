@@ -1,21 +1,80 @@
 import db from "../models/index";
-require('dotenv').config();
-var cloudinary = require('cloudinary').v2;
-const Sequelize = require('sequelize');
-import moment from 'moment';
+require("dotenv").config();
+var cloudinary = require("cloudinary").v2;
+const Sequelize = require("sequelize");
+import moment from "moment";
 const Op = Sequelize.Op;
 
+let templatepurchase = (dataSend) => {
+  let result = `
+  <!doctype html>
+  <html lang="en-US">
+  <head>
+  <style>
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
 
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
 
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+  </style>
+    </head>
+<body>
+<header>
+<h3>Phú Thắng Store</h3>
+<h1>Thank You ${dataSend.nameCus}</h1>
+<hr>
+<p>for buying in Phu Thang Store. We hope to see you again.</p>
+<hr>
+</header>
+<h3>Your Order</h3>
+<table>
+  <tr>
+    <th>Product</th>
+    <th>Price</th>
+    <th>Quantity</th>
+    <th>TotalPrice</th>
+  </tr>
+  <tr>
+    <td>Alfreds Futterkiste</td>
+    <td>Maria Anders</td>
+    <td>Germany</td>
+    <td>1200</td>
+  </tr>
+  </table>
+  <hr>
+  <h3>Check your infor</h3>
+  <table>
+  <tr>
+    <th>Address</th>
+    <th>Phone</th>
+  </tr>
+  <tr>
+  <td>${dataSend.addressCus}</td>
+  <td>${dataSend.phonenumberCus}</td>
+</tr>
+  </table>
+</body>
 
-
+</html>
+`;
+  return result;
+};
 
 let templateResetPass = (dataSend) => {
-
-    let result = `
+  let result = `
     <!doctype html>
     <html lang="en-US">
-    
+
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
         <title>Reset Password Email Template</title>
@@ -24,7 +83,7 @@ let templateResetPass = (dataSend) => {
             a:hover {text-decoration: underline !important;}
         </style>
     </head>
-    
+
     <body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
         <!--100% body table-->
         <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
@@ -88,21 +147,19 @@ let templateResetPass = (dataSend) => {
         </table>
         <!--/100% body table-->
     </body>
-    
+
     </html>
-    
+
     `;
 
-    return result;
-}
-
+  return result;
+};
 
 let templateActiveAccount = (dataSend) => {
-    let result =
-        `
+  let result = `
         <!DOCTYPE html>
         <html>
-        
+
         <head>
             <title></title>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -116,21 +173,21 @@ let templateActiveAccount = (dataSend) => {
                         font-weight: 400;
                         src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
                     }
-        
+
                     @font-face {
                         font-family: 'Lato';
                         font-style: normal;
                         font-weight: 700;
                         src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
                     }
-        
+
                     @font-face {
                         font-family: 'Lato';
                         font-style: italic;
                         font-weight: 400;
                         src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
                     }
-        
+
                     @font-face {
                         font-family: 'Lato';
                         font-style: italic;
@@ -138,7 +195,7 @@ let templateActiveAccount = (dataSend) => {
                         src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
                     }
                 }
-        
+
                 /* CLIENT-SPECIFIC STYLES */
                 body,
                 table,
@@ -147,17 +204,17 @@ let templateActiveAccount = (dataSend) => {
                     -webkit-text-size-adjust: 100%;
                     -ms-text-size-adjust: 100%;
                 }
-        
+
                 table,
                 td {
                     mso-table-lspace: 0pt;
                     mso-table-rspace: 0pt;
                 }
-        
+
                 img {
                     -ms-interpolation-mode: bicubic;
                 }
-        
+
                 /* RESET STYLES */
                 img {
                     border: 0;
@@ -166,18 +223,18 @@ let templateActiveAccount = (dataSend) => {
                     outline: none;
                     text-decoration: none;
                 }
-        
+
                 table {
                     border-collapse: collapse !important;
                 }
-        
+
                 body {
                     height: 100% !important;
                     margin: 0 !important;
                     padding: 0 !important;
                     width: 100% !important;
                 }
-        
+
                 /* iOS BLUE LINKS */
                 a[x-apple-data-detectors] {
                     color: inherit !important;
@@ -187,7 +244,7 @@ let templateActiveAccount = (dataSend) => {
                     font-weight: inherit !important;
                     line-height: inherit !important;
                 }
-        
+
                 /* MOBILE STYLES */
                 @media screen and (max-width:600px) {
                     h1 {
@@ -195,14 +252,14 @@ let templateActiveAccount = (dataSend) => {
                         line-height: 32px !important;
                     }
                 }
-        
+
                 /* ANDROID CENTER FIX */
                 div[style*="margin: 16px 0;"] {
                     margin: 0 !important;
                 }
             </style>
         </head>
-        
+
         <body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
             <!-- HIDDEN PREHEADER TEXT -->
             <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We're thrilled to have you here! Get ready to dive into your new account.
@@ -257,23 +314,21 @@ let templateActiveAccount = (dataSend) => {
                         </table>
                     </td>
                 </tr>
-        
+
             </table>
         </body>
-        
+
         </html>
-        
 
-        `
-    return result;
-}
 
+        `;
+  return result;
+};
 
 let templateBooking = (dataSend) => {
-    let result = '';
-    if (dataSend.combo) {
-        result =
-            `
+  let result = "";
+  if (dataSend.combo) {
+    result = `
             <!DOCTYPE html>
             <html lang="en">
 
@@ -412,7 +467,7 @@ let templateBooking = (dataSend) => {
                         <p>Xin chào <span>${dataSend.name}</span> </p>
                         <p>Chúc mừng bạn đã thanh toán thành công tại DKCINEMAS</p>
                         <p>Đây là thông tin đặt vé của bạn:</p>
-                        <div class="qr-booking"> 
+                        <div class="qr-booking">
 	<img style="width: 200px" src=${dataSend.QRcode} cid: 'unique@cid' />
 </div>
                         <table>
@@ -472,10 +527,9 @@ let templateBooking = (dataSend) => {
             </html>
 
 
-        `
-    } else {
-        result =
-            `
+        `;
+  } else {
+    result = `
             <!DOCTYPE html>
             <html lang="en">
 
@@ -614,7 +668,7 @@ let templateBooking = (dataSend) => {
                         <p>Xin chào <span>${dataSend.name}</span> </p>
                         <p>Chúc mừng bạn đã thanh toán thành công tại DKCINEMAS</p>
                         <p>Đây là thông tin đặt vé của bạn:</p>
-                        <div class="qr-booking"> 
+                        <div class="qr-booking">
 	<img style="width: 200px" src=${dataSend.QRcode} cid: 'unique@cid' />
 </div>
                         <table>
@@ -670,15 +724,14 @@ let templateBooking = (dataSend) => {
             </html>
 
 
-        `
-    }
-    return result;
-}
-
+        `;
+  }
+  return result;
+};
 
 let templateMovieIncoming = (dataSend) => {
-    const result = `
-    
+  const result = `
+
     <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
@@ -983,7 +1036,7 @@ margin-top: 20px;
 	background: rgba(0,0,0,.03);
 }
 .text-services{
-	padding: 10px 10px 0; 
+	padding: 10px 10px 0;
 	text-align: center;
 }
 .text-services h3{
@@ -1166,11 +1219,11 @@ color: #fff !important
 
 				<tr>
           <td valign="middle" class="hero bg_white" style="background-image: url(${dataSend.poster[0].url}); background-size: cover; height: 400px;">
-          
+
             <table>
             	<tr>
             		<td>
-        
+
             		</td>
             	</tr>
             </table>
@@ -1183,7 +1236,7 @@ color: #fff !important
                 <td class="bg_dark email-section">
 <div class="text" style="padding: 0 3em; text-align: center;">
             				<h2 style="color: #fff">Đề xuất phim mới</h2>
-            				
+
             			</div>
 <a class="btn-ticket" href="http://localhost:3000/lich-chieu"> Đặt vé</a>
                   <div class="heading-section heading-section-white">
@@ -1219,21 +1272,16 @@ color: #fff !important
   </center>
 </body>
 </html>
-    
+
     `;
 
-    return result;
-}
-
-
-
-
-
+  return result;
+};
 
 module.exports = {
-    templateResetPass,
-    templateActiveAccount,
-    templateBooking,
-    templateMovieIncoming
-}
-
+  templateResetPass,
+  templateActiveAccount,
+  templateBooking,
+  templateMovieIncoming,
+  templatepurchase,
+};
