@@ -298,8 +298,6 @@ let loginAdmin = (email, password) => {
             "password",
             "fullname",
             "phonenumber",
-            "warehouse_id",
-            "store_id",
             "role_id",
           ],
           raw: false,

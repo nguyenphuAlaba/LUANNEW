@@ -127,9 +127,27 @@ let deleteWarehouse = (id) => {
     }
   });
 };
+let getAllProductInWarehouse = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let product = await db.Warehouse_product.findAll({
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        product,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllWarehouse,
   createWarehouse,
   updateWarehouse,
   deleteWarehouse,
+  getAllProductInWarehouse,
 };

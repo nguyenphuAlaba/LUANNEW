@@ -170,10 +170,10 @@ let getCreateOrderByUser = async (data) => {
                 pp.product_id = cc.product_id;
                 pp.amount = cc.amount;
                 pp.cart_id = cc.cart_id;
-                pp.price = cc.ttprice;
+                pp.price = cc.price;
                 pp.optionValues = cc.optionvalue;
                 pp.TotalQuantity = cc.amount;
-                pp.TotalPrice = cc.ttprice * cc.amount;
+                pp.TotalPrice = cc.ttprice;
                 listOT.push(pp);
               })
             );
@@ -273,7 +273,7 @@ let deleteOrder = (id) => {
 let getMomoPaymentLink = async (req) => {
   var requestId = partnerCode + new Date().getTime();
   var orderId = requestId;
-  let fOrder = await db.Orderitem.sum("price", {
+  let fOrder = await db.Orderitem.sum("TotalPrice", {
     where: { order_id: req.body.orderId },
     nest: true,
   });

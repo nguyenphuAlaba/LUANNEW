@@ -204,6 +204,10 @@ let initWebRoutes = (app) => {
     WarehouseControler.handleDeleteWarehouse
   );
   router.post("/api/create-event/", EventControler.handleCreateEvent);
+  router.get(
+    "/api/Get-all-warehouse/",
+    WarehouseControler.handleGetAllProductInWarehouse
+  );
   return app.use("/", router);
 };
 

@@ -35,9 +35,18 @@ let handleDeleteWarehouse = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetAllProductInWarehouse = async (request, response) => {
+  try {
+    let product = await WarehouseService.getAllProductInWarehouse();
+    return response.status(200).json(product);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllWarehouse,
   handleCreateWarehouse,
   handleUpdateWarehouse,
   handleDeleteWarehouse,
+  handleGetAllProductInWarehouse,
 };
