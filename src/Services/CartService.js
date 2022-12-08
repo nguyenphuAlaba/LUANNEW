@@ -58,29 +58,30 @@ let addProductToCart = (data) => {
                   product_id: data.product_id,
                   optionvalue: data.optionvalue,
                 },
-                //attributes: ["optionvalue", "amount", "ttprice", "price", "id"],
+                attributes: ["optionvalue", "amount", "ttprice", "price", "id"],
                 raw: false,
                 nest: true,
               });
               if (checkCartitem) {
-                // try {
-                //   //checkCartitem.amount = checkCartitem.amount + 1;
-                //   // checkCartitem.ttprice =
-                //   //   checkCartitem.price * checkCartitem.amount;
-                //   console.log(checkCartitem.id);
-
-                //   //await checkCartitem.save();
-                //   await checkCartitem.update(
-                //     { amount: 8 },
-                //     { where: { id: 7 } }
-                //   );
-                // } catch (error) {
-                //   console.log("error: ", error);
-                // }
+                await sequelize.query(
+                  'UPDATE "Cartitem" SET "amount" = :am , "ttprice" = :tt WHERE  "Cartitem"."id" = :op;',
+                  {
+                    replacements: {
+                      am: checkCartitem.amount + data.amount,
+                      tt:
+                        checkCartitem.price *
+                        (checkCartitem.amount + data.amount),
+                      op: checkCartitem.id,
+                    },
+                    type: sequelize.UPDATE,
+                    raw: false,
+                    nest: true,
+                  }
+                );
 
                 resolve({
                   errCode: 0,
-                  errMessage: "Your product already Add",
+                  errMessage: "Your Cartitem Have Update",
                 });
               } else {
                 console.log(data);
@@ -112,11 +113,11 @@ let addProductToCart = (data) => {
                 if (checkPOExist) {
                   await db.Cartitem.create({
                     product_id: data.product_id,
-                    amount: 1,
+                    amount: data.amount,
                     cart_id: checkCart.id,
                     optionvalue: data.optionvalue,
                     price: checkProduct.unitprice + optionsum,
-                    ttprice: checkProduct.unitprice + optionsum,
+                    ttprice: (checkProduct.unitprice + optionsum) * data.amount,
                   });
                   resolve({
                     errCode: -1,

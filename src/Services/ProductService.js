@@ -873,6 +873,7 @@ let createWareHouseProduct = (data) => {
     }
   });
 };
+
 module.exports = {
   getAllProduct,
   getProductDetail,
