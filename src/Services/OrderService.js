@@ -7,7 +7,7 @@ const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const crypto = require("crypto");
 const https = require("https");
-
+import emailService from "./emailService";
 //parameters
 var partnerCode = "MOMO";
 var accessKey = "F8BBA842ECF85";
@@ -186,6 +186,20 @@ let getCreateOrderByUser = async (data) => {
                 });
               })
             );
+            let order = await db.Order.findOne({
+              id: x,
+            });
+            // let orderitem = await db.Orderitem.findOne({
+            //   where: {order_id: order.id},
+            // })
+            let dataSend = {
+              orderCus: order.id,
+              nameCus: order.fullname,
+              addressCus: order.Address,
+              phonenumberCus: order.phonenumber,
+              paymentstatus: order.paymentstatus,
+            };
+            emailService.sendSimpleEmail(dataSend);
           }
         });
         resolve({

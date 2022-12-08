@@ -86,8 +86,16 @@ let handleLoginAdmin = async (req, res) => {
 };
 let handleGetAllStaff = async (request, response) => {
   try {
-    let Product = await CustomerService.getAllStaff();
-    return response.status(200).json(Product);
+    let Staff = await CustomerService.getAllStaff();
+    return response.status(200).json(Staff);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
+let handleGetAllOrderInWarehouse = async (request, response) => {
+  try {
+    let Order = await CustomerService.getAllOrderInWarehouse();
+    return response.status(200).json(Order);
   } catch (error) {
     return response.status(400).json(error);
   }
@@ -101,4 +109,5 @@ module.exports = {
   handleChangePassword,
   handleLoginAdmin,
   handleGetAllStaff,
+  handleGetAllOrderInWarehouse,
 };

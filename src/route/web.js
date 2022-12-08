@@ -151,6 +151,10 @@ let initWebRoutes = (app) => {
   router.put("/api/udate-password/", UserControler.handleChangePassword);
   router.post("/api/login-admin/", UserControler.handleLoginAdmin);
   router.get("/api/get-all-staff/", UserControler.handleGetAllStaff);
+  router.get(
+    "/api/get-all-order-in-warehouse/",
+    UserControler.handleGetAllOrderInWarehouse
+  );
   //Role
   router.get("/api/get-all-role/", RoleControler.handleGetAllRole);
   router.get(

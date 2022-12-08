@@ -2,7 +2,7 @@ import db from "../models/index";
 import bcrypt from "bcryptjs";
 import { raw } from "body-parser";
 require("dotenv").config();
-
+import moment from "moment";
 var salt = bcrypt.genSaltSync(10);
 var cloudinary = require("cloudinary").v2;
 cloudinary.config({
@@ -364,19 +364,30 @@ let getAllStaff = () => {
     }
   });
 };
-let getAllOrderInWarehouse = (data) => {
+
+let getAllOrderInWarehouse = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      let staff = await db.Staff.findOne({
-        where: { id: data.sta_id },
-        raw: false,
-        nest: true,
+      let dateToday = moment(new Date()).format("MM-DD");
+      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+      console.log(dateToday);
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
       });
-      if (staff) {
-        let checkWorktime = await db.Warehouse_staff.findOne({
-          where: { staf_id: data.sta_id },
-        });
-      }
+      // const dataSend = {
+      //   nae: "www",
+      // };
+      // let staff = await db.Staff.findOne({
+      //   where: { id: data.sta_id },
+      //   raw: false,
+      //   nest: true,
+      // });
+      // if (staff) {
+      //   let checkWorktime = await db.Warehouse_staff.findOne({
+      //     where: { sta_id: data.sta_id },
+      //   });
+      // }
     } catch (error) {
       reject(error);
     }
@@ -394,4 +405,5 @@ module.exports = {
   changePassword,
   loginAdmin,
   getAllStaff,
+  getAllOrderInWarehouse,
 };
