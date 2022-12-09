@@ -313,21 +313,32 @@ let loginAdmin = (email, password) => {
             nest: true,
           });
           if (check) {
-            userdata.errorCode = 0;
-            userdata.errMessage = `Ok`;
-
+            let checkpoint = true;
+            let dateToday = moment(new Date()).format("YYYY-MM-DD");
             let cus = await db.Staff.findOne({
-              where: { id: user.id },
+              where: { id: user.id, role_id: 2 },
             });
+            let time = await db.Warehouse_staff.findOne({
+              where: { sta_id: cus.id },
+            });
+            var end = moment(time.endtime, "YYYY-MM-DD");
+            let check = moment.duration(dateToday.diff(end).asDay());
+            if (check) {
+              checkpoint = false;
+              userdata.errCode = 4;
+              userdata.errMessage = "Your work time is expired";
+            }
+            if (checkpoint) {
+              userdata.errorCode = 0;
+              userdata.errMessage = `Ok`;
+              // xoa password
+              delete user.password;
+              // xoa userid
+              delete user.id;
 
-            // xoa password
-            delete user.password;
-            // xoa userid
-            delete user.id;
-
-            user.id = cus.id;
-            userdata.user = user;
-
+              user.id = cus.id;
+              userdata.user = user;
+            }
             //add token
           } else {
             userdata.errCode = 3;
@@ -366,16 +377,31 @@ let getAllStaff = () => {
   });
 };
 
-let getAllOrderInWarehouse = () => {
+let getAllOrderInWarehouse = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let dateToday = moment(new Date()).format("MM-DD");
-      console.log(dateToday);
-      // emailService.sendSimpleEmail();
-      resolve({
-        errCode: 0,
-        errMessage: "OK",
+      let staff = await db.Warehouse_staff.findOne({
+        where: { sta_id: data.sta_id, warehouse_id: data.warehouse_id },
+        raw: false,
+        nest: true,
       });
+      if (staff) {
+        let order = await db.Order.findAll({
+          where: { warehouse_id: data.warehouse_id, status: 1 },
+          raw: false,
+          nest: true,
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "OK",
+          order,
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Staff not found",
+        });
+      }
     } catch (error) {
       reject(error);
     }

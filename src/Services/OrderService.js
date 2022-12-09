@@ -19,7 +19,7 @@ var redirectUrl = "http://localhost:3000/";
 // var ipnUrl = "https://57ce-2402-800-6371-a14a-ed0d-ccd6-cbe9-5ced.ngrok.io/api/handle-order";
 
 var notifyUrl =
-  "https://e02a-2402-800-6315-cb03-796d-e925-f7a-12d3.ap.ngrok.io/api/handle-order/";
+  "https://8bae-2402-800-6314-f0b4-89e-f4a6-f896-d234.ap.ngrok.io/api/handle-order/";
 // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
 var requestType = "captureWallet";
 
@@ -187,9 +187,14 @@ let getCreateOrderByUser = async (data) => {
               })
             );
             let order = await db.Order.findOne({
-              id: x,
+              where: { id: x.id },
+              raw: false,
+              nest: true,
             });
-            let orderitem = await db.Orderitem.findAll({
+            let sump = await db.Orderitem.sum("TotalPrice", {
+              where: { order_id: order.id },
+            });
+            let sumq = await db.Orderitem.sum("TotalQuantity", {
               where: { order_id: order.id },
             });
             let dataSend = {
@@ -199,8 +204,31 @@ let getCreateOrderByUser = async (data) => {
               phonenumberCus: order.phonenumber,
               paymentstatus: order.paymentstatus,
               email: order.email,
+              ttp: sump,
+              ttq: sumq,
             };
-            emailService.sendSimpleEmail(dataSend);
+            let dataarray = [];
+            await Promise.all(
+              listOT.map(async (item) => {
+                let pro = await db.Warehouse_product.findOne({
+                  where: {
+                    product_id: item.product_id,
+                    optionvalue: item.optionValues,
+                  },
+                  raw: false,
+                  nest: true,
+                });
+                let obj = {};
+                obj.proid = item.order_id;
+                obj.name = pro.name;
+                obj.price = item.price;
+                obj.quantity = item.amount;
+                obj.TotalPrice = item.TotalPrice;
+                dataarray.push(obj);
+              })
+            );
+            console.log(dataarray);
+            emailService.sendSimpleEmail(dataSend, dataarray);
           }
         });
         resolve({

@@ -5,7 +5,11 @@ const Sequelize = require("sequelize");
 import moment from "moment";
 const Op = Sequelize.Op;
 
-let templatepurchase = (dataSend) => {
+let templatepurchase = (dataSend, dataarray) => {
+  function handleArray(dataarray) {
+    return dataarray;
+  }
+  var newdataarray = dataarray.map(handleArray);
   let result = `
   <!doctype html>
   <html lang="en-US">
@@ -31,32 +35,41 @@ let templatepurchase = (dataSend) => {
 <body>
 <header>
 <h3>Phú Thắng Store</h3>
-<h1>Thank You ${dataSend.nameCus}</h1>
+<h1>Cảm ơn ${dataSend.nameCus}</h1>
 <hr>
-<p>for buying in Phu Thang Store. We hope to see you again.</p>
+<p>Vì đã mua sản phẩm và tin tưởng cửa hàng của chúng tôi.</p>
+<p>Chúng tôi hi vọng sẽ gặp lại bạn trong một ngày gần nhất.</p>
 <hr>
 </header>
 <h3>Your Order</h3>
 <table>
   <tr>
-    <th>Product</th>
-    <th>Price</th>
-    <th>Quantity</th>
-    <th>TotalPrice</th>
+    <th>Sản Phẩm</th>
+    <th>Giá</th>
+    <th>Số Lượng</th>
+    <th>Thành tiền</th>
   </tr>
-  <tr>
-    <td>Alfreds Futterkiste</td>
-    <td>Maria Anders</td>
-    <td>Germany</td>
-    <td>1200</td>
-  </tr>
+    <tr>
+    <td>${newdataarray[0].name}</td>
+    <td>${newdataarray[0].price}</td>
+    <td>${newdataarray[0].quantity}</td>
+    <td>${newdataarray[0].TotalPrice}</td>
+    </tr>
+     <tr>
+    <td>${newdataarray[1].name}</td>
+    <td>${newdataarray[1].price}</td>
+    <td>${newdataarray[1].quantity}</td>
+    <td>${newdataarray[1].TotalPrice}</td>
+    </tr>
   </table>
+  <h4>Tổng tiền: ${dataSend.ttp}</h4>
+  <h4>Tổng số lượng: ${dataSend.ttq}</h4>
   <hr>
-  <h3>Check your infor</h3>
+  <h3>Kiểm tra thông tin của bạn</h3>
   <table>
   <tr>
-    <th>Address</th>
-    <th>Phone</th>
+    <th>Địa chỉ</th>
+    <th>Số điện thoại</th>
   </tr>
   <tr>
   <td>${dataSend.addressCus}</td>

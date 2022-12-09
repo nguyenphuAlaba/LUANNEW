@@ -3,8 +3,9 @@ require("dotenv").config();
 import nodemailer from "nodemailer";
 import TemplateEmail from "../public/TemplateEmail";
 
-let sendSimpleEmail = async (dataSend) => {
-  console.log(dataSend);
+let sendSimpleEmail = async (dataSend, dataarray) => {
+  //   console.log(dataSend);
+  //   console.log(dataarray);
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -17,10 +18,11 @@ let sendSimpleEmail = async (dataSend) => {
   });
   let info = await transporter.sendMail({
     from: '"PhuThangShop" <phunguyen22052000@gmail.com>', // sender address
-    to: dataSend.email, //dataSend.reciverEmail, // list of receivers
+    to: "anhdansgvn@gmail.com", //dataSend.reciverEmail, // list of receivers
     subject: "Thông tin Bán Hàng", // Subject line
-    html: TemplateEmail.templatepurchase(dataSend),
-    //TemplateEmail.templatepurchase(dateSend)
+    html: TemplateEmail.templatepurchase(dataSend, dataarray),
+    // TemplateEmail.templatepurchase(dataSend)
+    //dataSend.email
   });
 };
 

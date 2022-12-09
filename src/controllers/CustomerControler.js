@@ -94,7 +94,7 @@ let handleGetAllStaff = async (request, response) => {
 };
 let handleGetAllOrderInWarehouse = async (request, response) => {
   try {
-    let Order = await CustomerService.getAllOrderInWarehouse();
+    let Order = await CustomerService.getAllOrderInWarehouse(request.body);
     return response.status(200).json(Order);
   } catch (error) {
     return response.status(400).json(error);

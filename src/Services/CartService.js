@@ -117,19 +117,27 @@ let addProductToCart = (data) => {
                       optionvalue: data.optionvalue,
                     },
                   });
-                  await db.Cartitem.create({
-                    product_id: data.product_id,
-                    amount: data.amount,
-                    name: wa.name,
-                    cart_id: checkCart.id,
-                    optionvalue: data.optionvalue,
-                    price: checkProduct.unitprice + optionsum,
-                    ttprice: (checkProduct.unitprice + optionsum) * data.amount,
-                  });
-                  resolve({
-                    errCode: -1,
-                    errMessage: "Create cartitem by cart_id success",
-                  });
+                  if (wa) {
+                    await db.Cartitem.create({
+                      product_id: data.product_id,
+                      amount: data.amount,
+                      name: wa.name,
+                      cart_id: checkCart.id,
+                      optionvalue: data.optionvalue,
+                      price: checkProduct.unitprice + optionsum,
+                      ttprice:
+                        (checkProduct.unitprice + optionsum) * data.amount,
+                    });
+                    resolve({
+                      errCode: -1,
+                      errMessage: "Create cartitem by cart_id success",
+                    });
+                  } else {
+                    resolve({
+                      errCode: 5,
+                      errMessage: "Your Product Option not found in warehouse",
+                    });
+                  }
                 }
               }
             } else {
