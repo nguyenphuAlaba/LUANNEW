@@ -18,7 +18,7 @@ let sendSimpleEmail = async (dataSend, dataarray) => {
   });
   let info = await transporter.sendMail({
     from: '"PhuThangShop" <phunguyen22052000@gmail.com>', // sender address
-    to: "anhdansgvn@gmail.com", //dataSend.reciverEmail, // list of receivers
+    to: dataSend.email, //dataSend.reciverEmail, // list of receivers
     subject: "Thông tin Bán Hàng", // Subject line
     html: TemplateEmail.templatepurchase(dataSend, dataarray),
     // TemplateEmail.templatepurchase(dataSend)
@@ -61,9 +61,9 @@ let sendEmailResetPass = async (dataSend) => {
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"DK Cinemas" <khoadido@gmail.com>', // sender address
-    to: dataSend.reciverEmail, // list of receivers
-    subject: "Reset Password", // Subject line
+    from: '"PhuThangShop" <NguyenThienPhu@gmail.com>', // sender address
+    to: dataSend.email, // list of receivers
+    subject: "Quên mật khẩu", // Subject line
     html: TemplateEmail.templateResetPass(dataSend), // html body
   });
 };

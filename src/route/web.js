@@ -149,6 +149,7 @@ let initWebRoutes = (app) => {
   router.post("/api/get-user-login/", UserControler.handleLogin);
   router.put("/api/update-user/", UserControler.handleUpdateUser);
   router.put("/api/udate-password/", UserControler.handleChangePassword);
+  router.post("/api/forgot-password/", UserControler.handleForgetPassWord);
   router.post("/api/login-admin/", UserControler.handleLoginAdmin);
   router.get("/api/get-all-staff/", UserControler.handleGetAllStaff);
   router.get(

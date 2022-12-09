@@ -100,6 +100,14 @@ let handleGetAllOrderInWarehouse = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleForgetPassWord = async (request, response) => {
+  try {
+    let forgot = await CustomerService.forgetPassWord(request.body);
+    return response.status(200).json(forgot);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllUser,
   handleGetById,
@@ -110,4 +118,5 @@ module.exports = {
   handleLoginAdmin,
   handleGetAllStaff,
   handleGetAllOrderInWarehouse,
+  handleForgetPassWord,
 };

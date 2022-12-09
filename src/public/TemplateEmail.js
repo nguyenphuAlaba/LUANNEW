@@ -111,7 +111,7 @@ let templateResetPass = (dataSend) => {
                         <tr>
                             <td style="text-align:center;">
                               <a href="https://rakeshmandal.com" title="logo" target="_blank">
-                                <img width="300" src="https://res.cloudinary.com/dpo9d3otr/image/upload/v1656596213/Image/Logo/DKCinema_wx0dza.png" title="logo" alt="logo">
+                                <img width="300" src="https://res.cloudinary.com/dya6aniro/image/upload/v1670579980/obfmywlfcgwjgq7jgnba.png" title="logo" alt="logo">
                               </a>
                             </td>
                         </tr>
@@ -133,8 +133,8 @@ let templateResetPass = (dataSend) => {
                                             <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
                                                 Để đặt lại mật khẩu của bạn, hãy nhấp vào liên kết sau và làm theo hướng dẫn.
                                             </p>
-                                            <a href="http://localhost:3000/reset-password?email=${dataSend.email}&token=${dataSend.m_token}"
-                                                style="background:#FCAF17;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Reset
+                                            <a href="http://localhost:3000/reset-password?email=${dataSend.email}"
+                                                style="background:#FF0000;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Reset
                                                 Password</a>
                                         </td>
                                     </tr>
@@ -148,7 +148,7 @@ let templateResetPass = (dataSend) => {
                         </tr>
                         <tr>
                             <td style="text-align:center;">
-                                <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.dkcinema.vn</strong></p>
+                                <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.PHUTHANGSTORE.com</strong></p>
                             </td>
                         </tr>
                         <tr>

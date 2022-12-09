@@ -408,6 +408,34 @@ let getAllOrderInWarehouse = (data) => {
     }
   });
 };
+
+let forgetPassWord = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let check = await db.Customer.findOne({
+        where: { email: data.email },
+        attributes: ["email"],
+      });
+      if (check) {
+        let dataSend = {
+          email: check.email,
+        };
+        emailService.sendEmailResetPass(dataSend);
+        resolve({
+          errCode: 0,
+          errMessage: "Ok",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Your email not found",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   uploadCloud,
   encodePassword,
@@ -421,4 +449,5 @@ module.exports = {
   loginAdmin,
   getAllStaff,
   getAllOrderInWarehouse,
+  forgetPassWord,
 };
