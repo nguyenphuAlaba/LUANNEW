@@ -19,7 +19,7 @@ var redirectUrl = "http://localhost:3000/";
 // var ipnUrl = "https://57ce-2402-800-6371-a14a-ed0d-ccd6-cbe9-5ced.ngrok.io/api/handle-order";
 
 var notifyUrl =
-  "https://8bae-2402-800-6314-f0b4-89e-f4a6-f896-d234.ap.ngrok.io/api/handle-order/";
+  "https://2d7a-2402-800-6314-f0b4-89e-f4a6-f896-d234.ap.ngrok.io/api/handle-order/";
 // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
 var requestType = "captureWallet";
 
