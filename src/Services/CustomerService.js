@@ -308,22 +308,23 @@ let loginAdmin = (email, password) => {
           let check = await db.Staff.findOne({
             where: {
               email: user.email,
-              password: user.password,
+              password: password,
             },
             nest: true,
           });
           if (check) {
-            let checkpoint = true;
-            let dateToday = moment(new Date()).format("YYYY-MM-DD");
-            let cus = await db.Staff.findOne({
-              where: { id: user.id, role_id: 2 },
-            });
             let time = await db.Warehouse_staff.findOne({
-              where: { sta_id: cus.id },
+              where: { sta_id: user.id },
             });
+            let checkpoint = true;
+            var dateToday = moment(new Date()).format("YYYY-MM-DD");
             var end = moment(time.endtime, "YYYY-MM-DD");
-            let check = moment.duration(dateToday.diff(end).asDay());
-            if (check) {
+            let check = moment.duration(end.diff(dateToday)).asDays();
+            console.log(check);
+            let cus = await db.Staff.findOne({
+              where: { id: user.id },
+            });
+            if ((cus.role_id = 2 && check < 1)) {
               checkpoint = false;
               userdata.errCode = 4;
               userdata.errMessage = "Your work time is expired";
@@ -331,6 +332,7 @@ let loginAdmin = (email, password) => {
             if (checkpoint) {
               userdata.errorCode = 0;
               userdata.errMessage = `Ok`;
+
               // xoa password
               delete user.password;
               // xoa userid
@@ -339,7 +341,6 @@ let loginAdmin = (email, password) => {
               user.id = cus.id;
               userdata.user = user;
             }
-            //add token
           } else {
             userdata.errCode = 3;
             userdata.errMessage = "Wrong password";
