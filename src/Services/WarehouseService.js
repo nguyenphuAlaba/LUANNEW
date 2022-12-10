@@ -16,7 +16,7 @@ let getAllWarehouse = () => {
       //   raw: false,
       //   nest: true,
       // });
-      let Warehouse = await db.Warehouse_staff.findAll({
+      let Warehouse = await db.Warehouse.findAll({
         raw: false,
         nest: true,
       });
@@ -127,10 +127,20 @@ let deleteWarehouse = (id) => {
     }
   });
 };
-let getAllProductInWarehouse = () => {
+let getAllProductInWarehouse = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       let product = await db.Warehouse_product.findAll({
+        where: { warehouse_id: id },
+        attributes: [
+          "id",
+          "name",
+          "quantity",
+          "warehouse_id",
+          "product_id",
+          "quantity",
+          "optionvalue",
+        ],
         raw: false,
         nest: true,
       });
