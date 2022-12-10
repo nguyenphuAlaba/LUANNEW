@@ -127,10 +127,13 @@ let addProductToCart = (data) => {
                       price: checkProduct.unitprice + optionsum,
                       ttprice:
                         (checkProduct.unitprice + optionsum) * data.amount,
-                    });
-                    resolve({
-                      errCode: -1,
-                      errMessage: "Create cartitem by cart_id success",
+                    }).then(function (y) {
+                      resolve({
+                        errCode: -1,
+                        errMessage: "Create cartitem by cart_id success",
+                        cartid: y.id,
+                        cus: checkUser.id,
+                      });
                     });
                   } else {
                     resolve({
@@ -182,6 +185,7 @@ let addProductToCart = (data) => {
                       errCode: -2,
                       errMessage:
                         "Create Cart And Create Cartitem Successfully",
+                      cartid: x.id,
                     });
                   }
                 }

@@ -144,7 +144,6 @@ let getCreateOrderByUser = async (data) => {
         })
       );
       if (check) {
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
         await db.Order.create({
           fullname: data.fullname,
           email: data.email,
@@ -232,6 +231,7 @@ let getCreateOrderByUser = async (data) => {
             resolve({
               errCode: 0,
               errMessage: "Create Order: " + x.id + " successfully",
+              Orderid: x.id,
             });
           }
         });
