@@ -229,11 +229,11 @@ let getCreateOrderByUser = async (data) => {
             );
             console.log(dataarray);
             emailService.sendSimpleEmail(dataSend, dataarray);
+            resolve({
+              errCode: 0,
+              errMessage: "Create Order: " + x.id + " successfully",
+            });
           }
-        });
-        resolve({
-          errCode: 0,
-          errMessage: "Create Order successfully",
         });
       }
     } catch (error) {

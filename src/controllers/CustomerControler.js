@@ -108,6 +108,14 @@ let handleForgetPassWord = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleResetPassword = async (request, response) => {
+  try {
+    let pass = await CustomerService.resetPassword(request.body);
+    return response.status(200).json(pass);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllUser,
   handleGetById,
@@ -119,4 +127,5 @@ module.exports = {
   handleGetAllStaff,
   handleGetAllOrderInWarehouse,
   handleForgetPassWord,
+  handleResetPassword,
 };

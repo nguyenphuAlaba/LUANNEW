@@ -436,6 +436,15 @@ let forgetPassWord = (data) => {
     }
   });
 };
+let resetPassword = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log(data);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   uploadCloud,
   encodePassword,
@@ -450,4 +459,5 @@ module.exports = {
   getAllStaff,
   getAllOrderInWarehouse,
   forgetPassWord,
+  resetPassword,
 };
