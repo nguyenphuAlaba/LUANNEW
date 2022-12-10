@@ -20,7 +20,9 @@ module.exports = {
       option_id: {
         type: Sequelize.INTEGER,
       },
-
+      listimg: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

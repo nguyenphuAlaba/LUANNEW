@@ -6,10 +6,6 @@ import moment from "moment";
 const Op = Sequelize.Op;
 
 let templatepurchase = (dataSend, dataarray) => {
-  function handleArray(dataarray) {
-    return dataarray;
-  }
-  var newdataarray = dataarray.map(handleArray);
   let result = `
   <!doctype html>
   <html lang="en-US">
@@ -49,18 +45,13 @@ let templatepurchase = (dataSend, dataarray) => {
     <th>Số Lượng</th>
     <th>Thành tiền</th>
   </tr>
-    <tr>
-    <td>${newdataarray[0].name}</td>
-    <td>${newdataarray[0].price}</td>
-    <td>${newdataarray[0].quantity}</td>
-    <td>${newdataarray[0].TotalPrice}</td>
-    </tr>
-     <tr>
-    <td>${newdataarray[1].name}</td>
-    <td>${newdataarray[1].price}</td>
-    <td>${newdataarray[1].quantity}</td>
-    <td>${newdataarray[1].TotalPrice}</td>
-    </tr>
+  ${dataarray.map((item) => {
+    console.log("Item: " + item);
+    return `
+            aaa
+            `;
+  })}
+
   </table>
   <h4>Tổng tiền: ${dataSend.ttp}</h4>
   <h4>Tổng số lượng: ${dataSend.ttq}</h4>
