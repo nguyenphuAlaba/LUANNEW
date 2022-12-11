@@ -3,7 +3,8 @@ import WarrantyService from "../Services/WarrantyService";
 
 let handleGetAllWarranty = async (request, response) => {
   try {
-    let Warranty = await WarrantyService.getAllWarranty();
+    let id = request.params.storeId;
+    let Warranty = await WarrantyService.getAllWarranty(id);
     return response.status(200).json(Warranty);
   } catch (error) {
     return response.status(400).json(error);

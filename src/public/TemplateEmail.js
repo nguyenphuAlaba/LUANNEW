@@ -37,7 +37,7 @@ let templatepurchase = (dataSend, dataarray) => {
 <p>Chúng tôi hi vọng sẽ gặp lại bạn trong một ngày gần nhất.</p>
 <hr>
 </header>
-<h3>Your Order</h3>
+<h3>Đơn hàng của bạn</h3>
 <table>
   <tr>
     <th>Sản Phẩm</th>
@@ -45,12 +45,19 @@ let templatepurchase = (dataSend, dataarray) => {
     <th>Số Lượng</th>
     <th>Thành tiền</th>
   </tr>
-  ${dataarray.map((item) => {
-    console.log("Item: " + item);
-    return `
-            aaa
+  ${dataarray
+    .map((item) => {
+      console.log("Item: " + item);
+      return `
+            <tr>
+            <td>${item.name}</td>
+                <td>${item.price}</td>
+                <td>${item.quantity}</td>
+                <td>${item.TotalPrice}</td>
+                </tr>
             `;
-  })}
+    })
+    .join("")}
 
   </table>
   <h4>Tổng tiền: ${dataSend.ttp}</h4>

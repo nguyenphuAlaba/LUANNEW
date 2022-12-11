@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "ProductWarranty",
         targetkey: "id",
       });
+      // Warranty.belongsTo(models.Orderitem, {
+      //   foreignKey: "order_id",
+      //   as: "OrderItemWarranty",
+      //   targetKey: "id",
+      // });
       Warranty.belongsTo(models.Store, {
         foreignKey: "store_id",
         as: "StoreWarranty",

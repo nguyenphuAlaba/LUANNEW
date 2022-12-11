@@ -4,14 +4,16 @@ import { raw } from "body-parser";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
+import infor from "../config/infor.json";
 
 var salt = bcrypt.genSaltSync(10);
 var cloudinary = require("cloudinary").v2;
 
-let getAllWarranty = () => {
+let getAllWarranty = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       let Warranty = await db.Warranty.findAll({
+        where: { store_id: id },
         include: [
           { model: db.Product, as: "ProductWarranty" },
           { model: db.Store, as: "StoreWarranty" },

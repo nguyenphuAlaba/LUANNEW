@@ -109,7 +109,10 @@ let initWebRoutes = (app) => {
     CartControler.handleDeleteAllCartitem
   );
   //Warranty
-  router.get("/api/get-all-warranty/", WarrantyControler.handleGetAllWarranty);
+  router.get(
+    "/api/get-all-warranty/:storeId/",
+    WarrantyControler.handleGetAllWarranty
+  );
   router.post("/api/create-warranty/", WarrantyControler.handleCreateWarranty);
   //brand
   router.get("/api/get-brand/", BrandControler.handleGetAllBrand);

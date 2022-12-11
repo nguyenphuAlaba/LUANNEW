@@ -12,13 +12,12 @@ let app = express();
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001");
   // Request methods you wish to allow
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
   );
-  
 
   // Request headers you wish to allow
   res.setHeader(
@@ -51,3 +50,10 @@ app.listen(port, () => {
   // callback //
   console.log("Backend Nodejs is runing");
 });
+
+// var task = cron.schedule("4 * * * * *", async () => {
+//   console.log("DM Phu");
+//   //let dateToday = moment(new Date()).format("MM-DD");
+// });
+
+// task.start();

@@ -8,10 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      totalprice: {
-        type: Sequelize.DOUBLE,
+      code: {
+        type: Sequelize.STRING,
       },
-      voucher_name: {
+      name: {
         type: Sequelize.STRING,
       },
       sale: {
@@ -23,7 +23,9 @@ module.exports = {
       event_id: {
         type: Sequelize.INTEGER,
       },
-
+      maxuse: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
