@@ -238,6 +238,7 @@ let getCartByCustomer = (id) => {
               model: db.Product,
               as: "CartItemProduct",
               include: [
+                { model: db.Option, as: "ProductOption" },
                 { model: db.Brand, as: "ProductBrand" },
                 {
                   model: db.Category,
@@ -256,8 +257,21 @@ let getCartByCustomer = (id) => {
             "optionvalue",
           ],
           raw: false,
+          // plain: false,
           nest: true,
         });
+        // const result = [
+        //   ...cartitem
+        //     .reduce((r, o) => {
+        //       const key = o.id;
+        //       const item =
+        //         r.get(key) || Object.assign({}, o, { optionvalue: [] });
+        //       item.optionvalue.push(o.CartItemProduct);
+        //       return r.set(key, item);
+        //     }, new Map())
+        //     .values(),
+        // ];
+        // console.log(result);
         let quantity = await db.Cartitem.sum("amount", {
           where: { cart_id: cus.id },
           nest: true,

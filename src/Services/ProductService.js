@@ -118,7 +118,7 @@ let getProductDetail = (id) => {
             model: db.Option,
             as: "ProductOption",
             through: {
-              attributes: ["id", "name", "option_id", "product_id"],
+              attributes: ["id", "name", "option_id", "product_id", "listimg"],
             },
             // order: ["option_id"],
           },

@@ -254,6 +254,7 @@ let getAllOrderByUser = (user) => {
           where: {
             cus_id: user,
           },
+          include: [{ model: db.Product, as: "OrderProductItem" }],
           raw: false,
           nest: true,
         });

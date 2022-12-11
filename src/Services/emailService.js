@@ -117,8 +117,10 @@ let sendEmailVoucherGif = (dataSend) => {
               to: item.email, // list of receivers
               subject: "Voucher Chúc mừng sinh nhật", // Subject line
               html: `
-                            <p>Mừng sinh nhật quý khách. Phú Thắng cửa hàng xin gửi voucher giảm giá ${item.data.discoutNumber}% giá vé (Áp dụng cho 1 lần đặt): ${item.data.gifCode}</p>
-                            <p>Phú Thắng cửa hàng kính chúc quý khách ngày sinh nhật vui vẻ, đầm ấm bên người thân và gia đình.</p>
+                            <h2>Chúc mừng sinh nhật</h2>
+                            <hr>
+                            <p>Nhân dịp sinh nhật của quý khách. Cửa hàng Phú Thắng  xin gửi voucher giảm giá ${item.data.discoutNumber}% giá vé (Áp dụng cho 1 lần đặt): ${item.data.gifCode}</p>
+                            <p>Cửa hàng Phú Thắng kính chúc quý khách ngày sinh nhật vui vẻ, đầm ấm bên người thân và gia đình.</p>
                             <p>Trân trọng cám ơn quý khách đã luôn đồng hành cùng với Phú Thắng cửa hàng.</p>
                             `, // html body
             });
