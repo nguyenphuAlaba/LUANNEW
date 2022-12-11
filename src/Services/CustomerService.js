@@ -439,11 +439,21 @@ let forgetPassWord = (data) => {
 let resetPassword = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log(data);
       let cus = await db.Customer.findOne({
-        where: { id: data.id },
+        where: { email: data.email },
         raw: false,
         nest: true,
       });
+      if (cus) {
+        let hashPas = await hashUserPassword(data.newpassword);
+        cus.password = hashPas;
+        await cus.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Update password success",
+        });
+      }
     } catch (error) {
       reject(error);
     }
