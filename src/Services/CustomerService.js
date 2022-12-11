@@ -439,7 +439,11 @@ let forgetPassWord = (data) => {
 let resetPassword = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log(data);
+      let cus = await db.Customer.findOne({
+        where: { id: data.id },
+        raw: false,
+        nest: true,
+      });
     } catch (error) {
       reject(error);
     }
