@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import viewEngine from "./config/viewEngine";
-import initWebRoutes from "../src/route/web";
+import initWebRoutes from "./route/web";
 import connectDB from "./config/connectDB";
 require("dotenv").config();
 
@@ -10,8 +10,19 @@ let app = express();
 // enable CROS //
 // Add headers before the routes are defined
 app.use(function (req, res, next) {
+  const allowedOrigins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+  ];
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
   // Website you wish to allow to connect
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  // res.setHeader('Access-Control-Allow-Origin', 'https://spotifakeplus.herokuapp.com');
+
   // Request methods you wish to allow
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -21,7 +32,7 @@ app.use(function (req, res, next) {
   // Request headers you wish to allow
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "X-Requested-With,content-type"
+    "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, authorization"
   );
 
   // Set to true if you need the website to include cookies in the requests sent
@@ -49,10 +60,3 @@ app.listen(port, () => {
   // callback //
   console.log("Backend Nodejs is runing");
 });
-
-// var task = cron.schedule("4 * * * * *", async () => {
-//   console.log("DM Phu");
-//   //let dateToday = moment(new Date()).format("MM-DD");
-// });
-
-// task.start();
