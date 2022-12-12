@@ -135,16 +135,22 @@ let handleSignUpUser = (data) => {
             phonenumber: data.phonenumber,
             role_id: 3,
             avatar: data.avatar,
-            isActive: true,
+            isActive: false,
             birthday: data.birthday,
             address: data.address,
+          }).then(function (x) {
+            if (x.id) {
+              let dataSend = {};
+              dataSend.email = x.email;
+              dataSend.userId = x.id;
+              emailService.sendEmailActive(dataSend);
+              resolve({
+                errCode: 0,
+                errMessage: "OK",
+              });
+            }
           });
         }
-
-        resolve({
-          errCode: 0,
-          errMessage: "OK",
-        });
       }
     } catch (e) {
       reject(e);
@@ -173,30 +179,39 @@ let handeLogin = (email, password) => {
           nest: true,
         });
         if (user) {
-          let check = bcrypt.compareSync(password, user.password);
-          if (check) {
-            if (!user.isActive) {
-              reject({
-                errCode: 1,
-                errMessage: "Your account is not Active",
-              });
-              return;
-            }
-            userdata.errorCode = 0;
-            userdata.errMessage = `Ok`;
-
-            let cus = await db.Customer.findOne({
-              where: { id: user.id },
+          let c = true;
+          if (user.isActive == false) {
+            c = false;
+            resolve({
+              errCode: 1,
+              errMessage: "Your account is not active",
             });
+          }
+          if (c) {
+            let check = bcrypt.compareSync(password, user.password);
+            if (check) {
+              if (!user.isActive) {
+                reject({
+                  errCode: 1,
+                  errMessage: "Your account is not Active",
+                });
+                return;
+              }
+              userdata.errorCode = 0;
+              userdata.errMessage = `Ok`;
 
-            // xoa password
-            delete user.password;
-            // xoa userid
-            delete user.id;
+              let cus = await db.Customer.findOne({
+                where: { id: user.id },
+              });
 
-            user.id = cus.id;
-            userdata.user = user;
+              // xoa password
+              delete user.password;
+              // xoa userid
+              delete user.id;
 
+              user.id = cus.id;
+              userdata.user = user;
+            }
             //add token
           } else {
             userdata.errCode = 3;

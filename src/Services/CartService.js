@@ -238,11 +238,11 @@ let getCartByCustomer = (id) => {
               model: db.Product,
               as: "CartItemProduct",
               include: [
-                { model: db.Option, as: "ProductOption" },
-                { model: db.Brand, as: "ProductBrand" },
+                { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
                 {
                   model: db.Category,
                   as: "CategoryProduct",
+                  attributes: ["name"],
                 },
               ],
             },
@@ -257,21 +257,21 @@ let getCartByCustomer = (id) => {
             "optionvalue",
           ],
           raw: false,
-          // plain: false,
+          plain: false,
           nest: true,
         });
-        // const result = [
-        //   ...cartitem
-        //     .reduce((r, o) => {
-        //       const key = o.id;
-        //       const item =
-        //         r.get(key) || Object.assign({}, o, { optionvalue: [] });
-        //       item.optionvalue.push(o.CartItemProduct);
-        //       return r.set(key, item);
-        //     }, new Map())
-        //     .values(),
-        // ];
-        // console.log(result);
+        const result = [
+          ...cartitem
+            .reduce((r, o) => {
+              const key = o.id;
+              const item =
+                r.get(key) || Object.assign({}, o, { optionvalue: [] });
+              item.optionvalue.push(o.CartItemProduct);
+              return r.set(key, item);
+            }, new Map())
+            .values(),
+        ];
+        console.log(result);
         let quantity = await db.Cartitem.sum("amount", {
           where: { cart_id: cus.id },
           nest: true,
@@ -344,9 +344,14 @@ let plusMinusAmount = (data) => {
       } else {
         if (data.key == "+") {
           await sequelize.query(
-            'UPDATE "Cartitem" SET "amount" = :ss WHERE "Cartitem"."id" = :ff;',
+            'UPDATE "Cartitem" SET "amount" = :ss, "ttprice" = :tt WHERE "Cartitem"."id" = :ff;',
             {
-              replacements: { ff: data.cart_id, ss: checkCart.amount + 1 },
+              replacements: {
+                ff: data.cart_id,
+                ss: checkCart.amount + 1,
+                tt: (checkCart.ttprice =
+                  checkCart.price * (checkCart.amount + 1)),
+              },
               type: sequelize.SELECT,
               nest: true,
               raw: false,
@@ -365,9 +370,14 @@ let plusMinusAmount = (data) => {
             });
           } else {
             await sequelize.query(
-              'UPDATE "Cartitem" SET "amount" = :ss WHERE "Cartitem"."id" = :ff;',
+              'UPDATE "Cartitem" SET "amount" = :ss, "ttprice" = :tt WHERE "Cartitem"."id" = :ff;',
               {
-                replacements: { ff: data.cart_id, ss: checkCart.amount - 1 },
+                replacements: {
+                  ff: data.cart_id,
+                  ss: checkCart.amount - 1,
+                  tt: (checkCart.ttprice =
+                    checkCart.price * (checkCart.amount - 1)),
+                },
                 type: sequelize.SELECT,
                 nest: true,
                 raw: false,
