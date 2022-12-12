@@ -135,11 +135,9 @@ let deleteWarehouse = (id) => {
 let getAllProductInWarehouse = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log(data);
       let w = {};
       if (data.id) w.id = data.id;
       let product = await db.Warehouse_product.findAll({
-        where: w,
         attributes: [
           "id",
           "name",
@@ -149,7 +147,9 @@ let getAllProductInWarehouse = (data) => {
           "quantity",
           "optionvalue",
         ],
-        include: [{ model: db.Warehouse, as: "UserwarehouseProduct" }],
+        include: [
+          { model: db.Warehouse, as: "UserwarehouseProduct", where: w },
+        ],
         raw: false,
         nest: true,
       });
