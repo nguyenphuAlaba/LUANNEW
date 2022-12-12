@@ -33,7 +33,12 @@ let getAllWarehouse = () => {
 let createWarehouse = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log(data);
+      if (!data.name) {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing required",
+        });
+      }
       let CWarehouse = await db.Warehouse.findOne({
         where: { name: data.name },
         raw: false,
@@ -127,11 +132,14 @@ let deleteWarehouse = (id) => {
     }
   });
 };
-let getAllProductInWarehouse = (id) => {
+let getAllProductInWarehouse = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log(data);
+      let w = {};
+      if (data.id) w.id = data.id;
       let product = await db.Warehouse_product.findAll({
-        where: { warehouse_id: id },
+        where: w,
         attributes: [
           "id",
           "name",
@@ -141,6 +149,7 @@ let getAllProductInWarehouse = (id) => {
           "quantity",
           "optionvalue",
         ],
+        include: [{ model: db.Warehouse, as: "UserwarehouseProduct" }],
         raw: false,
         nest: true,
       });

@@ -109,20 +109,23 @@ let getProductDetail = (id) => {
         include: [
           { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
           { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
-          // {
-          //   model: db.Warehouse,
-          //   as: "ProductInWarehouse",
-          //   attributes: ["name"],
-          // },
+          {
+            model: db.Warehouse,
+            as: "ProductInWarehouse",
+            through: {
+              attributes: ["id", "name"],
+            },
+          },
           {
             model: db.Option,
             as: "ProductOption",
             through: {
               attributes: ["id", "name", "option_id", "product_id", "listimg"],
             },
-            // order: ["option_id"],
+            Order: ["id"],
           },
         ],
+
         raw: true,
         plain: false,
         nest: true,
@@ -135,12 +138,16 @@ let getProductDetail = (id) => {
               r.get(key) ||
               Object.assign({}, o, {
                 optionValues: [],
+                Warehousequan: [],
               });
             item.optionValues.push(o.ProductOption);
+            item.Warehousequan.push(o.ProductInWarehouse);
+            console.log(o.ProductInWarehouse);
             return r.set(key, item);
           }, new Map())
           .values(),
       ];
+      console.log(result);
 
       try {
         let newArr = result[0];
@@ -157,6 +164,14 @@ let getProductDetail = (id) => {
                   values: [],
                 });
               item.values.push(o.Option_Product);
+              item.value.reduce((r, o) => {
+                const key2 = o.id;
+                const item =
+                  r.get(key2) ||
+                  Object.assign({}, o, {
+                    values: [],
+                  });
+              });
               delete item.Option_Product;
               return r.set(key, item);
               // const { Option_Product, ...keep_data } = item;
@@ -164,17 +179,35 @@ let getProductDetail = (id) => {
             }, new Map())
             .values(),
         ];
+        const resultQuantity = [
+          ...newArr.Warehousequan.reduce((r, o) => {
+            const key = o.id;
+            const item =
+              r.get(key) ||
+              Object.assign({}, o, {
+                values: [],
+              });
+            item.values.push(o.Warehouse_product);
+            delete item.Warehouse_product;
+            return r.set(key, item);
+          }, new Map()).values(),
+        ];
 
         let obj = {
           ...newArr,
           existingOptions: resultValues,
+          quantity: resultQuantity,
         };
+
         delete obj.ProductOption;
         delete obj.optionValues;
+        delete obj.Warehousequan;
+        delete obj.ProductInWarehouse;
         resolve({
           errCode: 0,
           errMessage: "OK",
           data: obj,
+          // rawProduct,
         });
       } catch (error) {
         console.log("error: ", error);

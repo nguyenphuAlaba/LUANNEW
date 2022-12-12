@@ -38,7 +38,7 @@ let handleDeleteWarehouse = async (request, response) => {
 let handleGetAllProductInWarehouse = async (request, response) => {
   try {
     let product = await WarehouseService.getAllProductInWarehouse(
-      request.params.warehouse_id
+      request.query
     );
     return response.status(200).json(product);
   } catch (error) {
