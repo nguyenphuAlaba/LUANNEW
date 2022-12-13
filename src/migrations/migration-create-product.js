@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       Description: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       status: {
         type: Sequelize.INTEGER,

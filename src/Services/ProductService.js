@@ -4,6 +4,7 @@ import { raw } from "body-parser";
 import Product from "../models/Product";
 import Option_Product from "../models/Option_Product";
 import { dataError } from "./jsonFormat";
+import emailService from "./emailService";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
@@ -65,7 +66,6 @@ let getAllProduct = (data) => {
         raw: false,
         nest: true,
       });
-
       resolve(pr);
     } catch (e) {
       reject(e);
@@ -264,6 +264,12 @@ let createProduct = (product) => {
   return new Promise(async (resolve, reject) => {
     try {
       let check = await checkProduct(product.name);
+      if (!product.img) {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing img",
+        });
+      }
       if (check) {
         resolve({
           errCode: 1,
@@ -280,6 +286,22 @@ let createProduct = (product) => {
           brand_id: product.brand_id,
           category_id: product.category_id,
           img: product.img,
+        }).then(async function (x) {
+          let ba = await db.Brand.findOne({
+            where: { id: x.brand_id },
+          });
+          let co = await db.Category.findOne({
+            where: { id: x.category_id },
+          });
+          let dataSend = {
+            img: x.img,
+            name: x.name,
+            description: x.Description,
+            unitprice: x.unitprice,
+            br: ba.name,
+            ca: co.name,
+          };
+          emailService.sendEmailNewProduct(dataSend);
         });
         resolve({
           errCode: 0,
@@ -691,6 +713,7 @@ let createOptionProduct = (data) => {
             product_id: data.product_id,
             option_id: data.option_id,
           });
+          emailService.sendEmailNewProduct(dateSend);
           resolve({
             errCode: 0,
             errMessage: "Create option successfully",
@@ -909,7 +932,33 @@ let createWareHouseProduct = (data) => {
     }
   });
 };
-
+let createOpttion = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let Option = await db.Option.findOne({
+        where: { name: { [Op.iLike]: `%${data.name}%` } },
+        raw: false,
+        nest: true,
+      });
+      if (Option) {
+        resolve({
+          errCode: 1,
+          errMessage: "Your Option has exist",
+        });
+      } else {
+        await db.Option.create({
+          name: data.name,
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "Create Option successfully",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllProduct,
   getProductDetail,

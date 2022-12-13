@@ -41,7 +41,7 @@ let sendEmailActive = async (dataSend) => {
   // send mail with defined transport object
   let info = await transporter.sendMail({
     from: '"PhuThangShop" <NguyenThienPhu@gmail.com>', // sender address
-    to: "anhdansgvn@gmail.com", // list of receivers dataSend.reciverEmail
+    to: dataSend.email, // list of receivers dataSend.reciverEmail
     subject: "Xác thực email", // Subject line
     html: TemplateEmail.templateActiveAccount(dataSend), // html body
   });
@@ -134,11 +134,11 @@ let sendEmailVoucherGif = (dataSend) => {
   });
 };
 
-let sendEmailTypeMovie = (maiList, dataSend) => {
+let sendEmailNewProduct = (dataSend) => {
   return new Promise(async (resolve, reject) => {
     try {
       // create reusable transporter object using the default SMTP transport
-      console.log("maiList: ", maiList);
+      // console.log("maiList: ", maiList);
       let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 587,
@@ -149,10 +149,10 @@ let sendEmailTypeMovie = (maiList, dataSend) => {
         },
       });
       let info = await transporter.sendMail({
-        from: '"DK Cinemas" <khoadido@gmail.com>', // sender address
-        to: maiList, // list of receivers
-        subject: "Phim mới ra mắt !!!", // Subject line
-        html: TemplateEmail.templateMovieIncoming(dataSend), // html body
+        from: '"PhuThangShop" <NguyenThienPhu@gmail.com>', // sender address
+        to: "anhdansgvn@gmail.com", // list of receivers maiList
+        subject: "Sản phẩm mới ra mắt !!!", // Subject line
+        html: TemplateEmail.newProductComeOut(dataSend), // html body
       });
     } catch (e) {
       console.log(e);
@@ -166,6 +166,6 @@ module.exports = {
   sendEmailActive,
   sendEmailResetPass,
   sendEmailVoucherGif,
-  sendEmailTypeMovie,
+  sendEmailNewProduct,
   sendEmailVoucherFree,
 };

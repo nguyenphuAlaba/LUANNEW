@@ -72,7 +72,7 @@ module.exports = (sequelize, DataTypes) => {
       unitprice: DataTypes.DOUBLE,
       currentQuantity: DataTypes.INTEGER,
       IntialQuantity: DataTypes.INTEGER,
-      Description: DataTypes.STRING,
+      Description: DataTypes.TEXT,
       status: DataTypes.INTEGER,
       brand_id: DataTypes.INTEGER,
       category_id: DataTypes.INTEGER,

@@ -336,7 +336,7 @@ let templateActiveAccount = (dataSend) => {
   return result;
 };
 
-let templateMovieIncoming = (dataSend) => {
+let newProductComeOut = (dataSend) => {
   const result = `
 
     <!DOCTYPE html>
@@ -825,7 +825,7 @@ color: #fff !important
       <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
 
 				<tr>
-          <td valign="middle" class="hero bg_white" style="background-image: url(${dataSend.poster[0].url}); background-size: cover; height: 400px;">
+          <td valign="middle" class="hero bg_white" style="background-image: url(${dataSend.img}); background-size: cover; height: 400px;">
 
             <table>
             	<tr>
@@ -842,24 +842,24 @@ color: #fff !important
               <tr>
                 <td class="bg_dark email-section">
 <div class="text" style="padding: 0 3em; text-align: center;">
-            				<h2 style="color: #fff">Đề xuất phim mới</h2>
+            				<h2 style="color: #fff">Đề xuất sản phẩm mới</h2>
 
             			</div>
-<a class="btn-ticket" href="http://localhost:3000/lich-chieu"> Đặt vé</a>
+<a class="btn-ticket" href="http://localhost:3000/"> Đặt hàng ngay</a>
                   <div class="heading-section heading-section-white">
                     <h1 style="margin-top: 50px; color: #fff; margin-bottom: 0;">${dataSend.name}</h1>
-                    <span>${dataSend.typeMovie}</span>
+                    <span>${dataSend.ca}</span>
                     <p style="margin-bottom: 0; color: #fff; ">TÓM TẮT</p>
                     <p style="margin: 0; color: rgba(255,255,255,.8);">
                       ${dataSend.description}</p>
                     <div class="info-movie-main">
                       <div class="info-directed">
-                        <h6 style="color: #fff">ĐẠO DIỄN</h6>
-                        <p>${dataSend.director}</p>
+                        <h6 style="color: #fff">Giá tiền</h6>
+                        <p>${dataSend.unitprice}</p>
                       </div>
                       <div class="info-cast">
-                        <h6 style="color: #fff">DIỄN VIÊN</h6>
-                        <p>${dataSend.cast}</p>
+                        <h6 style="color: #fff">Nhãn hiệu</h6>
+                        <p>${dataSend.br}</p>
                       </div>
                     </div>
                   </div>
@@ -888,6 +888,6 @@ color: #fff !important
 module.exports = {
   templateResetPass,
   templateActiveAccount,
-  templateMovieIncoming,
+  newProductComeOut,
   templatepurchase,
 };
