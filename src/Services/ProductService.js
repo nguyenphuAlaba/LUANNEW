@@ -983,5 +983,6 @@ module.exports = {
   getOption,
   createWareHouseProduct,
   getAllProductadmin,
+  createOpttion,
   upload,
 };

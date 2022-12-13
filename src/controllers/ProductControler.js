@@ -240,6 +240,14 @@ let handleGetAllProductadmin = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleCreateOpttion = async (request, response) => {
+  try {
+    let option = await ProductService.createOpttion(request.body);
+    return response.status(200).json(option);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handlegetallProduct,
   handlegetbyidProduct,
@@ -263,4 +271,5 @@ module.exports = {
   handleGetOption,
   handleCreateWareHouseProduct,
   handleGetAllProductadmin,
+  handleCreateOpttion,
 };

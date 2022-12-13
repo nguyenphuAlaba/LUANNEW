@@ -91,6 +91,7 @@ let initWebRoutes = (app) => {
     "/api/create-warehouse-product/",
     ProductControler.handleCreateWareHouseProduct
   );
+  router.post("/api/create-option/", ProductControler.handleCreateOpttion);
   //Cart
   router.post("/api/add-to-cart", CartControler.handleAddProductToCart);
   router.get("/api/get-all-cart", CartControler.handleGetAllCat);
