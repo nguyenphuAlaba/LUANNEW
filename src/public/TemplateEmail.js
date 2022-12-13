@@ -131,7 +131,7 @@ let templateResetPass = (dataSend) => {
                                             <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
                                                 Để đặt lại mật khẩu của bạn, hãy nhấp vào liên kết sau và làm theo hướng dẫn.
                                             </p>
-                                            <a href="http://localhost:3000/reset-password?email=${dataSend.email}"
+                                            <a href="http://localhost:3000/password?email=${dataSend.email}"
                                                 style="background:#FF0000;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Reset
                                                 Password</a>
                                         </td>

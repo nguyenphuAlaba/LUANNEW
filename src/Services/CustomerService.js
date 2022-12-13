@@ -109,7 +109,6 @@ let hashUserPassword = (password) => {
     }
   });
 };
-
 //dang ky
 let handleSignUpUser = (data) => {
   return new Promise(async (resolve, reject) => {
@@ -157,7 +156,6 @@ let handleSignUpUser = (data) => {
     }
   });
 };
-
 //Dang nhap
 let handeLogin = (email, password) => {
   return new Promise(async (resolve, reject) => {
@@ -474,6 +472,33 @@ let resetPassword = (data) => {
     }
   });
 };
+let acctive = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let getUser = await db.Customer.findOne({
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      if (getUser) {
+        getUser.isActive = true;
+        await getUser.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Your account has active",
+          name: "Acount " + getUser.email + " Has been acctive ",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot find your account",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   uploadCloud,
   encodePassword,
@@ -489,4 +514,5 @@ module.exports = {
   getAllOrderInWarehouse,
   forgetPassWord,
   resetPassword,
+  acctive,
 };

@@ -116,6 +116,15 @@ let handleResetPassword = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleAcctive = async (request, response) => {
+  try {
+    let id = request.params.userId;
+    let user = await CustomerService.acctive(id);
+    return response.status(200).json(user);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllUser,
   handleGetById,
@@ -128,4 +137,5 @@ module.exports = {
   handleGetAllOrderInWarehouse,
   handleForgetPassWord,
   handleResetPassword,
+  handleAcctive,
 };

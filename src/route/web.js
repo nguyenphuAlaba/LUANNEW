@@ -160,6 +160,7 @@ let initWebRoutes = (app) => {
     UserControler.handleGetAllOrderInWarehouse
   );
   router.put("/api/forgot-password/", UserControler.handleResetPassword);
+  router.put("/api/acctive-user-account/:userId/", UserControler.handleAcctive);
   //Role
   router.get("/api/get-all-role/", RoleControler.handleGetAllRole);
   router.get(

@@ -274,6 +274,39 @@ let getAllOrderByUser = (user) => {
     }
   });
 };
+let cancelOrder = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let Order = await db.Order.findOne({
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      if (Order) {
+        if (Order.status == 1 || Order.status == 2) {
+          Order.status == 5;
+          await Order.save();
+          resolve({
+            errCode: 0,
+            errMessage: "Your Order has cancel",
+          });
+        } else {
+          resolve({
+            errCode: 1,
+            errMessage: "You cannot cancel this Order",
+          });
+        }
+      } else {
+        resolve({
+          errCode: 2,
+          errMessage: "Cannot find your Order",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 let deleteOrder = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -313,7 +346,6 @@ let deleteOrder = (id) => {
     }
   });
 };
-
 let getMomoPaymentLink = async (req) => {
   var requestId = partnerCode + new Date().getTime();
   var orderId = requestId;
@@ -492,4 +524,5 @@ module.exports = {
   deleteOrder,
   getMomoPaymentLink,
   handleOrderPayment,
+  cancelOrder,
 };
