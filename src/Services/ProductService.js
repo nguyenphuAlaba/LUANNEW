@@ -801,7 +801,10 @@ let getAllOptionProduct = () => {
     try {
       let Option = await db.Option_Product.findAll({
         attributes: ["name", "id", "product_id", "option_id", "price"],
-        include: [{ model: db.Product, as: "Product" }],
+        include: [
+          { model: db.Product, as: "Product" },
+          { model: db.Option, as: "Option" },
+        ],
         raw: false,
         nest: true,
       });
