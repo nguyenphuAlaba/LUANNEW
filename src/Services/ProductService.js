@@ -82,6 +82,7 @@ let getAllProductadmin = () => {
           // { model: db.Option, as: "ProductOption", attributes: ["name"] },
           // { model: db.Warehouse, as: "ProductInWarehouse" },
         ],
+        order: ["brand_id"],
         raw: false,
         nest: true,
       });
@@ -746,12 +747,27 @@ let updateOptionProduct = (data) => {
           nest: true,
         });
         if (checkOP) {
-          await checkOP.update({
-            name: data.name,
-            price: data.price,
-            product_id: data.product_id,
-            option_id: data.option_id,
-          });
+          if (!data.product_id) {
+            data.product_id = checkOP.product_id;
+          }
+          if (!data.option_id) {
+            data.option_id = checkOP.option_id;
+          }
+          await sequelize.query(
+            'UPDATE "Option_Product" SET "name" = :ss, "price" = :tt, "product_id" = :pr, "option_id" = :op WHERE "Option_Product"."id" = :ff;',
+            {
+              replacements: {
+                ff: data.id,
+                ss: data.name,
+                tt: data.price,
+                pr: data.product_id,
+                op: data.option_id,
+              },
+              type: sequelize.SELECT,
+              nest: true,
+              raw: false,
+            }
+          );
           resolve({
             errCode: 0,
             errMessage: "Update option successfully",
