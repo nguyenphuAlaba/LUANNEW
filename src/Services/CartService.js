@@ -260,27 +260,31 @@ let getCartByCustomer = (id) => {
           plain: false,
           nest: true,
         });
-        const result = [
-          ...cartitem
-            .reduce((r, o) => {
-              const key = o.id;
-              const item =
-                r.get(key) || Object.assign({}, o, { optionvalue: [] });
-              item.optionvalue.push(o.CartItemProduct);
-              return r.set(key, item);
-            }, new Map())
-            .values(),
-        ];
-        console.log(result);
+        // const result = [
+        //   ...cartitem
+        //     .reduce((r, o) => {
+        //       const key = o.id;
+        //       const item =
+        //         r.get(key) || Object.assign({}, o, { optionvalue: [] });
+        //       item.optionvalue.push(o.CartItemProduct);
+        //       return r.set(key, item);
+        //     }, new Map())
+        //     .values(),
+        // ];
+        // console.log(result);
         let quantity = await db.Cartitem.sum("amount", {
           where: { cart_id: cus.id },
           nest: true,
+        });
+        let totalprice = await db.Cartitem.sum("ttprice", {
+          where: { cart_id: cus.id },
         });
         resolve({
           errCode: 0,
           errMessage: "Ok",
           cartitem,
           quantity,
+          totalprice,
         });
       } else {
         resolve({

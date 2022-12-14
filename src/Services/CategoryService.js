@@ -13,12 +13,10 @@ let getAllCategory = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let category = await db.Category.findAll({
+        include: [{ model: db.Category, as: "ChildrenCategoty" }],
+        order: ["parent_id"],
         raw: false,
         nest: true,
-        // where: {
-        //   parent_id: 0,
-        // },
-        include: [{ model: db.Category, as: "ChildrenCategoty" }],
       });
       resolve({
         errCode: 0,
@@ -147,43 +145,43 @@ let deleteCategory = (category_id) => {
     }
   });
 };
-let getCategory = (data) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // let w = {};
-      // if (data.id) w.id = data.id;
-      // if (data.parent_id) w.parent_id = data.parent_id;
-      let Category = await db.Category.findAll({
-        // where: w,
-        include: [
-          // {
-          //   model: Category,
-          //   as: "ChildrenCategoty",
-          //   require: false,
-          // },
-          // {
-          //   model: Category,
-          //   as: "parent",
-          //   require: false,
-          // },
-        ],
-        raw: false,
-        nest: true,
-      });
-      resolve({
-        errCode: 0,
-        errMessage: "OK",
-        Category,
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
+// let getCategory = (data) => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       // let w = {};
+//       // if (data.id) w.id = data.id;
+//       // if (data.parent_id) w.parent_id = data.parent_id;
+//       let Category = await db.Category.findAll({
+//         // where: w,
+//         include: [
+//           // {
+//           //   model: Category,
+//           //   as: "ChildrenCategoty",
+//           //   require: false,
+//           // },
+//           // {
+//           //   model: Category,
+//           //   as: "parent",
+//           //   require: false,
+//           // },
+//         ],
+//         raw: false,
+//         nest: true,
+//       });
+//       resolve({
+//         errCode: 0,
+//         errMessage: "OK",
+//         Category,
+//       });
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// };
 module.exports = {
   createCategory,
   updateCategory,
   getAllCategory,
   deleteCategory,
-  getCategory,
+  // getCategory,
 };

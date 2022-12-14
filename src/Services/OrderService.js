@@ -79,7 +79,27 @@ let allOrderByStatus = (Order) => {
     }
   });
 };
+let getDetailProduct = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let Order = await db.Order.findOne({
+        where: { id: id },
+        include: [{ model: db.Product, as: "OrderProductItem" }],
+        raw: false,
+        plain: false,
+        nest: true,
+      });
 
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        Order,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 let getCreateOrderByUser = async (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -556,6 +576,7 @@ module.exports = {
   getAllOrder,
   allOrderByStatus,
   getCreateOrderByUser,
+  getDetailProduct,
   getAllOrderByUser,
   deleteOrder,
   getMomoPaymentLink,

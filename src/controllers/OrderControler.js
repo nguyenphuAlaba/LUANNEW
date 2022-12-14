@@ -101,6 +101,15 @@ let handleUpdateOrderStatus = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetDetailProduct = async (request, response) => {
+  try {
+    let id = request.params.orderId;
+    let Order = await OrderService.getDetailProduct(id);
+    return response.status(200).json(Order);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllOrder,
   handleAllOrderByStatus,
@@ -110,4 +119,5 @@ module.exports = {
   getMomoPaymentLink,
   handleOrderPayment,
   handleUpdateOrderStatus,
+  handleGetDetailProduct,
 };

@@ -157,7 +157,7 @@ let getProductDetail = (id) => {
               r.get(key) ||
               Object.assign({}, o, {
                 optionValues: [],
-                Warehousequan: [],
+                // Warehousequan: [],
               });
             item.optionValues.push(o.ProductOption);
             // item.Warehousequan.push(o.ProductInWarehouse);
@@ -172,7 +172,6 @@ let getProductDetail = (id) => {
           ...newArr.optionValues
             .reduce((r, o) => {
               console.log("Check o: ", o);
-
               const key = o.id;
               // console.log("Check key: ", key);
               const item =

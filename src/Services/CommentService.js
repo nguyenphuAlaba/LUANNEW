@@ -55,28 +55,39 @@ let addComment = (data) => {
     }
   });
 };
-let updateComment = (comment) => {
+let updateComment = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log(data);
       let fcomment = await db.Comment.findOne({
-        where: { id: comment.id, cus_id: comment.cus_id },
+        where: { id: data.id, cus_id: data.cus_id },
         raw: false,
         nest: true,
       });
+      let product = await db.Product.findOne({
+        where: { id: data.product_id },
+        raw: false,
+      });
+      if (!product) {
+        resolve({
+          errCode: 2,
+          errMessage: "Product not found",
+        });
+      }
       if (fcomment) {
-        fcomment.description = comment.description;
+        fcomment.description = data.description;
         fcomment.status = 1;
-        fcomment.rate = comment.rate;
-
+        fcomment.rate = data.rate;
         await fcomment.save();
         resolve({
           errCode: 0,
           errMessage: "Update Comment Successfully",
         });
-      } else {
+      }
+      if (!fcomment) {
         resolve({
           errCode: 1,
-          errMessage: "Update comment failed",
+          errMessage: "Cannot find comment",
         });
       }
     } catch (error) {

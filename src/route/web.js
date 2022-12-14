@@ -195,6 +195,10 @@ let initWebRoutes = (app) => {
     "/api/update-accept-order/:orderId/",
     OrderControler.handleUpdateOrderStatus
   );
+  router.get(
+    "/api/get-order-detail/:orderId/",
+    OrderControler.handleGetDetailProduct
+  );
   //Blog
   router.get("/api/get-all-blog/", BlogControler.handleGetAllBlog);
   router.get(
