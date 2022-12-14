@@ -42,9 +42,24 @@ let getAllProduct = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let whereStatement = {};
+      let c = {};
       if (data.brand_id) whereStatement.brand_id = data.brand_id;
-      if (data.category_id) whereStatement.category_id = data.category_id;
-      whereStatement.status = 1;
+      if (data.category_id) {
+        whereStatement.category_id = data.category_id;
+        let cat = await db.Category.findOne({
+          where: { id: data.category_id },
+        });
+        if (cat) {
+          if (cat.parent_id == 0) {
+            c.parent_id = cat.id;
+            delete whereStatement.category_id;
+          }
+        }
+      }
+      // whereStatement.status = 1;
+
+      console.log(whereStatement);
+      console.log(c);
       let pr = await db.Product.findAll({
         where: whereStatement,
         include: [
@@ -52,7 +67,14 @@ let getAllProduct = (data) => {
           {
             model: db.Category,
             as: "CategoryProduct",
-            attributes: ["id", "name"],
+            attributes: ["id", "name", "parent_id"],
+            where: c,
+            // include: [
+            //   {
+            //     model: db.Category,
+            //     as: "parent",
+            //   },
+            // ],
           },
           // { model: db.Option, as: "ProductOption", attributes: ["name"] },
           // { model: db.Warehouse, as: "ProductInWarehouse" },
@@ -61,6 +83,7 @@ let getAllProduct = (data) => {
         raw: false,
         nest: true,
       });
+
       resolve(pr);
     } catch (e) {
       reject(e);
@@ -204,45 +227,50 @@ let getProductDetail = (id) => {
     }
   });
 };
-let getProductByBrand = (brand_id) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let product = await db.Product.findAll({
-        include: [
-          { model: db.Brand, as: "ProductBrand", where: { id: brand_id } },
-          { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
-        ],
-        raw: false,
-        nest: true,
-      });
-      resolve(product);
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
-let findProductByCategory = (category_id) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      console.log("Category: " + category_id);
-      let product = await db.Product.findAll({
-        include: [
-          { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
-          {
-            model: db.Category,
-            as: "CategoryProduct",
-            where: { id: category_id },
-          },
-        ],
-        raw: false,
-        nest: true,
-      });
-      resolve(product);
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
+// let getProductByBrand = (brand_id) => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       let product = await db.Product.findAll({
+//         include: [
+//           { model: db.Brand, as: "ProductBrand", where: { id: brand_id } },
+//           { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
+//         ],
+//         raw: false,
+//         nest: true,
+//       });
+//       resolve(product);
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// };
+// let findProductByCategory = (id) => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       let product = await db.Product.findAll({
+//         include: [
+//           { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
+//           {
+//             model: db.Category,
+//             as: "CategoryProduct",
+//             include: [
+//               {
+//                 model: db.Category,
+//                 as: "parent",
+//                 where: { id: id },
+//               },
+//             ],
+//           },
+//         ],
+//         raw: false,
+//         nest: true,
+//       });
+//       resolve(product);
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// };
 let checkProduct = (product) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -976,8 +1004,8 @@ let createOpttion = (data) => {
 module.exports = {
   getAllProduct,
   getProductDetail,
-  getProductByBrand,
-  findProductByCategory,
+  // getProductByBrand,
+  // findProductByCategory,
   checkProduct,
   createProduct,
   updateProduct,
