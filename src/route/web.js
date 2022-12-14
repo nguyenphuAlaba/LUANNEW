@@ -144,6 +144,7 @@ let initWebRoutes = (app) => {
     "/api/delete-comment/:id/",
     CommentControler.handleDeleteComment
   );
+  router.get("/api/get-all-comment/", CommentControler.handleGetAllComment);
   //commentblog
 
   //user
@@ -190,6 +191,10 @@ let initWebRoutes = (app) => {
   );
   router.post("/api/get-momo-payment-link/", OrderControler.getMomoPaymentLink);
   router.post("/api/handle-order/", OrderControler.handleOrderPayment);
+  router.put(
+    "/api/update-accept-order/:orderId/",
+    OrderControler.handleUpdateOrderStatus
+  );
   //Blog
   router.get("/api/get-all-blog/", BlogControler.handleGetAllBlog);
   router.get(

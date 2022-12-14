@@ -36,9 +36,18 @@ let handleDeleteComment = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetAllComment = async (request, response) => {
+  try {
+    let product = await CommentService.getAllComment();
+    return response.status(200).json(product);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllCommentOfProductRate,
   handleUpdateComment,
   handleAddComment,
   handleDeleteComment,
+  handleGetAllComment,
 };

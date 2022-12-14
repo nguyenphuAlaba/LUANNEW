@@ -41,32 +41,69 @@ let uploadToCloudinary = async (fileString, format) => {
 let getAllProduct = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
+      // let ca = await db.Category.findAll({
+      //   where: { id: data.category_id },
+      //   raw: false,
+      //   nest: true,
+      //   include: [
+      //     {
+      //       model: db.Category,
+      //       as: "ChildrenCategoty",
+      //       include: [{ model: db.Product, as: "categoryProduct" }],
+      //     },
+      //   ],
+      // });
       let whereStatement = {};
       if (data.brand_id) whereStatement.brand_id = data.brand_id;
       if (data.category_id) whereStatement.category_id = data.category_id;
       whereStatement.status = 1;
-      let pr = await db.Product.findAll({
-        where: whereStatement,
-        // {
-        //   [Op.or]: [
-        //     data.brand_id && {
-        //       brand_id: +data.brand_id,
-        //     },
-        //     data.category_id && {
-        //       category_id: +data.category_id,
-        //     },
-        //   ],
-        // },
-        include: [
-          { model: db.Brand, as: "ProductBrand", attributes: ["name"] },
-          { model: db.Category, as: "CategoryProduct", attributes: ["name"] },
-          // { model: db.Option, as: "ProductOption", attributes: ["name"] },
-          // { model: db.Warehouse, as: "ProductInWarehouse" },
-        ],
+      console.log(data);
+      let ca = await db.Category.findOne({
+        where: { id: data.category_id },
         raw: false,
         nest: true,
       });
-      resolve(pr);
+      if (ca.parent_id == 0) {
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+        let pr = await db.Product.findAll({
+          // where: whereStatement,
+          include: [
+            { model: db.Brand, as: "ProductBrand", attributes: ["id", "name"] },
+            {
+              model: db.Category,
+              as: "CategoryProduct",
+              attributes: ["id", "name"],
+              where: { parent_id: ca.id },
+            },
+            // { model: db.Option, as: "ProductOption", attributes: ["name"] },
+            // { model: db.Warehouse, as: "ProductInWarehouse" },
+          ],
+          order: ["brand_id"],
+          raw: false,
+          nest: true,
+        });
+        resolve(pr);
+      }
+      if (ca.parent_id > 0) {
+        console.log("bbbbbbbbbbbbbb");
+        let pr = await db.Product.findAll({
+          where: whereStatement,
+          include: [
+            { model: db.Brand, as: "ProductBrand", attributes: ["id", "name"] },
+            {
+              model: db.Category,
+              as: "CategoryProduct",
+              attributes: ["id", "name"],
+            },
+            // { model: db.Option, as: "ProductOption", attributes: ["name"] },
+            // { model: db.Warehouse, as: "ProductInWarehouse" },
+          ],
+          order: ["brand_id"],
+          raw: false,
+          nest: true,
+        });
+        resolve(pr);
+      }
     } catch (e) {
       reject(e);
     }

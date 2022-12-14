@@ -92,6 +92,15 @@ let handleOrderPayment = async (req, res) => {
       );
   }
 };
+let handleUpdateOrderStatus = async (request, response) => {
+  try {
+    let id = request.params.orderId;
+    let order = await OrderService.updateOrderStatus(id);
+    return response.status(200).json(order);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllOrder,
   handleAllOrderByStatus,
@@ -100,4 +109,5 @@ module.exports = {
   handleDeleteOrder,
   getMomoPaymentLink,
   handleOrderPayment,
+  handleUpdateOrderStatus,
 };

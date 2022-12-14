@@ -177,24 +177,17 @@ let handeLogin = (email, password) => {
           nest: true,
         });
         if (user) {
-          let c = true;
-          if (user.isActive == false) {
-            c = false;
-            resolve({
-              errCode: 1,
-              errMessage: "Your account is not active",
-            });
-          }
-          if (c) {
-            let check = bcrypt.compareSync(password, user.password);
-            if (check) {
-              if (!user.isActive) {
-                reject({
-                  errCode: 1,
-                  errMessage: "Your account is not Active",
-                });
-                return;
-              }
+          let check = bcrypt.compareSync(password, user.password);
+          if (check) {
+            let c = true;
+            if (user.isActive == false) {
+              c = false;
+              resolve({
+                errCode: 1,
+                errMessage: "Your account is not active",
+              });
+            }
+            if (c) {
               userdata.errorCode = 0;
               userdata.errMessage = `Ok`;
 
@@ -210,7 +203,6 @@ let handeLogin = (email, password) => {
               user.id = cus.id;
               userdata.user = user;
             }
-            //add token
           } else {
             userdata.errCode = 3;
             userdata.errMessage = "Wrong password";
@@ -329,11 +321,10 @@ let loginAdmin = (email, password) => {
             let time = await db.Warehouse_staff.findOne({
               where: { sta_id: user.id },
             });
-            let checkpoint = true;
             var dateToday = moment(new Date()).format("YYYY-MM-DD");
+            let checkpoint = true;
             var end = moment(time.endtime, "YYYY-MM-DD");
             let check = moment.duration(end.diff(dateToday)).asDays();
-            console.log(check);
             let cus = await db.Staff.findOne({
               where: { id: user.id },
             });

@@ -248,6 +248,7 @@ let handleCreateOpttion = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+
 module.exports = {
   handlegetallProduct,
   handlegetbyidProduct,

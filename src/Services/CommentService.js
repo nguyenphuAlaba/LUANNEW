@@ -113,8 +113,26 @@ let deleteComment = (comment) => {
     }
   });
 };
+let getAllComment = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let comment = await db.Comment.findAll({
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        comment,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllCommentOfProductRate,
+  getAllComment,
   addComment,
   updateComment,
   deleteComment,

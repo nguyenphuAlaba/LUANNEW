@@ -15,15 +15,15 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       // Danh muc cha con //
-      Category.hasMany(Category, {
-        as: "ChildrenCategoty",
-        foreignKey: "parent_id",
-        useJunctionTable: false,
-      });
       Category.belongsTo(Category, {
         as: "parent",
         foreignKey: "parent_id",
         targetKey: "id",
+      });
+      Category.hasMany(Category, {
+        as: "ChildrenCategoty",
+        foreignKey: "parent_id",
+        // useJunctionTable: false,
       });
     }
   }

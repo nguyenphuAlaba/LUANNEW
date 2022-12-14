@@ -1,6 +1,7 @@
 import db from "../models/index";
 import bcrypt from "bcryptjs";
 import { raw } from "body-parser";
+import Category from "../models/Category";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
@@ -14,6 +15,10 @@ let getAllCategory = () => {
       let category = await db.Category.findAll({
         raw: false,
         nest: true,
+        // where: {
+        //   parent_id: 0,
+        // },
+        include: [{ model: db.Category, as: "ChildrenCategoty" }],
       });
       resolve({
         errCode: 0,

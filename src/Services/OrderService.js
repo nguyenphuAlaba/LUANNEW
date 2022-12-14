@@ -1,4 +1,4 @@
-import db from "../models/index";
+import db, { sequelize } from "../models/index";
 import bcrypt from "bcryptjs";
 import { raw } from "body-parser";
 import { ifError } from "assert";
@@ -346,6 +346,44 @@ let deleteOrder = (id) => {
     }
   });
 };
+
+let updateOrderStatus = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let order = await db.Order.findOne({
+        where: { id: id, status: 1 },
+        raw: false,
+        nest: true,
+      });
+      if (order) {
+        console.log(order.id);
+        await sequelize.query(
+          'UPDATE "Order" SET "status" = :st WHERE "Order"."id" = :id;',
+          {
+            replacements: { st: 2, id: order.id },
+            type: Sequelize.UPDATE,
+            nest: true,
+            raw: false,
+          }
+        );
+        resolve({
+          errCode: 0,
+          errMessage: "Update Your Order Successfully",
+          orderId: order.id,
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot find order",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+// get link momo
 let getMomoPaymentLink = async (req) => {
   var requestId = partnerCode + new Date().getTime();
   var orderId = requestId;
@@ -491,7 +529,6 @@ let getMomoPaymentLink = async (req) => {
     req.end();
   });
 };
-
 // Update status order //
 let handleOrderPayment = async (req) => {
   console.log("Check order: ", req.body);
@@ -515,7 +552,6 @@ let handleOrderPayment = async (req) => {
   }
   return false;
 };
-
 module.exports = {
   getAllOrder,
   allOrderByStatus,
@@ -524,5 +560,6 @@ module.exports = {
   deleteOrder,
   getMomoPaymentLink,
   handleOrderPayment,
+  updateOrderStatus,
   cancelOrder,
 };
