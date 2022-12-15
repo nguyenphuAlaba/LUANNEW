@@ -314,7 +314,7 @@ let templateActiveAccount = (dataSend) => {
                                             <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
                                                 <table border="0" cellspacing="0" cellpadding="0">
                                                     <tr>
-                                                        <td align="center" style="border-radius: 3px;" bgcolor="#FF0000"><a href="http://localhost:3000?userId=${dataSend.userId}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FF0000; display: inline-block;">Confirm Account</a></td>
+                                                        <td align="center" style="border-radius: 3px;" bgcolor="#FF0000"><a href="http://localhost:3000/login?userId=${dataSend.userId}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FF0000; display: inline-block;">Confirm Account</a></td>
                                                     </tr>
                                                 </table>
                                             </td>

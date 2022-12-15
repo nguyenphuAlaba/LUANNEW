@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Orderitem.init(
     {
+      serinumber: DataTypes.STRING,
       name: DataTypes.STRING,
       product_id: DataTypes.INTEGER,
       price: DataTypes.DOUBLE,

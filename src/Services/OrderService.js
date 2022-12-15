@@ -19,13 +19,16 @@ var redirectUrl = "http://localhost:3000/";
 // var ipnUrl = "https://57ce-2402-800-6371-a14a-ed0d-ccd6-cbe9-5ced.ngrok.io/api/handle-order";
 
 var notifyUrl =
-  "https://f92f-2402-800-6314-9fce-8532-52c7-a958-758.ap.ngrok.io/api/handle-order/";
+  "https://1a02-2402-800-6315-112-9df6-f590-69b2-1982.ap.ngrok.io/api/handle-order/";
 // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
 var requestType = "captureWallet";
 
 var salt = bcrypt.genSaltSync(10);
 var cloudinary = require("cloudinary").v2;
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
 let getAllOrder = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -634,4 +637,5 @@ module.exports = {
   handleOrderPayment,
   updateOrderStatus,
   cancelOrder,
+  getRandomInt,
 };

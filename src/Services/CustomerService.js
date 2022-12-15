@@ -443,7 +443,12 @@ let forgetPassWord = (data) => {
 let resetPassword = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log(data);
+      if (!data.password) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing required password",
+        });
+      }
       let cus = await db.Customer.findOne({
         where: { email: data.email },
         raw: false,

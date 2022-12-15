@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Order.init(
     {
+      code: DataTypes.STRING,
       fullname: DataTypes.STRING,
       email: DataTypes.STRING,
       status: DataTypes.INTEGER,
