@@ -8,6 +8,7 @@ const Op = Sequelize.Op;
 const crypto = require("crypto");
 const https = require("https");
 import emailService from "./emailService";
+import moment from "moment";
 //parameters
 var partnerCode = "MOMO";
 var accessKey = "F8BBA842ECF85";
@@ -218,7 +219,10 @@ let getCreateOrderByUser = async (data) => {
         })
       );
       if (check) {
+        let codeor = "O3D3R" + getRandomInt(10000);
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
         await db.Order.create({
+          code: codeor,
           fullname: data.fullname,
           email: data.email,
           status: 1,
@@ -231,6 +235,9 @@ let getCreateOrderByUser = async (data) => {
           paymentstatus: 1,
         }).then(async function (x) {
           if (x.id) {
+            let year = moment(new Date()).format("YYYY");
+            let month = moment(new Date()).format("MM");
+            let day = moment(new Date()).format("DD");
             let listOT = [];
             let op = data.cartitem;
             await Promise.all(
@@ -238,7 +245,9 @@ let getCreateOrderByUser = async (data) => {
                 let cc = await db.Cartitem.findOne({
                   where: { id: o },
                 });
+                let seri = "TPS" + year + month + day + getRandomInt(10000);
                 let pp = {};
+                pp.serinumber = seri;
                 pp.order_id = x.id;
                 pp.name = cc.name;
                 pp.product_id = cc.product_id;
