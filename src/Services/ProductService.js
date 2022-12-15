@@ -698,7 +698,6 @@ let createOptionProduct = (data) => {
           errMessage: "Missing required",
         });
       } else {
-        console.log("aaaaaaaaaaa");
         let checP = await db.Product.findOne({
           where: { id: data.product_id },
         });
@@ -740,7 +739,6 @@ let createOptionProduct = (data) => {
             product_id: data.product_id,
             option_id: data.option_id,
           });
-          emailService.sendEmailNewProduct(dateSend);
           resolve({
             errCode: 0,
             errMessage: "Create option successfully",

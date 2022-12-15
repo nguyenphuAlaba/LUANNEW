@@ -84,16 +84,67 @@ let getDetailProduct = (id) => {
     try {
       let Order = await db.Order.findOne({
         where: { id: id },
-        include: [{ model: db.Product, as: "OrderProductItem" }],
-        raw: false,
+        include: [
+          {
+            model: db.Product,
+            as: "OrderProductItem",
+            through: {
+              attributes: [
+                "id",
+                "name",
+                "product_id",
+                "price",
+                "order_id",
+                "TotalQuantity",
+                "optionValues",
+                "TotalPrice",
+              ],
+            },
+          },
+        ],
+        raw: true,
         plain: false,
         nest: true,
       });
-
+      const result = [
+        ...Order.reduce((r, o) => {
+          const key = o.id;
+          console.log(" Check O : " + o);
+          const item = r.get(key) || Object.assign({}, o, { listOrder: [] });
+          item.listOrder.push(o.OrderProductItem);
+          return r.set(key, item);
+        }, new Map()).values(),
+      ];
+      let Arr = result[0];
+      const net = [
+        ...Arr.listOrder
+          .reduce((r, o) => {
+            const key = o.id;
+            console.log(" Check O : " + o);
+            const item =
+              r.get(key) ||
+              Object.assign({}, o, {
+                values: [],
+              });
+            item.values.push(o.Orderitem);
+            console.log(item.values);
+            delete item.Orderitem;
+            return r.set(key, item);
+          }, new Map())
+          .values(),
+      ];
+      let obj = {
+        ...Arr,
+        Order: net,
+        // quantity: resultQuantity,
+      };
+      delete obj.OrderProductItem;
+      delete obj.Orderitem;
+      delete obj.Order;
       resolve({
         errCode: 0,
         errMessage: "Ok",
-        Order,
+        data: obj,
       });
     } catch (error) {
       reject(error);
