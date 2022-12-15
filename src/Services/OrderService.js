@@ -186,6 +186,7 @@ let getCreateOrderByUser = async (data) => {
                 });
                 let pp = {};
                 pp.order_id = x.id;
+                pp.name = cc.name;
                 pp.product_id = cc.product_id;
                 pp.amount = cc.amount;
                 pp.cart_id = cc.cart_id;
