@@ -203,6 +203,7 @@ let initWebRoutes = (app) => {
     "/api/get-order-detail/:orderId/",
     OrderControler.handleGetDetailProduct
   );
+  router.put("/api/cancel-order/:orderId/", OrderControler.handleCancelOrder);
   //Blog
   router.get("/api/get-all-blog/", BlogControler.handleGetAllBlog);
   router.get(

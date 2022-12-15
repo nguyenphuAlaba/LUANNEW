@@ -305,7 +305,7 @@ let cancelOrder = (id) => {
       });
       if (Order) {
         if (Order.status == 1 || Order.status == 2) {
-          Order.status == 5;
+          Order.status = 5;
           await Order.save();
           resolve({
             errCode: 0,

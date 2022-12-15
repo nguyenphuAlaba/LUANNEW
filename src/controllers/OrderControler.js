@@ -101,6 +101,15 @@ let handleUpdateOrderStatus = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleCancelOrder = async (request, response) => {
+  try {
+    let id = request.params.orderId;
+    let order = await OrderService.cancelOrder(id);
+    return response.status(200).json(order);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 let handleGetDetailProduct = async (request, response) => {
   try {
     let id = request.params.orderId;
@@ -120,4 +129,5 @@ module.exports = {
   handleOrderPayment,
   handleUpdateOrderStatus,
   handleGetDetailProduct,
+  handleCancelOrder,
 };
