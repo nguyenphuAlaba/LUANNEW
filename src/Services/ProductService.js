@@ -530,6 +530,8 @@ let updateAmountProductWarehouse = (data) => {
     }
   });
 };
+//////////////////////////////////////////
+//////////WISHLIST/////REVIEW////
 let getAllProductWislishByCusID = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -686,6 +688,8 @@ let getAllProductView = (id) => {
     }
   });
 };
+/////////////////////////////////////////////////////////////////
+/////////OPTION/////////////
 let createOptionProduct = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -870,6 +874,35 @@ let getOption = () => {
     }
   });
 };
+let createOpttion = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let Option = await db.Option.findOne({
+        where: { name: { [Op.iLike]: `%${data.name}%` } },
+        raw: false,
+        nest: true,
+      });
+      if (Option) {
+        resolve({
+          errCode: 1,
+          errMessage: "Your Option has exist",
+        });
+      } else {
+        await db.Option.create({
+          name: data.name,
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "Create Option successfully",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+//////////////////////////////////////////////////////////
+//////WAREHOUSE///////
 let createWareHouseProduct = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -973,28 +1006,31 @@ let createWareHouseProduct = (data) => {
     }
   });
 };
-let createOpttion = (data) => {
+let getWarehouseQuantity = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let Option = await db.Option.findOne({
-        where: { name: { [Op.iLike]: `%${data.name}%` } },
+      console.log(data);
+      if (!data.product_id || !data.optionvalue) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing require",
+        });
+      }
+      let qa = await db.Warehouse_product.findOne({
+        where: {
+          [Op.and]: [
+            { product_id: data.product_id },
+            { optionvalue: data.optionvalue },
+          ],
+        },
         raw: false,
         nest: true,
       });
-      if (Option) {
-        resolve({
-          errCode: 1,
-          errMessage: "Your Option has exist",
-        });
-      } else {
-        await db.Option.create({
-          name: data.name,
-        });
-        resolve({
-          errCode: 0,
-          errMessage: "Create Option successfully",
-        });
-      }
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        qa,
+      });
     } catch (error) {
       reject(error);
     }
@@ -1025,5 +1061,6 @@ module.exports = {
   createWareHouseProduct,
   getAllProductadmin,
   createOpttion,
+  getWarehouseQuantity,
   upload,
 };

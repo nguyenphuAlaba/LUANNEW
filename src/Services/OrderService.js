@@ -376,7 +376,6 @@ let updateOrderStatus = (id) => {
         nest: true,
       });
       if (order) {
-        console.log(order.id);
         await sequelize.query(
           'UPDATE "Order" SET "status" = :st WHERE "Order"."id" = :id;',
           {

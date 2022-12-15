@@ -248,6 +248,14 @@ let handleCreateOpttion = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetWarehouseQuantity = async (request, response) => {
+  try {
+    let quantity = await ProductService.getWarehouseQuantity(request.body);
+    return response.status(200).json(quantity);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 
 module.exports = {
   handlegetallProduct,
@@ -273,4 +281,5 @@ module.exports = {
   handleCreateWareHouseProduct,
   handleGetAllProductadmin,
   handleCreateOpttion,
+  handleGetWarehouseQuantity,
 };
