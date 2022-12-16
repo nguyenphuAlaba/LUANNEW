@@ -13,6 +13,7 @@ let getAllCategory = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let category = await db.Category.findAll({
+        where: { parent_id: 0 },
         include: [{ model: db.Category, as: "ChildrenCategoty" }],
         order: ["parent_id"],
         raw: false,

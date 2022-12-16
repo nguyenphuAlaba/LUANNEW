@@ -220,7 +220,6 @@ let getCreateOrderByUser = async (data) => {
       );
       if (check) {
         let codeor = "O3D3R" + getRandomInt(10000);
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
         await db.Order.create({
           code: codeor,
           fullname: data.fullname,
@@ -245,19 +244,42 @@ let getCreateOrderByUser = async (data) => {
                 let cc = await db.Cartitem.findOne({
                   where: { id: o },
                 });
-                let seri = "TPS" + year + month + day + getRandomInt(10000);
-                let pp = {};
-                pp.serinumber = seri;
-                pp.order_id = x.id;
-                pp.name = cc.name;
-                pp.product_id = cc.product_id;
-                pp.amount = cc.amount;
-                pp.cart_id = cc.cart_id;
-                pp.price = cc.price;
-                pp.optionValues = cc.optionvalue;
-                pp.TotalQuantity = cc.amount;
-                pp.TotalPrice = cc.ttprice;
-                listOT.push(pp);
+                for (let i = 0; i < cc.amount; i++) {
+                  let seri = "TPS" + year + month + day + getRandomInt(10000);
+                  let pp = {};
+                  pp.serinumber = seri;
+                  pp.order_id = x.id;
+                  pp.name = cc.name;
+                  pp.product_id = cc.product_id;
+                  pp.amount = cc.amount;
+                  pp.cart_id = cc.cart_id;
+                  pp.price = cc.price;
+                  pp.optionValues = cc.optionvalue;
+                  pp.TotalQuantity = 1;
+                  pp.TotalPrice = cc.ttprice;
+                  listOT.push(pp);
+                  let checkAmount = await db.Warehouse_product.findOne({
+                    where: {
+                      product_id: cc.product_id,
+                      optionvalue: cc.optionvalue,
+                    },
+                    raw: false,
+                    nest: true,
+                  });
+                  console.log(checkAmount);
+                  await sequelize.query(
+                    'UPDATE "Warehouse_product" SET "quantity" = :qa WHERE "Warehouse_product"."id" = :pr',
+                    {
+                      replacements: {
+                        pr: checkAmount.id,
+                        qa: checkAmount.quantity - cc.amount,
+                      },
+                      type: sequelize.UPDATE,
+                      raw: false,
+                      nest: true,
+                    }
+                  );
+                }
               })
             );
             await db.Orderitem.bulkCreate(listOT);
@@ -310,7 +332,6 @@ let getCreateOrderByUser = async (data) => {
                 dataarray.push(obj);
               })
             );
-            console.log(dataarray);
             emailService.sendSimpleEmail(dataSend, dataarray);
             resolve({
               errCode: 0,
@@ -465,6 +486,7 @@ let updateOrderStatus = (id) => {
     }
   });
 };
+//
 
 // get link momo
 let getMomoPaymentLink = async (req) => {
