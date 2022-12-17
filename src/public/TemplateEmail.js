@@ -37,7 +37,7 @@ let templatepurchase = (dataSend, dataarray) => {
 <p>Chúng tôi hi vọng sẽ gặp lại bạn trong một ngày gần nhất.</p>
 <hr>
 </header>
-<h3>Đơn hàng của bạn</h3>
+<h3>Mã đơn hàng của bạn: ${dataSend.code}</h3>
 <table>
   <tr>
     <th>Mã</th>

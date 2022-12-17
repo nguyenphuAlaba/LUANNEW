@@ -326,6 +326,7 @@ let getCreateOrderByUser = async (data) => {
             });
             let dataSend = {
               orderCus: order.id,
+              code: codeor,
               nameCus: order.fullname,
               addressCus: order.Address,
               phonenumberCus: order.phonenumber,
