@@ -68,30 +68,6 @@ let sendEmailResetPass = async (dataSend) => {
   });
 };
 
-let sendEmailVoucherFree = async (dataSend) => {
-  // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.EMAIL_APP, // generated ethereal user
-      pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
-    },
-  });
-
-  // send mail with defined transport object
-  let info = await transporter.sendMail({
-    from: '"DK Cinemas" <khoadido@gmail.com>', // sender address
-    to: dataSend.reciverEmail, // list of receivers
-    subject: "Voucher free ticket", // Subject line
-    html: `
-        <p>DKCinema xin gửi voucher miễn phí 1 vé (Áp dụng cho 1 lần đặt): ${dataSend.voucherCode}</p>
-        <p>Trân trọng cám ơn quý khách đã luôn đồng hành cùng với DKCinema.</p>
-        `, // html body
-  });
-};
-
 let sendEmailVoucherGif = (dataSend) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -161,11 +137,62 @@ let sendEmailNewProduct = (dataSend) => {
   });
 };
 
+let sendEmailPaymentSuccess = async (dataSend) => {
+  console.log("meail : " + dataSend);
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_APP, // generated ethereal user
+      pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
+    },
+  });
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"PhuThangShop" <NguyenThienPhu@gmail.com>', // sender address
+    to: dataSend.email, // list of receivers
+    subject: " Đơn hàng : " + dataSend.code + " Thanh toán thành công ", // Subject line
+    html: `
+        <h1>Cửa hàng Phú Thắng trân thành cảm ơn quý khách ${dataSend.name}</h1>
+        <hr>
+        <p>Đơn hàng sẽ được giao tới cho quý khách trong vòng 3 - 7 ngày xin quý khách hãy để ý tới điện thoại của mình</p>
+        <p>Cảm ơn quý khách đã luôn đồng hành cùng với cửa hàng Phú Thắng.</p>
+        `, // html body
+  });
+};
+let sendEmailVoucherEvent = async (dataSend) => {
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_APP, // generated ethereal user
+      pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
+    },
+  });
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"PhuThangShop" <NguyenThienPhu@gmail.com>', // sender address
+    to: dataSend.email, // list of receivers
+    subject: "Tặng voucher Khuyến mãi nhân dịp ", // Subject line
+    html: `
+        <p>Cửa hàng Phú Thắng xin gửi voucher giảm giá 5% nhân dịp: ${dataSend.name}</p>
+        <h3>Mã khuyến mãi: ${dataSend.data.codeE}  Giảm giá: ${dataSend.data.disco}</h3>
+        <p>Trân trọng cám ơn quý khách đã luôn đồng hành cùng với Cửa hàng phú thắng.</p>
+        `, // html body
+  });
+};
 module.exports = {
   sendSimpleEmail,
   sendEmailActive,
   sendEmailResetPass,
   sendEmailVoucherGif,
   sendEmailNewProduct,
-  sendEmailVoucherFree,
+  sendEmailVoucherEvent,
+  sendEmailPaymentSuccess,
 };

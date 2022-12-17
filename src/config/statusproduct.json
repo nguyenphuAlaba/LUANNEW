@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Còn hàng"
+  },
+  {
+    "id": 2,
+    "name": "Hết hàng"
+  },
+  {
+    "id": 3,
+    "name": "Sắp ra mắt"
+  },
+  {
+    "id": 4,
+    "name": "Đang ẩn"
+  }
+]

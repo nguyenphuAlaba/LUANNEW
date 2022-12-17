@@ -34,7 +34,12 @@ let getAllCart = () => {
 let addProductToCart = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!data.cus_id || !data.product_id || !data.optionvalue) {
+      if (
+        !data.cus_id ||
+        !data.product_id ||
+        !data.optionvalue ||
+        !data.warehouse_id
+      ) {
         resolve({
           errCode: 3,
           errMessage: "missing cus_id or option_id or product_id",
@@ -42,6 +47,9 @@ let addProductToCart = (data) => {
       } else {
         let checkUser = await db.Customer.findOne({
           where: { id: data.cus_id },
+        });
+        let warehouse = await db.Warehouse.findOne({
+          where: { id: data.warehouse_id },
         });
         if (checkUser) {
           let checkProduct = await db.Product.findOne({
@@ -63,26 +71,43 @@ let addProductToCart = (data) => {
                 nest: true,
               });
               if (checkCartitem) {
-                await sequelize.query(
-                  'UPDATE "Cartitem" SET "amount" = :am , "ttprice" = :tt WHERE  "Cartitem"."id" = :op;',
-                  {
-                    replacements: {
-                      am: checkCartitem.amount + data.amount,
-                      tt:
-                        checkCartitem.price *
-                        (checkCartitem.amount + data.amount),
-                      op: checkCartitem.id,
-                    },
-                    type: sequelize.UPDATE,
-                    raw: false,
-                    nest: true,
-                  }
-                );
-
-                resolve({
-                  errCode: 0,
-                  errMessage: "Your Cartitem Have Update",
+                let wa = await db.Warehouse_product.findOne({
+                  where: {
+                    product_id: data.product_id,
+                    optionvalue: data.optionvalue,
+                    warehouse_id: data.warehouse_id,
+                  },
+                  raw: false,
+                  nest: true,
                 });
+                let ttt = checkCartitem.amount + data.amount;
+                if (ttt > wa.quantity) {
+                  resolve({
+                    errCode: 6,
+                    errMessage:
+                      "Your Option Not Enough Quantity" + warehouse.name,
+                  });
+                } else {
+                  await sequelize.query(
+                    'UPDATE "Cartitem" SET "amount" = :am , "ttprice" = :tt WHERE  "Cartitem"."id" = :op;',
+                    {
+                      replacements: {
+                        am: checkCartitem.amount + data.amount,
+                        tt:
+                          checkCartitem.price *
+                          (checkCartitem.amount + data.amount),
+                        op: checkCartitem.id,
+                      },
+                      type: sequelize.UPDATE,
+                      raw: false,
+                      nest: true,
+                    }
+                  );
+                  resolve({
+                    errCode: 0,
+                    errMessage: "Your Cartitem Have Update",
+                  });
+                }
               } else {
                 console.log(data);
                 let checkPOExist = true;
@@ -95,7 +120,6 @@ let addProductToCart = (data) => {
                     });
                     if (checkPO) {
                       optionsum = optionsum + checkPO.price;
-                      console.log(optionsum);
                     } else {
                       reject({
                         errCode: 4,
@@ -115,26 +139,37 @@ let addProductToCart = (data) => {
                     where: {
                       product_id: data.product_id,
                       optionvalue: data.optionvalue,
+                      warehouse_id: data.warehouse_id,
                     },
+                    raw: false,
+                    nest: true,
                   });
                   if (wa) {
-                    await db.Cartitem.create({
-                      product_id: data.product_id,
-                      amount: data.amount,
-                      name: wa.name,
-                      cart_id: checkCart.id,
-                      optionvalue: data.optionvalue,
-                      price: checkProduct.unitprice + optionsum,
-                      ttprice:
-                        (checkProduct.unitprice + optionsum) * data.amount,
-                    }).then(function (y) {
+                    if (wa.quantity < data.amount) {
                       resolve({
-                        errCode: -1,
-                        errMessage: "Create cartitem by cart_id success",
-                        cartid: y.id,
-                        cus: checkUser.id,
+                        errCode: 6,
+                        errMessage:
+                          "Your Option Not Enough Quantity" + warehouse.name,
                       });
-                    });
+                    } else {
+                      await db.Cartitem.create({
+                        product_id: data.product_id,
+                        amount: data.amount,
+                        name: wa.name,
+                        cart_id: checkCart.id,
+                        optionvalue: data.optionvalue,
+                        price: checkProduct.unitprice + optionsum,
+                        ttprice:
+                          (checkProduct.unitprice + optionsum) * data.amount,
+                      }).then(function (y) {
+                        resolve({
+                          errCode: -1,
+                          errMessage: "Create cartitem by cart_id success",
+                          cartitem: y.id,
+                          cus: checkUser.id,
+                        });
+                      });
+                    }
                   } else {
                     resolve({
                       errCode: 5,
@@ -148,16 +183,17 @@ let addProductToCart = (data) => {
                 cus_id: data.cus_id,
               }).then(async function (x) {
                 if (x.id) {
-                  let optionsum;
+                  let optionvalue = data.optionvalue;
                   let checkPOExist = true;
+                  let optionsum = 0;
                   await Promise.all(
                     optionvalue.map(async (item) => {
+                      console.log(item);
                       let checkPO = await db.Option_Product.findOne({
                         where: { id: item, product_id: data.product_id },
                       });
                       if (checkPO) {
                         optionsum = optionsum + checkPO.price;
-                        console.log(optionsum);
                       } else {
                         reject({
                           errCode: 4,
@@ -173,20 +209,39 @@ let addProductToCart = (data) => {
                     })
                   );
                   if (checkPOExist) {
-                    await db.Cartitem.create({
-                      product_id: data.product_id,
-                      amount: 1,
-                      cart_id: checkCart.id,
-                      optionvalue: data.optionvalue,
-                      price: checkProduct.unitprice + optionsum,
-                      ttprice: checkProduct.unitprice + optionsum,
+                    let wa = await db.Warehouse_product.findOne({
+                      where: {
+                        product_id: data.product_id,
+                        optionvalue: data.optionvalue,
+                        warehouse_id: data.warehouse_id,
+                      },
+                      raw: false,
+                      nest: true,
                     });
-                    resolve({
-                      errCode: -2,
-                      errMessage:
-                        "Create Cart And Create Cartitem Successfully",
-                      cartid: x.id,
-                    });
+                    if (wa.quantity < data.amount) {
+                      resolve({
+                        errCode: 6,
+                        errMessage:
+                          "Your Option Not Enough Quantity" + warehouse.name,
+                      });
+                    } else {
+                      await db.Cartitem.create({
+                        name: wa.name,
+                        product_id: data.product_id,
+                        amount: 1,
+                        cart_id: x.id,
+                        optionvalue: data.optionvalue,
+                        price: checkProduct.unitprice + optionsum,
+                        ttprice: checkProduct.unitprice + optionsum,
+                      }).then(function (y) {
+                        resolve({
+                          errCode: -2,
+                          errMessage:
+                            "Create Cart And Create Cartitem Successfully",
+                          cartitem: y.id,
+                        });
+                      });
+                    }
                   }
                 }
               });
@@ -255,6 +310,7 @@ let getCartByCustomer = (id) => {
             "price",
             "ttprice",
             "optionvalue",
+            "cart_id",
           ],
           raw: false,
           plain: false,

@@ -40,6 +40,7 @@ let templatepurchase = (dataSend, dataarray) => {
 <h3>Đơn hàng của bạn</h3>
 <table>
   <tr>
+    <th>Mã</th>
     <th>Sản Phẩm</th>
     <th>Giá</th>
     <th>Số Lượng</th>
@@ -50,6 +51,7 @@ let templatepurchase = (dataSend, dataarray) => {
       console.log("Item: " + item);
       return `
             <tr>
+            <td>${item.code}</td>
             <td>${item.name}</td>
                 <td>${item.price}</td>
                 <td>${item.quantity}</td>

@@ -1014,13 +1014,14 @@ let getWarehouseQuantity = (data) => {
           errMessage: "Missing require",
         });
       }
-      let qa = await db.Warehouse_product.findOne({
+      let qa = await db.Warehouse_product.findAll({
         where: {
           [Op.and]: [
             { product_id: data.product_id },
             { optionvalue: data.optionvalue },
           ],
         },
+        include: [{ model: db.Warehouse, as: "UserwarehouseProduct" }],
         raw: false,
         nest: true,
       });

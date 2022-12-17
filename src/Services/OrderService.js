@@ -9,6 +9,7 @@ const crypto = require("crypto");
 const https = require("https");
 import emailService from "./emailService";
 import moment from "moment";
+import { totalmem } from "os";
 //parameters
 var partnerCode = "MOMO";
 var accessKey = "F8BBA842ECF85";
@@ -206,7 +207,6 @@ let getCreateOrderByUser = async (data) => {
                   });
                 }
                 if (checkAmount.quantity < cart.amount) {
-                  console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
                   check = false;
                   resolve({
                     errCode: 2,
@@ -219,7 +219,10 @@ let getCreateOrderByUser = async (data) => {
         })
       );
       if (check) {
-        let codeor = "O3D3R" + getRandomInt(10000);
+        let year = moment(new Date()).format("YYYY");
+        let month = moment(new Date()).format("MM");
+        let day = moment(new Date()).format("DD");
+        let codeor = "O3D3R" + year + month + day + getRandomInt(10000);
         await db.Order.create({
           code: codeor,
           fullname: data.fullname,
@@ -234,9 +237,6 @@ let getCreateOrderByUser = async (data) => {
           paymentstatus: 1,
         }).then(async function (x) {
           if (x.id) {
-            let year = moment(new Date()).format("YYYY");
-            let month = moment(new Date()).format("MM");
-            let day = moment(new Date()).format("DD");
             let listOT = [];
             let op = data.cartitem;
             await Promise.all(
@@ -262,23 +262,45 @@ let getCreateOrderByUser = async (data) => {
                     where: {
                       product_id: cc.product_id,
                       optionvalue: cc.optionvalue,
+                      warehouse_id: data.warehouse_id,
                     },
+                    attributes: [
+                      "id",
+                      "name",
+                      "product_id",
+                      "quantity",
+                      "warehouse_id",
+                    ],
                     raw: false,
                     nest: true,
                   });
-                  console.log(checkAmount);
                   await sequelize.query(
-                    'UPDATE "Warehouse_product" SET "quantity" = :qa WHERE "Warehouse_product"."id" = :pr',
+                    'UPDATE "Warehouse_product" SET "quantity" = :qa WHERE "Warehouse_product"."id" = :pr;',
                     {
                       replacements: {
                         pr: checkAmount.id,
                         qa: checkAmount.quantity - cc.amount,
                       },
-                      type: sequelize.UPDATE,
+                      type: Sequelize.UPDATE,
                       raw: false,
                       nest: true,
                     }
                   );
+                  let sumtll = await db.Warehouse_product.sum("quantity", {
+                    where: { product_id: cc.product_id },
+                  });
+                  if (sumtll > 0) {
+                    await db.Product.update(
+                      { currentQuantity: sumtll },
+                      { where: { id: cc.product_id } }
+                    );
+                  }
+                  if (sumtll == 0) {
+                    await db.Product.update(
+                      { status: 2 },
+                      { where: { id: cc.product_id } }
+                    );
+                  }
                 }
               })
             );
@@ -324,10 +346,11 @@ let getCreateOrderByUser = async (data) => {
                   nest: true,
                 });
                 let obj = {};
+                obj.code = item.serinumber;
                 obj.proid = item.order_id;
                 obj.name = pro.name;
                 obj.price = item.price;
-                obj.quantity = item.amount;
+                obj.quantity = 1;
                 obj.TotalPrice = item.TotalPrice;
                 dataarray.push(obj);
               })
@@ -647,11 +670,18 @@ let handleOrderPayment = async (req) => {
     const orderCurrentData = orderCurrent.dataValues;
     console.log("orderCurrentData dataValues: ", orderCurrentData);
     orderCurrentData.paymentstatus = 2;
+    let dataSend = {
+      email: orderCurrentData.email,
+      name: orderCurrentData.fullname,
+      code: orderCurrentData.code,
+    };
+    emailService.sendEmailPaymentSuccess(dataSend);
     const result = await db.Order.update(orderCurrentData, {
       where: { id: req.body.extraData },
       returning: true,
       plain: true,
     });
+
     // console.log(result);
     return result;
   }

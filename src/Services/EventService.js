@@ -10,40 +10,6 @@ import emailService from "./emailService";
 var salt = bcrypt.genSaltSync(10);
 var cloudinary = require("cloudinary").v2;
 
-let createEvent = (data) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      if (!data.name) {
-        resolve({
-          errCode: 1,
-          errMessage: "Missing Event Name",
-        });
-      } else {
-        let event = await db.Event.findOne({
-          where: { name: data.name },
-        });
-        if (event) {
-          resolve({
-            errCode: 1,
-            errMessage: "Your event has exist",
-          });
-        } else {
-          await db.Event.create({
-            name: data.name,
-            datestart: data.datestart,
-            dateend: data.dateend,
-          });
-          resolve({
-            errCode: 0,
-            errMessage: "Your Event Create Successfully",
-          });
-        }
-      }
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
@@ -89,8 +55,81 @@ var task = cron.schedule("* 6 * * *", async () => {
     emailService.sendEmailVoucherGif(mailist);
   }
 });
-
 task.start();
+let createEvent = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.name) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing Event Name",
+        });
+      } else {
+        let event = await db.Event.findOne({
+          where: { name: data.name },
+        });
+        if (event) {
+          resolve({
+            errCode: 1,
+            errMessage: "Your event has exist",
+          });
+        } else {
+          await db.Event.create({
+            name: data.name,
+            datestart: data.datestart,
+            dateend: data.dateend,
+          });
+          resolve({
+            errCode: 0,
+            errMessage: "Your Event Create Successfully",
+          });
+        }
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+var quest = cron.schedule("* 6 * * *", async () => {
+  var dateToday = moment(new Date()).format("MM-DD");
+  let event = await db.Event.findOne({
+    where: {
+      [Op.and]: [
+        db.sequelize.where(
+          db.sequelize.cast(db.sequelize.col("Event.datestart"), "varchar"),
+          { [Op.iLike]: `%${dateToday}%` }
+        ),
+      ],
+    },
+    raw: false,
+    nest: true,
+  });
+  let cusz = await db.Customer.findAll();
+  if (cusz && cusz.length > 0) {
+    let discount = 5;
+    let codegif = "PTSE" + getRandomInt(10000);
+    await db.Voucher.create({
+      code: codegif,
+      name: event.name,
+      sale: discount,
+      expire: "2022/12/17",
+      event_id: 1,
+      maxuse: 600,
+    });
+    let listmail = [];
+    await Promise.all(
+      cusz.map(async (x) => {
+        console.log(x.id);
+        let dataSend = {};
+        dataSend.name = event.name;
+        dataSend.email = x.email;
+        dataSend.data = { codeE: codegif, disco: discount };
+        emailService.sendEmailVoucherEvent(dataSend);
+      })
+    );
+  }
+});
+quest.start();
 module.exports = {
   getRandomInt,
   createEvent,

@@ -14,7 +14,7 @@ let sequelize;
 const customizeConfig = {
   host: process.env.DB_HOST,
   dialect: "postgres",
-  logging: true,
+  logging: false,
   dialectOptions: {},
   query: {
     raw: true,
