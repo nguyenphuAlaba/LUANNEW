@@ -92,7 +92,7 @@ let initWebRoutes = (app) => {
     ProductControler.handleCreateWareHouseProduct
   );
   router.post("/api/create-option/", ProductControler.handleCreateOpttion);
-  router.get(
+  router.post(
     "/api/get-product-quantity/",
     ProductControler.handleGetWarehouseQuantity
   );
