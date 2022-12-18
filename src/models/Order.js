@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Orderitem,
         as: "OrderProductItem",
       });
+      Order.hasOne(models.Warranty, {
+        foreignKey: "order_id",
+        as: "OrderWarranty",
+      });
     }
   }
   Order.init(

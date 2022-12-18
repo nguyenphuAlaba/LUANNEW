@@ -4,8 +4,7 @@ import { raw } from "body-parser";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-import infor from "../config/infor.json";
-
+import moment from "moment";
 var salt = bcrypt.genSaltSync(10);
 var cloudinary = require("cloudinary").v2;
 
@@ -15,8 +14,9 @@ let getAllWarranty = (id) => {
       let Warranty = await db.Warranty.findAll({
         where: { store_id: id },
         include: [
-          { model: db.Product, as: "ProductWarranty" },
+          { model: db.Warranty_info, as: "WarrantyInfor" },
           { model: db.Store, as: "StoreWarranty" },
+          { model: db.Order, as: "OrderWarranty" },
         ],
         raw: false,
         nest: true,
@@ -32,54 +32,29 @@ let getAllWarranty = (id) => {
 let createWarranty = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let chCustomer = await db.Customer.findOne({
-        where: { id: data.cus_id },
+      var dateToday = moment(new Date()).format("YYYY-MM-DD");
+      let warranty = await db.Warranty.findOne({
+        where: { id: data.warranty_id },
         raw: false,
         nest: true,
       });
-      if (!chCustomer) {
+      let warrantyinfo = await db.Warranty_info.findOne({
+        where: { warranty_id: data.warranty_id },
+        raw: false,
+        nest: true,
+      });
+      if (!warranty) {
         resolve({
           errCode: 1,
-          errMessage: "Missing Customer ID",
+          errMessage: "Cannot find Warranty",
         });
-      } else {
-        let chProduct = await db.Product.findOne({
-          where: { id: data.product_id },
-          raw: false,
-          nest: true,
-        });
-        if (!chProduct) {
-          resolve({
-            errCode: 2,
-            errMessage: "Missing Product ID",
-          });
-        } else {
-          let checkStore = await db.Store.findOne({
-            where: { id: data.store_id },
-            raw: false,
-            nest: true,
-          });
-          if (!checkStore) {
-            resolve({
-              errCode: 3,
-              errMessage: "Missing Store ID",
-            });
-          } else {
-            await db.Warranty.create({
-              infor: data.infor,
-              description: data.description,
-              store_id: data.store_id,
-              product_id: data.product_id,
-              cus_id: data.cus_id,
-              sta_id: data.sta_id,
-            });
-            resolve({
-              errCode: 0,
-              errMessage: "Has add Successfully",
-            });
-          }
-        }
       }
+      var expire = moment(new Date(warranty.expire)).format("YYYY-MM-DD");
+      if (expire > dateToday) {
+        console.log("aaaaaaaaaaaaaaaaaa");
+      }
+      console.log(warranty.expire);
+      console.log(dateToday);
     } catch (error) {
       reject(error);
     }

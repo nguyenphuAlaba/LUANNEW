@@ -1,37 +1,34 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Warranty", {
+    await queryInterface.createTable("Warranty_info", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      name: {
+        type: Sequelize.STRING,
+      },
       infor: {
         type: Sequelize.STRING,
       },
       description: {
+        type: Sequelize.TEXT,
+      },
+      product_id: {
+        type: Sequelize.INTEGER,
+      },
+      warranty_id: {
+        type: Sequelize.INTEGER,
+      },
+      serinumber: {
         type: Sequelize.STRING,
       },
-      store_id: {
+      sta_id: {
         type: Sequelize.INTEGER,
       },
-      // product_id: {
-      //   type: Sequelize.INTEGER,
-      // },
-      order_id: {
-        type: Sequelize.INTEGER,
-      },
-      cus_id: {
-        type: Sequelize.INTEGER,
-      },
-      expire: {
-        type: Sequelize.DATE,
-      },
-      // sta_id: {
-      //   type: Sequelize.INTEGER,
-      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -43,6 +40,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Warranty");
+    await queryInterface.dropTable("Warranty_info");
   },
 };

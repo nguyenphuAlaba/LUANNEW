@@ -233,7 +233,11 @@ let initWebRoutes = (app) => {
     WarehouseControler.handleGetAllProductInWarehouse
   );
   router.post("/api/create-event/", EventControler.handleCreateEvent);
-
+  router.put("/api/update-event/", EventControler.handleUpdateEvent);
+  router.delete(
+    "/api/delete-event/:eventId/",
+    EventControler.handleDeleteEvent
+  );
   return app.use("/", router);
 };
 

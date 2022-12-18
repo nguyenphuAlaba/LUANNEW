@@ -161,6 +161,7 @@ let addProductToCart = (data) => {
                         price: checkProduct.unitprice + optionsum,
                         ttprice:
                           (checkProduct.unitprice + optionsum) * data.amount,
+                        warehouse_id: data.warehouse_id,
                       }).then(function (y) {
                         resolve({
                           errCode: -1,
@@ -233,12 +234,13 @@ let addProductToCart = (data) => {
                         optionvalue: data.optionvalue,
                         price: checkProduct.unitprice + optionsum,
                         ttprice: checkProduct.unitprice + optionsum,
+                        warehouse_id: data.warehouse_id,
                       }).then(function (y) {
                         resolve({
                           errCode: -2,
                           errMessage:
                             "Create Cart And Create Cartitem Successfully",
-                          cartitem: y.id,
+                          customer: data.cus_id,
                         });
                       });
                     }
@@ -311,6 +313,7 @@ let getCartByCustomer = (id) => {
             "ttprice",
             "optionvalue",
             "cart_id",
+            "warehouse_id",
           ],
           raw: false,
           plain: false,

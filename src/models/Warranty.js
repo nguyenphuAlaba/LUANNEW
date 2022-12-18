@@ -10,16 +10,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       //1 role co nhieu user
 
-      Warranty.belongsTo(models.Product, {
-        foreignKey: "product_id",
-        as: "ProductWarranty",
-        targetkey: "id",
-      });
+      // Warranty.belongsTo(models.Product, {
+      //   foreignKey: "product_id",
+      //   as: "ProductWarranty",
+      //   targetkey: "id",
+      // });
       // Warranty.belongsTo(models.Orderitem, {
       //   foreignKey: "order_id",
       //   as: "OrderItemWarranty",
       //   targetKey: "id",
       // });
+      Warranty.belongsTo(models.Order, {
+        foreignKey: "order_id",
+        as: "OrderWarranty",
+        targetKey: "id",
+      });
       Warranty.belongsTo(models.Store, {
         foreignKey: "store_id",
         as: "StoreWarranty",
@@ -30,11 +35,15 @@ module.exports = (sequelize, DataTypes) => {
         as: "UserWarranty",
         targetkey: "id",
       });
-      Warranty.belongsTo(models.Staff, {
-        foreignKey: "sta_id",
-        as: "StaffWarranty",
-        targetKey: "id",
+      Warranty.hasMany(models.Warranty_info, {
+        foreignKey: "warranty_id",
+        as: "WarrantyInfor",
       });
+      // Warranty.belongsTo(models.Staff, {
+      //   foreignKey: "sta_id",
+      //   as: "StaffWarranty",
+      //   targetKey: "id",
+      // });
     }
   }
   Warranty.init(
@@ -42,9 +51,11 @@ module.exports = (sequelize, DataTypes) => {
       infor: DataTypes.STRING,
       description: DataTypes.STRING,
       store_id: DataTypes.INTEGER,
-      product_id: DataTypes.INTEGER,
+      // product_id: DataTypes.INTEGER,
       cus_id: DataTypes.INTEGER,
-      sta_id: DataTypes.INTEGER,
+      // sta_id: DataTypes.INTEGER,
+      expire: DataTypes.DATE,
+      order_id: DataTypes.INTEGER,
     },
     {
       sequelize,

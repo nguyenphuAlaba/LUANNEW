@@ -90,6 +90,68 @@ let createEvent = (data) => {
     }
   });
 };
+let updateEvent = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let event = await db.Event.findOne({
+        where: { id: data.id },
+        raw: false,
+        nest: true,
+      });
+      if (!event) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot find your event",
+        });
+      } else {
+        if (!data.name) {
+          data.name = event.name;
+        }
+        var datestart = moment(new Date(data.datestart)).format("YYYY-MM-DD");
+        var dateend = moment(new Date(data.dateend)).format("YYYY-MM-DD");
+        event.datestart = datestart;
+        event.dateend = dateend;
+        event.name = data.name;
+        await event.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Update Successfully",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let deleteEvent = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let event = await db.Event.findOne({
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      if (!event) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot find your event",
+        });
+      } else {
+        await db.Event.destroy({
+          where: { id: id },
+          raw: false,
+          nest: true,
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "Delete Event Successfully",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 var quest = cron.schedule("* 6 * * *", async () => {
   var dateToday = moment(new Date()).format("MM-DD");
   let event = await db.Event.findOne({
@@ -133,4 +195,6 @@ quest.start();
 module.exports = {
   getRandomInt,
   createEvent,
+  updateEvent,
+  deleteEvent,
 };

@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       optionvalue: DataTypes.ARRAY(DataTypes.INTEGER),
       price: DataTypes.DOUBLE,
       ttprice: DataTypes.DOUBLE,
+      warehouse_id: DataTypes.INTEGER,
     },
     {
       sequelize,

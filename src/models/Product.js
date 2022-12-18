@@ -39,10 +39,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "product_id",
         as: "CommentProduct",
       });
-      Product.hasMany(models.Warranty, {
+      Product.hasMany(models.Warranty_info, {
         foreignKey: "product_id",
-        as: "ProductWarranty",
+        as: "ProductInfor",
       });
+      // Product.hasMany(models.Warranty, {
+      //   foreignKey: "product_id",
+      //   as: "ProductWarranty",
+      // });
       Product.belongsToMany(models.Warehouse, {
         foreignKey: "product_id",
         through: models.Warehouse_product,
