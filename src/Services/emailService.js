@@ -263,6 +263,67 @@ let sendEmailgoodsreceived = async (dataSend, dataitem) => {
     `,
   });
 };
+let sendEmailWarranty = async (dataSend) => {
+  //   console.log(dataSend);
+  //   console.log(dataarray);
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_APP, // generated ethereal user
+      pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
+    },
+  });
+  let info = await transporter.sendMail({
+    from: '"PhuThangShop" <phunguyen22052000@gmail.com>', // sender address
+    to: dataSend.email, //dataSend.reciverEmail, // list of receivers
+    subject: "Đơn bảo hành của đơn hàng : " + dataSend.code, // Subject line
+    html: `
+    <!doctype html>
+    <html lang="en-US">
+    <head>
+    <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+    </style>
+      </head>
+  <body>
+  <header>
+    <h1 style = "color: green">Đơn bảo hành online</h1>
+    <h3>${dataSend.infor} của đơn ${dataSend.code}</h3>
+    <p>${dataSend.description}</p>
+    <hr>
+    <h3>Các sản phẩm sau sẽ được bảo hành</h3>
+    </header>
+    <hr>
+    <h3>Hạn bảo hành ${dataSend.expire}</h3>
+    <hr>
+    <h3>Các trường hợp không được bảo hành</h3>
+    <p>* Máy không còn trong thời gian bảo hành</p>
+    <p>* Máy bị nhúng nước</p>
+    <p>* Máy bị hư hỏng nặng nề do bị rơi hoặc va chạm mạnh</p>
+    <p>* Máy không còn nhãn hiệu, tem trên máy</p>
+    <p>* Máy bị thay đổi phụ kiện bên trong</p>
+    </body>
+    </html>
+    `,
+  });
+};
 
 module.exports = {
   sendSimpleEmail,
@@ -273,4 +334,5 @@ module.exports = {
   sendEmailVoucherEvent,
   sendEmailPaymentSuccess,
   sendEmailgoodsreceived,
+  sendEmailWarranty,
 };

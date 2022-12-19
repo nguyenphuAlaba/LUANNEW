@@ -609,7 +609,8 @@ let updateOrderStatus4 = (id) => {
         }
         emailService.sendEmailgoodsreceived(dataSend, dataitem);
         var dateToday = moment(new Date()).format("YYYY-MM-DD");
-        var expiredate = moment(dateToday, "DD-MM-YYYY").add(1, "YEAR");
+        var expiredate = moment(dateToday, "YYYY-MM-DD").add(1, "YEAR");
+        console.log(expiredate);
         await db.Warranty.create({
           code: Order.code,
           infor: "Đơn bảo hành",
@@ -619,13 +620,16 @@ let updateOrderStatus4 = (id) => {
           cus_id: Order.cus_id,
           expire: expiredate,
         }).then(function (x) {
-          if (x) {
-            dataS = {
+          if (x.id) {
+            console.log(x);
+            dataSend = {
               code: x.code,
               infor: x.infor,
               description: x.description,
-              expire: x.expire,
+              expire: expiredate,
+              email: Order.email,
             };
+            emailService.sendEmailWarranty(dataSend);
           }
         });
         resolve({

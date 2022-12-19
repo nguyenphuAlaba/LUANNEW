@@ -56,10 +56,8 @@ let getAllProduct = (data) => {
           }
         }
       }
-      // whereStatement.status = 1;
+      whereStatement.status = 1;
 
-      console.log(whereStatement);
-      console.log(c);
       let pr = await db.Product.findAll({
         where: whereStatement,
         include: [
