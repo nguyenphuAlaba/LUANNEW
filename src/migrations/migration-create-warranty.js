@@ -17,9 +17,9 @@ module.exports = {
       description: {
         type: Sequelize.STRING,
       },
-      store_id: {
-        type: Sequelize.INTEGER,
-      },
+      // store_id: {
+      //   type: Sequelize.INTEGER,
+      // },
       // product_id: {
       //   type: Sequelize.INTEGER,
       // },

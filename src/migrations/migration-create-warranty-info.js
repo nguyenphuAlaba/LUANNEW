@@ -29,6 +29,9 @@ module.exports = {
       sta_id: {
         type: Sequelize.INTEGER,
       },
+      store_id: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

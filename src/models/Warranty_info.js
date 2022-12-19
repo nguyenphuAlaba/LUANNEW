@@ -24,6 +24,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "StaffWarranty",
         targetKey: "id",
       });
+      Warranty_info.belongsTo(models.Store, {
+        foreignKey: "store_id",
+        as: "StoreWarranty",
+        targetkey: "id",
+      });
     }
   }
   Warranty_info.init(
@@ -35,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       warranty_id: DataTypes.INTEGER,
       serinumber: DataTypes.STRING,
       sta_id: DataTypes.INTEGER,
+      store_id: DataTypes.INTEGER,
     },
     {
       sequelize,

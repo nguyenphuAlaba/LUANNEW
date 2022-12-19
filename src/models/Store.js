@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Store_staff,
         as: "Storehavestaff",
       });
-      Store.hasMany(models.Warranty, {
+      Store.hasMany(models.Warranty_info, {
         foreignKey: "store_id",
         as: "StoreWarranty",
       });

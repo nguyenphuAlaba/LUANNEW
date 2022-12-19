@@ -12,10 +12,9 @@ let getAllWarranty = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       let Warranty = await db.Warranty.findAll({
-        where: { store_id: id },
         include: [
           { model: db.Warranty_info, as: "WarrantyInfor" },
-          { model: db.Store, as: "StoreWarranty" },
+          // { model: db.Store, as: "StoreWarranty" },
           { model: db.Order, as: "OrderWarranty" },
         ],
         raw: false,
@@ -54,7 +53,6 @@ let createWarranty = (data) => {
         });
       }
       if (check) {
-        console.log(warranty);
       }
     } catch (error) {
       reject(error);

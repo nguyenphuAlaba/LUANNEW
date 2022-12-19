@@ -96,6 +96,7 @@ let getDetailProduct = (id) => {
             through: {
               attributes: [
                 "id",
+                "serinumber",
                 "name",
                 "product_id",
                 "price",
@@ -607,6 +608,26 @@ let updateOrderStatus4 = (id) => {
           );
         }
         emailService.sendEmailgoodsreceived(dataSend, dataitem);
+        var dateToday = moment(new Date()).format("YYYY-MM-DD");
+        var expiredate = moment(dateToday, "DD-MM-YYYY").add(1, "YEAR");
+        await db.Warranty.create({
+          code: Order.code,
+          infor: "Đơn bảo hành",
+          description:
+            "Đơn bảo hành được tạo khi khách hàng đã nhận hàng thành công khi thanh toán trực tiếp tại website",
+          order_id: Order.id,
+          cus_id: Order.cus_id,
+          expire: expiredate,
+        }).then(function (x) {
+          if (x) {
+            dataS = {
+              code: x.code,
+              infor: x.infor,
+              description: x.description,
+              expire: x.expire,
+            };
+          }
+        });
         resolve({
           errCode: 0,
           errMessage: "Update successfully",
@@ -627,11 +648,6 @@ let getMomoPaymentLink = async (req) => {
   let fOrder = await db.Orderitem.sum("TotalPrice", {
     where: { order_id: req.body.orderId },
     nest: true,
-  });
-  let order = await db.Order.findOne({
-    where: {
-      id: req.body.orderId,
-    },
   });
   req.body.amount = fOrder;
   //before sign HMAC SHA256 with format
