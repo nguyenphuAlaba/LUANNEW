@@ -1,4 +1,4 @@
-import db from "../models/index";
+import db, { sequelize } from "../models/index";
 import bcrypt from "bcryptjs";
 import { raw } from "body-parser";
 require("dotenv").config();
@@ -77,6 +77,7 @@ let createWarranty = (data) => {
             description: data.description,
             product_id: data.product_id,
             warranty_id: warranty.id,
+            serinumber: data.serinumber,
             sta_id: sta.sta_id,
             store: sta.store_id,
           });
@@ -91,13 +92,53 @@ let createWarranty = (data) => {
     }
   });
 };
-// let update
-// let updateWarranty = () => {
-//   return new Promise(async (resolve, reject) => {
-
-//   });
-// };
+let updateWarranty = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let warranty = await db.Warranty_info.findOne({
+        where: { id: data.id },
+      });
+      if (!warranty) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot find your Warranty",
+        });
+      } else {
+        if (!data.name) {
+          data.name = warranty.name;
+        }
+        if (!data.infor) {
+          data.infor = warranty.infor;
+        }
+        if (!data.description) {
+          data.description = warranty.description;
+        }
+        await sequelize.query(
+          'UPDATE "Warranty_info" SET "name" = :na, "infor" = :in, "description" = :des WHERE "Warranty_info"."id" = :waid;',
+          {
+            replacements: {
+              waid: data.id,
+              na: data.name,
+              des: data.description,
+              in: data.infor,
+            },
+            type: sequelize.UPDATE,
+            raw: false,
+            nest: true,
+          }
+        );
+        resolve({
+          errCode: 0,
+          errMessage: "Update successfully",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllWarrantyProduct,
   createWarranty,
+  updateWarranty,
 };

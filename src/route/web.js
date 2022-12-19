@@ -119,6 +119,7 @@ let initWebRoutes = (app) => {
     WarrantyControler.handleGetAllWarranty
   );
   router.post("/api/create-warranty/", WarrantyControler.handleCreateWarranty);
+  router.put("/api/update-warranty/", WarrantyControler.handleUpdateWarranty);
   //brand
   router.get("/api/get-brand/", BrandControler.handleGetAllBrand);
   router.post("/api/get-create-brand/", BrandControler.handleCreateBrand);

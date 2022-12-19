@@ -306,6 +306,7 @@ let getCartByCustomer = (id) => {
               ],
             },
           ],
+          order: ["id"],
           attributes: [
             "id",
             "name",
@@ -377,7 +378,6 @@ let updateAmount = (data) => {
             raw: false,
           }
         );
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
         resolve({
           errCode: 0,
           errMessage: "Update success",
