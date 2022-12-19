@@ -510,6 +510,114 @@ let updateOrderStatus = (id) => {
     }
   });
 };
+let updateOrderStatus3 = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let Order = await db.Order.findOne({
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      if (!Order) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot find your Order ",
+        });
+      }
+      if (Order.status != 2) {
+        resolve({
+          errCode: 2,
+          errMessage: "Your Order not status 2 ",
+        });
+      } else {
+        await sequelize.query(
+          'UPDATE "Order" SET "status" = :st WHERE "Order"."id" = :or',
+          {
+            replacements: { st: 3, or: id },
+            type: Sequelize.UPDATE,
+            raw: false,
+            nest: true,
+          }
+        );
+        resolve({
+          errCode: 0,
+          errMessage: "Update successfully",
+          Order: id,
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let updateOrderStatus4 = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let Order = await db.Order.findOne({
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      if (!Order) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot find your Order ",
+        });
+      }
+      if (Order.status != 3) {
+        resolve({
+          errCode: 2,
+          errMessage: "Your Order not status 3 ",
+        });
+      } else {
+        // await sequelize.query(
+        //   'UPDATE "Order" SET "status" = :st WHERE "Order"."id" = :or',
+        //   {
+        //     replacements: { st: 4, or: id },
+        //     type: Sequelize.UPDATE,
+        //     raw: false,
+        //     nest: true,
+        //   }
+        // );
+        let dataSend = {
+          email: Order.email,
+          name: Order.fullname,
+          code: Order.code,
+          phone: Order.phonenumber,
+          address: Order.Address,
+        };
+        let dataitem = [];
+        let oitem = await db.Orderitem.findAll({
+          where: { order_id: id },
+          raw: false,
+          nest: true,
+        });
+        if (oitem && oitem.length > 0) {
+          dataSend.price = 0;
+          await Promise.all(
+            oitem.map(async (x) => {
+              let obj = {};
+              obj.serinumber = x.serinumber;
+              obj.name = x.name;
+              obj.price = x.price;
+              obj.TotalPrice = x.TotalPrice;
+              dataSend.price = dataSend.price + x.TotalPrice;
+              dataitem.push(obj);
+            })
+          );
+        }
+        emailService.sendEmailgoodsreceived(dataSend, dataitem);
+        resolve({
+          errCode: 0,
+          errMessage: "Update successfully",
+          Order: id,
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 //
 
 // get link momo
@@ -698,6 +806,8 @@ module.exports = {
   getMomoPaymentLink,
   handleOrderPayment,
   updateOrderStatus,
+  updateOrderStatus3,
+  updateOrderStatus4,
   cancelOrder,
   getRandomInt,
 };

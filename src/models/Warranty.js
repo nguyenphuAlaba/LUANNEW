@@ -48,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Warranty.init(
     {
+      code: DataTypes.STRING,
       infor: DataTypes.STRING,
       description: DataTypes.STRING,
       store_id: DataTypes.INTEGER,

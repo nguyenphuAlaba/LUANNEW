@@ -187,6 +187,31 @@ let sendEmailVoucherEvent = async (dataSend) => {
         `, // html body
   });
 };
+
+let sendEmailgoodsreceived = async (dataSend, dataitem) => {
+  //   console.log(dataSend);
+  //   console.log(dataarray);
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_APP, // generated ethereal user
+      pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
+    },
+  });
+  let info = await transporter.sendMail({
+    from: '"PhuThangShop" <phunguyen22052000@gmail.com>', // sender address
+    to: dataSend.email, //dataSend.reciverEmail, // list of receivers
+    subject: "Đơn hàng: " + dataSend.code + " Giao hàng thành công", // Subject line
+    html: `<h1 style = "color: green">Giao hàng thành công</h1>
+    <h3>Đơn hàng của bạn: ${dataSend.code}</h3>`,
+    // TemplateEmail.templatepurchase(dataSend)
+    //dataSend.email
+  });
+};
+
 module.exports = {
   sendSimpleEmail,
   sendEmailActive,
@@ -195,4 +220,5 @@ module.exports = {
   sendEmailNewProduct,
   sendEmailVoucherEvent,
   sendEmailPaymentSuccess,
+  sendEmailgoodsreceived,
 };

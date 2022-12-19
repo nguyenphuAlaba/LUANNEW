@@ -195,15 +195,24 @@ let initWebRoutes = (app) => {
   );
   router.post("/api/get-momo-payment-link/", OrderControler.getMomoPaymentLink);
   router.post("/api/handle-order/", OrderControler.handleOrderPayment);
+  // ORDER UPDATE
   router.put(
     "/api/update-accept-order/:orderId/",
     OrderControler.handleUpdateOrderStatus
   );
+  router.put(
+    "/api/update-order-status-3/:orderId/",
+    OrderControler.handleUpdateOrderStatus3
+  );
+  router.put(
+    "/api/update-order-status-4/:orderId/",
+    OrderControler.handleUpdateOrderStatus4
+  );
+  router.put("/api/cancel-order/:orderId/", OrderControler.handleCancelOrder);
   router.get(
     "/api/get-order-detail/:orderId/",
     OrderControler.handleGetDetailProduct
   );
-  router.put("/api/cancel-order/:orderId/", OrderControler.handleCancelOrder);
   //Blog
   router.get("/api/get-all-blog/", BlogControler.handleGetAllBlog);
   router.get(
@@ -232,6 +241,7 @@ let initWebRoutes = (app) => {
     "/api/Get-all-warehouse/",
     WarehouseControler.handleGetAllProductInWarehouse
   );
+  router.get("/api/get-all-event/", EventControler.handleGetAllEvent);
   router.post("/api/create-event/", EventControler.handleCreateEvent);
   router.put("/api/update-event/", EventControler.handleUpdateEvent);
   router.delete(

@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      code: {
+        type: Sequelize.STRING,
+      },
       infor: {
         type: Sequelize.STRING,
       },
@@ -29,6 +32,7 @@ module.exports = {
       expire: {
         type: Sequelize.DATE,
       },
+
       // sta_id: {
       //   type: Sequelize.INTEGER,
       // },

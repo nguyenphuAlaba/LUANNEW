@@ -152,6 +152,23 @@ let deleteEvent = (id) => {
     }
   });
 };
+let getAllEvent = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let event = await db.Event.findAll({
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        event,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 var quest = cron.schedule("* 6 * * *", async () => {
   var dateToday = moment(new Date()).format("MM-DD");
   let event = await db.Event.findOne({
@@ -197,4 +214,5 @@ module.exports = {
   createEvent,
   updateEvent,
   deleteEvent,
+  getAllEvent,
 };

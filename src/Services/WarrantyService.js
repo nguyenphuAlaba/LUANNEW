@@ -38,11 +38,6 @@ let createWarranty = (data) => {
         raw: false,
         nest: true,
       });
-      let warrantyinfo = await db.Warranty_info.findOne({
-        where: { warranty_id: data.warranty_id },
-        raw: false,
-        nest: true,
-      });
       if (!warranty) {
         resolve({
           errCode: 1,
@@ -50,11 +45,17 @@ let createWarranty = (data) => {
         });
       }
       var expire = moment(new Date(warranty.expire)).format("YYYY-MM-DD");
+      let check = true;
       if (dateToday > expire) {
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
+        check = false;
+        resolve({
+          errCode: 2,
+          errMessage: "Your Warranty has expired",
+        });
       }
-      console.log(warranty.expire);
-      console.log(dateToday);
+      if (check) {
+        console.log(warranty);
+      }
     } catch (error) {
       reject(error);
     }

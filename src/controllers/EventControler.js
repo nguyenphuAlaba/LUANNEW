@@ -26,8 +26,17 @@ let handleDeleteEvent = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetAllEvent = async (request, response) => {
+  try {
+    let Event = await EventService.getAllEvent();
+    return response.status(200).json(Event);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleCreateEvent,
   handleUpdateEvent,
   handleDeleteEvent,
+  handleGetAllEvent,
 };
