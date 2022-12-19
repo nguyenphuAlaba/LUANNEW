@@ -570,15 +570,15 @@ let updateOrderStatus4 = (id) => {
           errMessage: "Your Order not status 3 ",
         });
       } else {
-        // await sequelize.query(
-        //   'UPDATE "Order" SET "status" = :st WHERE "Order"."id" = :or',
-        //   {
-        //     replacements: { st: 4, or: id },
-        //     type: Sequelize.UPDATE,
-        //     raw: false,
-        //     nest: true,
-        //   }
-        // );
+        await sequelize.query(
+          'UPDATE "Order" SET "status" = :st WHERE "Order"."id" = :or',
+          {
+            replacements: { st: 4, or: id },
+            type: Sequelize.UPDATE,
+            raw: false,
+            nest: true,
+          }
+        );
         let dataSend = {
           email: Order.email,
           name: Order.fullname,

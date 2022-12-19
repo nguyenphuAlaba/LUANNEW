@@ -205,10 +205,62 @@ let sendEmailgoodsreceived = async (dataSend, dataitem) => {
     from: '"PhuThangShop" <phunguyen22052000@gmail.com>', // sender address
     to: dataSend.email, //dataSend.reciverEmail, // list of receivers
     subject: "Đơn hàng: " + dataSend.code + " Giao hàng thành công", // Subject line
-    html: `<h1 style = "color: green">Giao hàng thành công</h1>
-    <h3>Đơn hàng của bạn: ${dataSend.code}</h3>`,
-    // TemplateEmail.templatepurchase(dataSend)
-    //dataSend.email
+    html: `
+    <!doctype html>
+    <html lang="en-US">
+    <head>
+    <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+    </style>
+      </head>
+  <body>
+  <header>
+    <h1 style = "color: green">Giao hàng thành công</h1>
+    <h3>Đơn hàng của bạn: ${dataSend.code} Đã được giao tới nơi</h3>
+    <hr>
+    </header>
+    <table>
+    <tr>
+    <th>Mã</th>
+    <th>Sản phẩm</th>
+    <th>Số lượng</th>
+    <th>Thành tiền</th>
+    </tr>
+    ${dataitem
+      .map((item) => {
+        return `
+      <tr>
+      <td>${item.serinumber}</td>
+      <td>${item.name}</td>
+      <td>${item.price}</td>
+      <td>${item.TotalPrice}</td>
+      </tr>`;
+      })
+      .join("")}
+    </table>
+    <hr>
+    <h3>Tổng tiền: ${dataSend.price}</h3>
+    <hr>
+    <p>Cảm ơn quý khách đã tin tưởng cửa hàng của chúng tôi, chúng tôi hy vọng sẽ được phục vụ quý khách vào lần tới.</p>
+    <p>Trong quá trình mua bán hay vận chuyển có vấn đề gì xin quý khách hãy vui lòng liên hệ với bên cửa hàng, cửa hàng sẽ đổi mới sản phẩm cho quý khách trong vòng 3 ngày.</p>
+    <p> Chú ý: chúng tôi sẽ không chịu trách nhiệm nếu khách cố tình gây thương tích cho sản phẩm bên chúng tôi.</p>
+    </body>
+    </html>
+    `,
   });
 };
 
