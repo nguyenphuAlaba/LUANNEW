@@ -50,8 +50,8 @@ let createWarranty = (data) => {
         });
       }
       var expire = moment(new Date(warranty.expire)).format("YYYY-MM-DD");
-      if (expire > dateToday) {
-        console.log("aaaaaaaaaaaaaaaaaa");
+      if (dateToday > expire) {
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaa");
       }
       console.log(warranty.expire);
       console.log(dateToday);

@@ -65,6 +65,7 @@ let addProductToCart = (data) => {
                   cart_id: checkCart.id,
                   product_id: data.product_id,
                   optionvalue: data.optionvalue,
+                  warehouse_id: data.warehouse_id,
                 },
                 attributes: ["optionvalue", "amount", "ttprice", "price", "id"],
                 raw: false,
@@ -85,9 +86,10 @@ let addProductToCart = (data) => {
                   resolve({
                     errCode: 6,
                     errMessage:
-                      "Your Option Not Enough Quantity" + warehouse.name,
+                      "Your Option Not Enough Quantity " + warehouse.name,
                   });
                 } else {
+                  console.log("wa: " + wa.id);
                   await sequelize.query(
                     'UPDATE "Cartitem" SET "amount" = :am , "ttprice" = :tt WHERE  "Cartitem"."id" = :op;',
                     {
