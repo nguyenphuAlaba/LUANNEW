@@ -121,6 +121,7 @@ let getProductDetail = (id) => {
           "Description",
           "img",
           "id",
+          "status",
           // "ProductOption.Option_Product.product_id",
         ],
         include: [
@@ -927,7 +928,6 @@ let createWareHouseProduct = (data) => {
         nest: true,
       });
       if (wp) {
-        console.log("aaaaaaaaaaa");
         await sequelize.query(
           'UPDATE "Warehouse_product" SET "quantity" = :am WHERE  "Warehouse_product"."id" = :op;',
           {
@@ -954,47 +954,97 @@ let createWareHouseProduct = (data) => {
         let list = [];
         let listname = cp.name;
         let ot = data.optionvalue;
+        let check = true;
+        let a = [];
+        let oplength = await db.Option_Product.findAll({
+          where: {
+            product_id: cp.id,
+          },
+          attributes: ["id", "name", "option_id"],
+        });
+        console.log(oplength);
+        if (oplength && oplength.length > 0) {
+          await Promise.all(
+            oplength.map(async (x) => {
+              let obj = {};
+              obj.option_id = x.option_id;
+              a.push(obj);
+            })
+          );
+        }
+        Array.from(new Set(a));
+        console.log(a);
+
         await Promise.all(
           ot.map(async (x) => {
             let option = await db.Option_Product.findOne({
-              where: { id: x },
-              raw: true,
+              where: { id: x, product_id: cp.id },
+              raw: false,
+              nest: true,
+              attributes: ["id", "option_id", "name"],
+              order: ["option_id"],
             });
+            if (!option) {
+              resolve({
+                errCode: 3,
+                errMessage: "Your Option not matching your product",
+              });
+            }
+            /// lấy mảng option_id
             let obj = {};
-            listname = listname + " / " + option.name;
-            obj = option.option_id;
+            obj.option_id = option.option_id;
+            obj.name = option.name;
+            obj.id = option.id;
             list.push(obj);
           })
         );
-        let checkpoint = true;
-        for (let i = 0; i < list.length; i++) {
-          for (let j = i + 1; j < list.length; j++) {
-            if (list[i] == list[j]) {
-              checkpoint = false;
-              resolve({
-                errCode: 2,
-                errMessage: "Your Option duplicate",
-              });
+        if (check) {
+          let checkpoint = true;
+          for (let i = 0; i < list.length; i++) {
+            for (let j = i + 1; j < list.length; j++) {
+              if (list[i].option_id == list[j].option_id) {
+                checkpoint = false;
+                resolve({
+                  errCode: 2,
+                  errMessage: "Your Option duplicate",
+                });
+              } else {
+                if (list[i].option_id > list[j].option_id) {
+                  // console.log(list);
+                  let swap = list[j];
+                  list[j] = list[i];
+                  list[i] = swap;
+                }
+              }
+              // console.log(list);
+              await Promise.all(
+                list.map(async (x) => {
+                  // console.log(x);
+                  listname = listname + " / " + x.name;
+                })
+              );
             }
           }
-        }
-        if (checkpoint) {
-          await db.Warehouse_product.create({
-            name: listname,
-            product_id: data.product_id,
-            warehouse_id: data.warehouse_id,
-            quantity: data.quantity,
-            optionvalue: data.optionvalue,
-          });
-          let sum2 = await db.Warehouse_product.sum("quantity", {
-            where: { product_id: data.product_id },
-          });
-          cp.currentQuantity = sum2;
-          await cp.save();
-          resolve({
-            errCode: 0,
-            errMessage: "Create Product Warehouse Successfully",
-          });
+          if (checkpoint) {
+            console.log(listname);
+            // await db.Warehouse_product.create({
+            //   name: listname,
+            //   product_id: data.product_id,
+            //   warehouse_id: data.warehouse_id,
+            //   quantity: data.quantity,
+            //   optionvalue: data.optionvalue,
+            // });
+            // let sum2 = await db.Warehouse_product.sum("quantity", {
+            //   where: { product_id: data.product_id },
+            // });
+            // cp.currentQuantity = sum2;
+            // cp.status = 1;
+            // await cp.save();
+            resolve({
+              errCode: 0,
+              errMessage: "Create Product Warehouse Successfully",
+            });
+          }
         }
       }
     } catch (error) {
