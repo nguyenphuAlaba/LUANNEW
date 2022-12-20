@@ -955,8 +955,25 @@ let createWareHouseProduct = (data) => {
         let listname = cp.name;
         let ot = data.optionvalue;
         let check = true;
-        let count = 0;
         let a = [];
+        let oplength = await db.Option_Product.findAll({
+          where: {
+            product_id: cp.id,
+          },
+          attributes: ["id", "name", "option_id"],
+        });
+        if (oplength && oplength.length > 0) {
+          await Promise.all(
+            oplength.map(async (x) => {
+              let obj = {};
+              obj = x.option_id;
+              a.push(obj);
+            })
+          );
+          var b = await a.filter((r, o) => {
+            return a.indexOf(r) === o;
+          });
+        }
         await Promise.all(
           ot.map(async (x) => {
             let option = await db.Option_Product.findOne({
@@ -981,6 +998,17 @@ let createWareHouseProduct = (data) => {
           })
         );
         if (check) {
+          //   console.log(b);
+          //   for (let i = 0; i < list.length; i++) {
+          //     if (list[i].option_id == b[i]) {
+          //       console.log(list[i].option_id, b[i]);
+          //     } else {
+          //       console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+          //     }
+          //   }
+
+          console.log(list.length);
+          console.log(list);
           let checkpoint = true;
           for (let i = 0; i < list.length; i++) {
             for (let j = i + 1; j < list.length; j++) {
@@ -992,21 +1020,20 @@ let createWareHouseProduct = (data) => {
                 });
               } else {
                 if (list[i].option_id > list[j].option_id) {
-                  // console.log(list);
                   let swap = list[j];
                   list[j] = list[i];
                   list[i] = swap;
                 }
               }
-              // console.log(list);
+              console.log(list);
               await Promise.all(
                 list.map(async (x) => {
-                  // console.log(x);
                   listname = listname + " / " + x.name;
                 })
               );
             }
           }
+
           if (checkpoint) {
             console.log(listname);
             await db.Warehouse_product.create({

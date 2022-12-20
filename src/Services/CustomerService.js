@@ -275,10 +275,10 @@ let changePassword = (data) => {
             errMessage: "Your password has been Update",
           });
         } else {
-          reject({ errCode: 2, errMessage: "Your Old password not correct" });
+          resolve({ errCode: 2, errMessage: "Your Old password not correct" });
         }
       } else {
-        reject({
+        resolve({
           errCode: 1,
           errMessage: "Your new password and re-password not correct",
         });
