@@ -955,26 +955,8 @@ let createWareHouseProduct = (data) => {
         let listname = cp.name;
         let ot = data.optionvalue;
         let check = true;
+        let count = 0;
         let a = [];
-        let oplength = await db.Option_Product.findAll({
-          where: {
-            product_id: cp.id,
-          },
-          attributes: ["id", "name", "option_id"],
-        });
-        console.log(oplength);
-        if (oplength && oplength.length > 0) {
-          await Promise.all(
-            oplength.map(async (x) => {
-              let obj = {};
-              obj.option_id = x.option_id;
-              a.push(obj);
-            })
-          );
-        }
-        Array.from(new Set(a));
-        console.log(a);
-
         await Promise.all(
           ot.map(async (x) => {
             let option = await db.Option_Product.findOne({
@@ -1027,19 +1009,19 @@ let createWareHouseProduct = (data) => {
           }
           if (checkpoint) {
             console.log(listname);
-            // await db.Warehouse_product.create({
-            //   name: listname,
-            //   product_id: data.product_id,
-            //   warehouse_id: data.warehouse_id,
-            //   quantity: data.quantity,
-            //   optionvalue: data.optionvalue,
-            // });
-            // let sum2 = await db.Warehouse_product.sum("quantity", {
-            //   where: { product_id: data.product_id },
-            // });
-            // cp.currentQuantity = sum2;
-            // cp.status = 1;
-            // await cp.save();
+            await db.Warehouse_product.create({
+              name: listname,
+              product_id: data.product_id,
+              warehouse_id: data.warehouse_id,
+              quantity: data.quantity,
+              optionvalue: data.optionvalue,
+            });
+            let sum2 = await db.Warehouse_product.sum("quantity", {
+              where: { product_id: data.product_id },
+            });
+            cp.currentQuantity = sum2;
+            cp.status = 1;
+            await cp.save();
             resolve({
               errCode: 0,
               errMessage: "Create Product Warehouse Successfully",
