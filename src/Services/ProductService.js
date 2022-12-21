@@ -140,10 +140,8 @@ let getProductDetail = (id) => {
             through: {
               attributes: ["id", "name", "option_id", "product_id", "listimg"],
             },
-            Order: ["option_id"],
           },
         ],
-
         raw: true,
         plain: false,
         nest: true,

@@ -137,8 +137,34 @@ let updateWarranty = (data) => {
     }
   });
 };
+let warrantyByCus = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log(id);
+      let warranty = await db.Warranty.findAll({
+        where: { cus_id: id },
+        raw: true,
+        nest: false,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        warranty,
+      });
+      if (!warranty) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot find warranty",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllWarrantyProduct,
   createWarranty,
   updateWarranty,
+  warrantyByCus,
 };

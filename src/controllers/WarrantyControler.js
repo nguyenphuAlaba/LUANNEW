@@ -26,8 +26,18 @@ let handleUpdateWarranty = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleWarrantyByCus = async (request, response) => {
+  try {
+    let id = request.params.cusId;
+    let Warranty = await WarrantyService.warrantyByCus(id);
+    return response.status(200).json(Warranty);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllWarranty,
   handleCreateWarranty,
+  handleWarrantyByCus,
   handleUpdateWarranty,
 };
