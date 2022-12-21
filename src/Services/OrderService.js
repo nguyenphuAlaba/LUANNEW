@@ -437,6 +437,7 @@ let cancelOrder = (id) => {
     }
   });
 };
+////// update
 let deleteOrder = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -476,7 +477,6 @@ let deleteOrder = (id) => {
     }
   });
 };
-
 let updateOrderStatus = (id) => {
   return new Promise(async (resolve, reject) => {
     try {

@@ -140,7 +140,7 @@ let getProductDetail = (id) => {
             through: {
               attributes: ["id", "name", "option_id", "product_id", "listimg"],
             },
-            Order: ["id"],
+            Order: ["option_id"],
           },
         ],
 
@@ -1014,6 +1014,8 @@ let createWareHouseProduct = (data) => {
               resolve({
                 errCode: 3,
                 errMessage: "Your Option not matching your product",
+                mes: "Product " + data.product_id + " Have option",
+                oplength,
               });
             }
             /// lấy mảng option_id
@@ -1072,6 +1074,7 @@ let createWareHouseProduct = (data) => {
                   "Your Option is not available you need : " +
                   b.length +
                   " different attributes",
+                oplength,
               });
             }
           }
