@@ -12,15 +12,6 @@ let getAllWarrantyProduct = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
       let Warranty = await db.Warranty.findAll({
-        include: [
-          {
-            model: db.Warranty_info,
-            as: "WarrantyInfor",
-            where: { store_id: id },
-          },
-          // { model: db.Store, as: "StoreWarranty" },
-          { model: db.Order, as: "OrderWarranty" },
-        ],
         raw: false,
         nest: true,
       });
@@ -162,6 +153,34 @@ let warrantyByCus = (id) => {
     }
   });
 };
+let getDetailWarranty = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let warranty = await db.Warranty.findOne({
+        where: { id: id },
+        include: [
+          { model: db.Warranty_info, as: "WarrantyInfor" },
+          // { model: db.Order, as: "OrderWarranty" },
+        ],
+        raw: false,
+        nest: true,
+      });
+      if (!warranty) {
+        resolve({
+          errCode: 1,
+          errMessage: "Warranty not found",
+        });
+      }
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        warranty,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 let getAllStore = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -185,10 +204,12 @@ let getAllStore = () => {
     }
   });
 };
+
 module.exports = {
   getAllWarrantyProduct,
   createWarranty,
   updateWarranty,
   warrantyByCus,
   getAllStore,
+  getDetailWarranty,
 };
