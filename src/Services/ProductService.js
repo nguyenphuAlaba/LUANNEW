@@ -961,6 +961,7 @@ let createWareHouseProduct = (data) => {
             product_id: cp.id,
           },
           attributes: ["id", "name", "option_id"],
+          order: ["option_id"],
         });
         if (oplength && oplength.length > 0) {
           await Promise.all(
@@ -998,57 +999,73 @@ let createWareHouseProduct = (data) => {
           })
         );
         if (check) {
-          // console.log(b);
+          let checkpoint = true;
           // for (let i = 0; i < list.length; i++) {
-          //   if (list[i].option_id == b[i]) {
-          //     console.log(list[i].option_id, b[i]);
-          //   } else {
-          //     console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+          //   for (let j = i + 1; j < list.length; j++) {
+          //     if (list[i].option_id == list[j].option_id) {
+          //       checkpoint = false;
+          //       resolve({
+          //         errCode: 2,
+          //         errMessage: "Your Option duplicate",
+          //       });
+          //     } else {
+          //       if (list[i].option_id > list[j].option_id) {
+          //         let swap = list[j];
+          //         list[j] = list[i];
+          //         list[i] = swap;
+          //       }
+          //     }
           //   }
           // }
-
-          // console.log(list.length);
-          // console.log(list);
-          let checkpoint = true;
           for (let i = 0; i < list.length; i++) {
             for (let j = i + 1; j < list.length; j++) {
-              if (list[i].option_id == list[j].option_id) {
-                checkpoint = false;
-                resolve({
-                  errCode: 2,
-                  errMessage: "Your Option duplicate",
-                });
-              } else {
-                if (list[i].option_id > list[j].option_id) {
-                  let swap = list[j];
-                  list[j] = list[i];
-                  list[i] = swap;
-                }
-                // console.log(list);
+              if (list[i].option_id > list[j].option_id) {
+                let swap = list[j];
+                list[j] = list[i];
+                list[i] = swap;
               }
-              await Promise.all(
-                list.map(async (x) => {
-                  listname = listname + " / " + x.name;
-                })
-              );
             }
           }
-
+          let u = [];
+          await Promise.all(
+            list.map(async (x) => {
+              let obj = {};
+              obj = x.option_id;
+              u.push(obj);
+            })
+          );
+          console.log(list);
+          console.log(b);
+          console.log(u);
+          for (let i = 0; i < b.length; i++) {
+            if (b[i] != u[i]) {
+              checkpoint = false;
+              resolve({
+                errCode: 2,
+                errMessage: "Your Option is not available",
+              });
+            }
+          }
           if (checkpoint) {
+            await Promise.all(
+              list.map(async (x) => {
+                listname = listname + " / " + x.name;
+              })
+            );
             console.log(listname);
-            await db.Warehouse_product.create({
-              name: listname,
-              product_id: data.product_id,
-              warehouse_id: data.warehouse_id,
-              quantity: data.quantity,
-              optionvalue: data.optionvalue,
-            });
-            let sum2 = await db.Warehouse_product.sum("quantity", {
-              where: { product_id: data.product_id },
-            });
-            cp.currentQuantity = sum2;
-            cp.status = 1;
-            await cp.save();
+            //   await db.Warehouse_product.create({
+            //     name: listname,
+            //     product_id: data.product_id,
+            //     warehouse_id: data.warehouse_id,
+            //     quantity: data.quantity,
+            //     optionvalue: data.optionvalue,
+            //   });
+            //   let sum2 = await db.Warehouse_product.sum("quantity", {
+            //     where: { product_id: data.product_id },
+            //   });
+            //   cp.currentQuantity = sum2;
+            //   cp.status = 1;
+            //   await cp.save();
             resolve({
               errCode: 0,
               errMessage: "Create Product Warehouse Successfully",
@@ -1064,7 +1081,6 @@ let createWareHouseProduct = (data) => {
 let getWarehouseQuantity = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log(data);
       if (!data.product_id || !data.optionvalue) {
         resolve({
           errCode: 1,
@@ -1082,10 +1098,28 @@ let getWarehouseQuantity = (data) => {
         raw: false,
         nest: true,
       });
+      let op = data.optionvalue;
+      let po = await db.Product.findOne({
+        where: { id: data.product_id },
+        raw: false,
+        nest: true,
+      });
+      let price = po.unitprice;
+      await Promise.all(
+        op.map(async (item) => {
+          let option = await db.Option_Product.findOne({
+            where: { id: item },
+            raw: false,
+            nest: true,
+          });
+          price = price + option.price;
+        })
+      );
       resolve({
         errCode: 0,
         errMessage: "Ok",
         qa,
+        price,
       });
     } catch (error) {
       reject(error);
