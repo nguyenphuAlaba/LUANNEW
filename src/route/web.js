@@ -130,6 +130,7 @@ let initWebRoutes = (app) => {
   );
   //store
   router.get("/api/get-all-store/", WarrantyControler.handleGetAllStore);
+
   //brand
   router.get("/api/get-brand/", BrandControler.handleGetAllBrand);
   router.post("/api/get-create-brand/", BrandControler.handleCreateBrand);
