@@ -529,6 +529,32 @@ let updateAmountProductWarehouse = (data) => {
     }
   });
 };
+let deleteProductbystatus = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let cp = await db.Product.findOne({
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      if (!cp) {
+        resolve({
+          errCode: 1,
+          errMessage: "Product not found",
+        });
+      } else {
+        cp.status = 4;
+        await cp.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Product have been hiden successfully",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 //////////////////////////////////////////
 //////////WISHLIST/////REVIEW////
 let getAllProductWislishByCusID = (id) => {
@@ -1042,7 +1068,10 @@ let createWareHouseProduct = (data) => {
               checkpoint = false;
               resolve({
                 errCode: 2,
-                errMessage: "Your Option is not available",
+                errMessage:
+                  "Your Option is not available you need : " +
+                  b.length +
+                  " different attributes",
               });
             }
           }
@@ -1053,19 +1082,19 @@ let createWareHouseProduct = (data) => {
               })
             );
             console.log(listname);
-            //   await db.Warehouse_product.create({
-            //     name: listname,
-            //     product_id: data.product_id,
-            //     warehouse_id: data.warehouse_id,
-            //     quantity: data.quantity,
-            //     optionvalue: data.optionvalue,
-            //   });
-            //   let sum2 = await db.Warehouse_product.sum("quantity", {
-            //     where: { product_id: data.product_id },
-            //   });
-            //   cp.currentQuantity = sum2;
-            //   cp.status = 1;
-            //   await cp.save();
+            await db.Warehouse_product.create({
+              name: listname,
+              product_id: data.product_id,
+              warehouse_id: data.warehouse_id,
+              quantity: data.quantity,
+              optionvalue: data.optionvalue,
+            });
+            let sum2 = await db.Warehouse_product.sum("quantity", {
+              where: { product_id: data.product_id },
+            });
+            cp.currentQuantity = sum2;
+            cp.status = 1;
+            await cp.save();
             resolve({
               errCode: 0,
               errMessage: "Create Product Warehouse Successfully",
@@ -1152,5 +1181,6 @@ module.exports = {
   getAllProductadmin,
   createOpttion,
   getWarehouseQuantity,
+  deleteProductbystatus,
   upload,
 };

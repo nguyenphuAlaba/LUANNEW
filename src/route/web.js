@@ -96,6 +96,10 @@ let initWebRoutes = (app) => {
     "/api/get-product-quantity/",
     ProductControler.handleGetWarehouseQuantity
   );
+  router.put(
+    "/api/delete-product-soft/:productId/",
+    ProductControler.handleDeleteProductbystatus
+  );
   //Cart
   router.post("/api/add-to-cart", CartControler.handleAddProductToCart);
   router.get("/api/get-all-cart", CartControler.handleGetAllCat);
