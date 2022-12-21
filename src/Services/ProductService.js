@@ -1075,6 +1075,17 @@ let createWareHouseProduct = (data) => {
                 oplength,
               });
             }
+            if (b.length < u.length) {
+              checkpoint = false;
+              resolve({
+                errCode: 2,
+                errMessage:
+                  "Your Option is not available you need : " +
+                  b.length +
+                  " different attributes",
+                oplength,
+              });
+            }
           }
           if (checkpoint) {
             await Promise.all(

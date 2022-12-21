@@ -128,6 +128,8 @@ let initWebRoutes = (app) => {
     "/api/get-all-warranty-by-cus/:cusId/",
     WarrantyControler.handleWarrantyByCus
   );
+  //store
+  router.get("/api/get-all-store/", WarrantyControler.handleGetAllStore);
   //brand
   router.get("/api/get-brand/", BrandControler.handleGetAllBrand);
   router.post("/api/get-create-brand/", BrandControler.handleCreateBrand);

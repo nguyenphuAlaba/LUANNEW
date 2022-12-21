@@ -162,9 +162,33 @@ let warrantyByCus = (id) => {
     }
   });
 };
+let getAllStore = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let store = await db.Store.findAll({
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "OK",
+        store,
+      });
+      if (!store) {
+        resolve({
+          errCode: 1,
+          errMessage: "Store not found",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllWarrantyProduct,
   createWarranty,
   updateWarranty,
   warrantyByCus,
+  getAllStore,
 };
