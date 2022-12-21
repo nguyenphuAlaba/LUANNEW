@@ -150,6 +150,10 @@ let initWebRoutes = (app) => {
     CommentControler.handleDeleteComment
   );
   router.get("/api/get-all-comment/", CommentControler.handleGetAllComment);
+  router.get(
+    "/api/get-all-comment-customer/:cusId/",
+    CommentControler.handleGetCommentCustomer
+  );
   //commentblog
 
   //user

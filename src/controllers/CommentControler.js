@@ -44,10 +44,20 @@ let handleGetAllComment = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetCommentCustomer = async (request, response) => {
+  try {
+    let id = request.params.cusId;
+    let Comment = await CommentService.getCommentCustomer(id);
+    return response.status(200).json(Comment);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllCommentOfProductRate,
   handleUpdateComment,
   handleAddComment,
   handleDeleteComment,
   handleGetAllComment,
+  handleGetCommentCustomer,
 };

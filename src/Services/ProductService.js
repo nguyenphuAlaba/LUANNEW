@@ -998,17 +998,17 @@ let createWareHouseProduct = (data) => {
           })
         );
         if (check) {
-          //   console.log(b);
-          //   for (let i = 0; i < list.length; i++) {
-          //     if (list[i].option_id == b[i]) {
-          //       console.log(list[i].option_id, b[i]);
-          //     } else {
-          //       console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-          //     }
+          // console.log(b);
+          // for (let i = 0; i < list.length; i++) {
+          //   if (list[i].option_id == b[i]) {
+          //     console.log(list[i].option_id, b[i]);
+          //   } else {
+          //     console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
           //   }
+          // }
 
-          console.log(list.length);
-          console.log(list);
+          // console.log(list.length);
+          // console.log(list);
           let checkpoint = true;
           for (let i = 0; i < list.length; i++) {
             for (let j = i + 1; j < list.length; j++) {
@@ -1024,8 +1024,8 @@ let createWareHouseProduct = (data) => {
                   list[j] = list[i];
                   list[i] = swap;
                 }
+                // console.log(list);
               }
-              console.log(list);
               await Promise.all(
                 list.map(async (x) => {
                   listname = listname + " / " + x.name;

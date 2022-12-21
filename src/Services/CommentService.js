@@ -141,10 +141,35 @@ let getAllComment = () => {
     }
   });
 };
+let getCommentCustomer = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let comment = await db.Comment.findAll({
+        where: { cus_id: id },
+        raw: false,
+        nest: true,
+      });
+      if (!comment) {
+        resolve({
+          errCode: 1,
+          errMessage: "Cannot find customer comment",
+        });
+      }
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        comment,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllCommentOfProductRate,
   getAllComment,
   addComment,
   updateComment,
   deleteComment,
+  getCommentCustomer,
 };
