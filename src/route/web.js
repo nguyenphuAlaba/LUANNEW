@@ -132,6 +132,11 @@ let initWebRoutes = (app) => {
     "/api/get-all-warranty-by-cus/:cusId/",
     WarrantyControler.handleWarrantyByCus
   );
+  router.get(
+    "/api/get-all-warranty-info/:storeId/",
+    WarrantyControler.handleGetwarrantyInfor
+  );
+
   //store
   router.get("/api/get-all-store/", WarrantyControler.handleGetAllStore);
 
@@ -169,6 +174,8 @@ let initWebRoutes = (app) => {
     "/api/get-all-comment-customer/:cusId/",
     CommentControler.handleGetCommentCustomer
   );
+  //-----Comment Response -----------
+
   //commentblog
 
   //user

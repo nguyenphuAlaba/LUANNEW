@@ -14,6 +14,13 @@ let getAllWarrantyProduct = (id) => {
       let Warranty = await db.Warranty.findAll({
         raw: false,
         nest: true,
+        include: [
+          {
+            model: db.Warranty_info,
+            as: "WarrantyInfor",
+            where: { store_id: id },
+          },
+        ],
       });
       resolve({
         Warranty,
@@ -204,7 +211,25 @@ let getAllStore = () => {
     }
   });
 };
-
+let getwarrantyInfor = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log(id);
+      let warranty = await db.Warranty_info.findAll({
+        where: { store_id: id },
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        warranty,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllWarrantyProduct,
   createWarranty,
@@ -212,4 +237,5 @@ module.exports = {
   warrantyByCus,
   getAllStore,
   getDetailWarranty,
+  getwarrantyInfor,
 };

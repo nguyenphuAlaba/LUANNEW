@@ -52,6 +52,15 @@ let handlGetDetailWarranty = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetwarrantyInfor = async (request, response) => {
+  try {
+    let id = request.params.storeId;
+    let warranty = await WarrantyService.getwarrantyInfor(id);
+    return response.status(200).json(warranty);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllWarranty,
   handleCreateWarranty,
@@ -59,4 +68,5 @@ module.exports = {
   handleUpdateWarranty,
   handleGetAllStore,
   handlGetDetailWarranty,
+  handleGetwarrantyInfor,
 };

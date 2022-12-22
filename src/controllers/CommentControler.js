@@ -53,6 +53,14 @@ let handleGetCommentCustomer = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleCreateCommentResponse = async (request, response) => {
+  try {
+    let Comment = await CommentService.createCommentResponse(request.body);
+    return response.status(200).json(Comment);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllCommentOfProductRate,
   handleUpdateComment,
@@ -60,4 +68,5 @@ module.exports = {
   handleDeleteComment,
   handleGetAllComment,
   handleGetCommentCustomer,
+  handleCreateCommentResponse,
 };

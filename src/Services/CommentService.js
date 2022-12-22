@@ -165,6 +165,15 @@ let getCommentCustomer = (id) => {
     }
   });
 };
+let createCommentResponse = async (data) => {
+  return new Promise((resolve, reject) => {
+    try {
+      console.log(data);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllCommentOfProductRate,
   getAllComment,
@@ -172,4 +181,5 @@ module.exports = {
   updateComment,
   deleteComment,
   getCommentCustomer,
+  createCommentResponse,
 };
