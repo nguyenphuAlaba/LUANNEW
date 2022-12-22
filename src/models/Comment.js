@@ -19,9 +19,9 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "CommentProduct",
       });
-      Comment.hasMany(models.Comment, {
+      Comment.hasMany(models.CommentRespon, {
         foreignKey: "comment_id",
-        as: "CommentRespon",
+        as: "CommentRespon1",
       });
     }
   }

@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       CommentRespon.belongsTo(models.Comment, {
         foreignKey: "comment_id",
         targetKey: "id",
-        as: "CommentRespon",
+        as: "CommentRespon1",
       });
       CommentRespon.belongsTo(models.Customer, {
         foreignKey: "cus_id",

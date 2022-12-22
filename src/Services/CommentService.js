@@ -182,7 +182,97 @@ let createCommentResponse = (data) => {
         where: { id: data.comment_id },
       });
       if (cu && cm) {
-        await db.CommentRespon.create({});
+        await db.CommentRespon.create({
+          cus_id: data.cus_id,
+          comment_id: data.comment_id,
+          description: data.description,
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "Comment Response Created Successfully",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let getAllCommentResponses = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!id) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing required",
+        });
+      }
+      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+      let commentres = await db.CommentRespon.findAll({
+        where: { comment_id: id },
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        commentres,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let updateCommentResponse = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let comment = await db.CommentRespon.findOne({
+        where: {
+          id: data.id,
+          cus_id: data.cus_id,
+          comment_id: data.comment_id,
+        },
+        raw: false,
+        nest: true,
+      });
+      if (!comment) {
+        resolve({
+          errCode: 1,
+          errMessage: "Comment not found",
+        });
+      } else {
+        comment.description = data.description;
+        await comment.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Update comment successfully",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let deleteCommentResponse = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let comment = await db.CommentRespon.findOne({
+        where: { id: id },
+        raw: false,
+        nest: true,
+      });
+      if (!comment) {
+        resolve({
+          errCode: 1,
+          errMessage: "Comment not found",
+        });
+      } else {
+        await db.CommentRespon.destroy({
+          where: { id: id },
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "Delete comment successfully",
+        });
       }
     } catch (error) {
       reject(error);
@@ -197,4 +287,7 @@ module.exports = {
   deleteComment,
   getCommentCustomer,
   createCommentResponse,
+  getAllCommentResponses,
+  updateCommentResponse,
+  deleteCommentResponse,
 };

@@ -1,3 +1,4 @@
+import { request, response } from "express";
 import db from "../models/index";
 import CommentService from "../Services/CommentService";
 
@@ -61,6 +62,32 @@ let handleCreateCommentResponse = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetAllCommentResponses = async (request, response) => {
+  try {
+    let id = request.params.commentId;
+    let CommentRes = await CommentService.getAllCommentResponses(id);
+    return response.status(200).json(CommentRes);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
+let handleUpdateCommentResponse = async (request, response) => {
+  try {
+    let Comment = await CommentService.updateCommentResponse(request.body);
+    return response.status(200).json(Comment);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
+let handleDeleteCommentResponse = async (request, response) => {
+  try {
+    let id = request.params.commentId;
+    let Comment = await CommentService.deleteCommentResponse(id);
+    return response.status(200).json(Comment);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllCommentOfProductRate,
   handleUpdateComment,
@@ -69,4 +96,7 @@ module.exports = {
   handleGetAllComment,
   handleGetCommentCustomer,
   handleCreateCommentResponse,
+  handleGetAllCommentResponses,
+  handleUpdateCommentResponse,
+  handleDeleteCommentResponse,
 };

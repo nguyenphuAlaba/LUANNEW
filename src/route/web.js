@@ -176,6 +176,18 @@ let initWebRoutes = (app) => {
     "/api/create-comment-response/",
     CommentControler.handleCreateCommentResponse
   );
+  router.get(
+    "/api/get-comment-respone/:commentId/",
+    CommentControler.handleGetAllCommentResponses
+  );
+  router.put(
+    "/api/update-comment-respone/",
+    CommentControler.handleUpdateCommentResponse
+  );
+  router.delete(
+    "/api/delete-comment-respone/:commentId/",
+    CommentControler.handleDeleteCommentResponse
+  );
   //commentblog
 
   //user
