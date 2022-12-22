@@ -38,6 +38,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "cus_id",
         as: "UserWarranty",
       });
+      Customer.hasMany(models.CommentRespon, {
+        foreignKey: "cus_id",
+        as: "CustomerCommentRespon",
+      });
     }
   }
   Customer.init(

@@ -165,10 +165,25 @@ let getCommentCustomer = (id) => {
     }
   });
 };
-let createCommentResponse = async (data) => {
-  return new Promise((resolve, reject) => {
+let createCommentResponse = (data) => {
+  return new Promise(async (resolve, reject) => {
     try {
       console.log(data);
+      if (!data) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing required data",
+        });
+      }
+      let cu = await db.Customer.findOne({
+        where: { id: data.cus_id },
+      });
+      let cm = await db.Comment.findOne({
+        where: { id: data.comment_id },
+      });
+      if (cu && cm) {
+        await db.CommentRespon.create({});
+      }
     } catch (error) {
       reject(error);
     }

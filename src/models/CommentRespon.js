@@ -14,10 +14,16 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "CommentRespon",
       });
+      CommentRespon.belongsTo(models.Customer, {
+        foreignKey: "cus_id",
+        targetKey: "id",
+        as: "CustomerCommentRespon",
+      });
     }
   }
   CommentRespon.init(
     {
+      cus_id: DataTypes.INTEGER,
       comment_id: DataTypes.INTEGER,
       description: DataTypes.STRING,
     },

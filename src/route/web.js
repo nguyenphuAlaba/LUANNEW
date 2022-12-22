@@ -118,10 +118,7 @@ let initWebRoutes = (app) => {
     CartControler.handleDeleteAllCartitem
   );
   //Warranty
-  router.get(
-    "/api/get-all-warranty/:storeId/",
-    WarrantyControler.handleGetAllWarranty
-  );
+  router.get("/api/get-all-warranty/", WarrantyControler.handleGetAllWarranty);
   router.get(
     "/api/get-detail-warranty/:warrantyId/",
     WarrantyControler.handlGetDetailWarranty
@@ -175,7 +172,10 @@ let initWebRoutes = (app) => {
     CommentControler.handleGetCommentCustomer
   );
   //-----Comment Response -----------
-
+  router.post(
+    "/api/create-comment-response/",
+    CommentControler.handleCreateCommentResponse
+  );
   //commentblog
 
   //user

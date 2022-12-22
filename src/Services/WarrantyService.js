@@ -8,19 +8,12 @@ import moment from "moment";
 var salt = bcrypt.genSaltSync(10);
 var cloudinary = require("cloudinary").v2;
 
-let getAllWarrantyProduct = (id) => {
+let getAllWarrantyProduct = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let Warranty = await db.Warranty.findAll({
         raw: false,
         nest: true,
-        include: [
-          {
-            model: db.Warranty_info,
-            as: "WarrantyInfor",
-            where: { store_id: id },
-          },
-        ],
       });
       resolve({
         Warranty,
