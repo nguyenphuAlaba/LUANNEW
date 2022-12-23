@@ -175,21 +175,22 @@ let createCommentResponse = (data) => {
           errMessage: "Missing required data",
         });
       }
-      let cu = await db.Customer.findOne({
-        where: { id: data.cus_id },
-      });
       let cm = await db.Comment.findOne({
         where: { id: data.comment_id },
       });
-      if (cu && cm) {
+      if (cm) {
         await db.CommentRespon.create({
-          cus_id: data.cus_id,
           comment_id: data.comment_id,
           description: data.description,
         });
         resolve({
           errCode: 0,
           errMessage: "Comment Response Created Successfully",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Comment not found",
         });
       }
     } catch (error) {
@@ -206,7 +207,6 @@ let getAllCommentResponses = (id) => {
           errMessage: "Missing required",
         });
       }
-      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
       let commentres = await db.CommentRespon.findAll({
         where: { comment_id: id },
         raw: false,

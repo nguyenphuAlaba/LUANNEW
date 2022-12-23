@@ -137,6 +137,14 @@ let handleUpdateOrderStatus4 = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleCountOrderStatus1 = async (request, response) => {
+  try {
+    let Order = await OrderService.countOrderStatus1();
+    return response.status(200).json(Order);
+  } catch (error) {
+    return response.status(500).json(error);
+  }
+};
 module.exports = {
   handleGetAllOrder,
   handleAllOrderByStatus,
@@ -150,4 +158,5 @@ module.exports = {
   handleCancelOrder,
   handleUpdateOrderStatus3,
   handleUpdateOrderStatus4,
+  handleCountOrderStatus1,
 };

@@ -60,22 +60,29 @@ let createWarranty = (data) => {
           });
         } else {
           let sta = await db.Store_staff.findOne({
-            where: { id: data.sta_id },
+            where: { sta_id: data.sta_id },
           });
-          await db.Warranty_info.create({
-            name: checkSeri.name,
-            infor: data.infor,
-            description: data.description,
-            product_id: data.product_id,
-            warranty_id: warranty.id,
-            serinumber: data.serinumber,
-            sta_id: sta.sta_id,
-            store: sta.store_id,
-          });
-          resolve({
-            errCode: 0,
-            errMessage: "Your warranty has been created successfully",
-          });
+          if (!sta) {
+            resolve({
+              errCode: 4,
+              errMessage: "Couldn't find Staff",
+            });
+          } else {
+            await db.Warranty_info.create({
+              name: checkSeri.name,
+              infor: data.infor,
+              description: data.description,
+              product_id: data.product_id,
+              warranty_id: warranty.id,
+              serinumber: data.serinumber,
+              sta_id: sta.sta_id,
+              store_id: sta.store_id,
+            });
+            resolve({
+              errCode: 0,
+              errMessage: "Your warranty has been created successfully",
+            });
+          }
         }
       }
     } catch (error) {

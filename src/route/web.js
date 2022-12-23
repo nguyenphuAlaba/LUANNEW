@@ -252,6 +252,10 @@ let initWebRoutes = (app) => {
     "/api/get-order-detail/:orderId/",
     OrderControler.handleGetDetailProduct
   );
+  router.get(
+    "/api/get-count-order-status/",
+    OrderControler.handleCountOrderStatus1
+  );
   //Blog
   router.get("/api/get-all-blog/", BlogControler.handleGetAllBlog);
   router.get(

@@ -21,7 +21,7 @@ var redirectUrl = "http://localhost:3000/";
 // var ipnUrl = "https://57ce-2402-800-6371-a14a-ed0d-ccd6-cbe9-5ced.ngrok.io/api/handle-order";
 
 var notifyUrl =
-  "https://1a02-2402-800-6315-112-9df6-f590-69b2-1982.ap.ngrok.io/api/handle-order/";
+  "https://b89a-2402-800-6314-b7c1-8cbb-eea4-fb94-9689.ap.ngrok.io/api/handle-order/";
 // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
 var requestType = "captureWallet";
 
@@ -437,6 +437,24 @@ let cancelOrder = (id) => {
     }
   });
 };
+let countOrderStatus1 = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let countOrder = await db.Order.count({
+        where: { status: 1 },
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        countOrder,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 ////// update
 let deleteOrder = (id) => {
   return new Promise(async (resolve, reject) => {
@@ -643,6 +661,7 @@ let updateOrderStatus4 = (id) => {
     }
   });
 };
+
 //
 
 // get link momo
@@ -830,4 +849,5 @@ module.exports = {
   updateOrderStatus4,
   cancelOrder,
   getRandomInt,
+  countOrderStatus1,
 };
