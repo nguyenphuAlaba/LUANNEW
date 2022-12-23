@@ -800,6 +800,9 @@ let updateOptionProduct = (data) => {
           if (!data.option_id) {
             data.option_id = checkOP.option_id;
           }
+          if (!data.name) {
+            data.name = checkOP.name;
+          }
           await sequelize.query(
             'UPDATE "Option_Product" SET "name" = :ss, "price" = :tt, "product_id" = :pr, "option_id" = :op WHERE "Option_Product"."id" = :ff;',
             {
