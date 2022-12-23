@@ -279,6 +279,23 @@ let deleteCommentResponse = (id) => {
     }
   });
 };
+let getAllCommentResponsesAdmin = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let comment = await db.CommentRespon.findAll({
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        comment,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   getAllCommentOfProductRate,
   getAllComment,
@@ -290,4 +307,5 @@ module.exports = {
   getAllCommentResponses,
   updateCommentResponse,
   deleteCommentResponse,
+  getAllCommentResponsesAdmin,
 };

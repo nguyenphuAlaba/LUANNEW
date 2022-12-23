@@ -88,6 +88,14 @@ let handleDeleteCommentResponse = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetAllCommentResponsesAdmin = async (request, respone) => {
+  try {
+    let Comment = await CommentService.getAllCommentResponsesAdmin();
+    return respone.status(200).json(Comment);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllCommentOfProductRate,
   handleUpdateComment,
@@ -99,4 +107,5 @@ module.exports = {
   handleGetAllCommentResponses,
   handleUpdateCommentResponse,
   handleDeleteCommentResponse,
+  handleGetAllCommentResponsesAdmin,
 };

@@ -171,6 +171,10 @@ let initWebRoutes = (app) => {
     "/api/get-all-comment-customer/:cusId/",
     CommentControler.handleGetCommentCustomer
   );
+  router.get(
+    "/api/get-all-comment-admin/",
+    CommentControler.handleGetAllCommentResponsesAdmin
+  );
   //-----Comment Response -----------
   router.post(
     "/api/create-comment-response/",
