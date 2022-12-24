@@ -228,6 +228,10 @@ let initWebRoutes = (app) => {
     "/api/create-order-user/",
     OrderControler.handleGetCreateOrderByUser
   );
+  router.post(
+    "/api/create-order-direct/",
+    OrderControler.handleCreateOrderDirectPayment
+  );
   router.get(
     "/api/get-order-by-user/:id/",
     OrderControler.handleGetAllOrderByUser

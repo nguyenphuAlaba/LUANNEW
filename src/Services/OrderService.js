@@ -10,6 +10,7 @@ const https = require("https");
 import emailService from "./emailService";
 import moment from "moment";
 import { totalmem } from "os";
+import { resolve } from "path";
 //parameters
 var partnerCode = "MOMO";
 var accessKey = "F8BBA842ECF85";
@@ -455,6 +456,52 @@ let countOrderStatus1 = () => {
     }
   });
 };
+let createOrderDirectPayment = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let pu = await db.Customer.findOne({
+        where: {
+          phonenumber: data.phonenumber,
+        },
+        attributes: ["email", "fullname", "phonenumber"],
+        nest: true,
+        raw: false,
+      });
+      if (pu) {
+        console.log(data);
+        console.log(data.product);
+        let product = data.product;
+        await Promise.all(
+          product.map(async (x) => {
+            let p = await db.Warehouse_product.findOne({
+              where: { product_id: x.product_id, optionvalue: x.optionvalue },
+              raw: false,
+              nest: true,
+            });
+            let year = moment(new Date()).format("YYYY");
+            let month = moment(new Date()).format("MM");
+            let day = moment(new Date()).format("DD");
+            let codeor = "O3D3R" + year + month + day + getRandomInt(10000);
+            await db.Order.create({
+              code: codeor,
+              fullname: data.fullname,
+              email: pu.email,
+              status: 5,
+              Address: pu.Address,
+              phonenumber: pu.phonenumber,
+              paymentstatus: 3,
+            }).then(function (x) {
+              if (x) {
+              }
+            });
+          })
+        );
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 ////// update
 let deleteOrder = (id) => {
   return new Promise(async (resolve, reject) => {
@@ -850,4 +897,5 @@ module.exports = {
   cancelOrder,
   getRandomInt,
   countOrderStatus1,
+  createOrderDirectPayment,
 };

@@ -18,5 +18,9 @@
   {
     "id": 5,
     "name": "Đơn hàng đã bị hủy"
+  },
+  {
+    "id": 6,
+    "name": "Đơn hàng thanh toán trực tiếp"
   }
 ]

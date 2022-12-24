@@ -230,6 +230,7 @@ let getwarrantyInfor = (id) => {
     }
   });
 };
+
 module.exports = {
   getAllWarrantyProduct,
   createWarranty,

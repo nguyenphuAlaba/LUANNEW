@@ -128,6 +128,7 @@ let getAllComment = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let comment = await db.Comment.findAll({
+        include: [{ model: db.CommentRespon, as: "CommentRespon1" }],
         raw: false,
         nest: true,
       });
@@ -228,7 +229,6 @@ let updateCommentResponse = (data) => {
       let comment = await db.CommentRespon.findOne({
         where: {
           id: data.id,
-          cus_id: data.cus_id,
           comment_id: data.comment_id,
         },
         raw: false,
