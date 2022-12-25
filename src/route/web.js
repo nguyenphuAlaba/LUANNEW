@@ -224,6 +224,7 @@ let initWebRoutes = (app) => {
     "/api/get-all-order-by-status/:status/",
     OrderControler.handleAllOrderByStatus
   );
+  router.get("/api/Count-Order-chart/", OrderControler.handleCountOrder);
   router.post(
     "/api/create-order-user/",
     OrderControler.handleGetCreateOrderByUser

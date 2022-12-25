@@ -153,6 +153,14 @@ let handleCreateOrderDirectPayment = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleCountOrder = async (request, response) => {
+  try {
+    let Order = await OrderService.countOrder();
+    return response.status(200).json(Order);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 module.exports = {
   handleGetAllOrder,
   handleAllOrderByStatus,
@@ -168,4 +176,5 @@ module.exports = {
   handleUpdateOrderStatus4,
   handleCountOrderStatus1,
   handleCreateOrderDirectPayment,
+  handleCountOrder,
 };

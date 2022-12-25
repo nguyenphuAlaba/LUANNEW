@@ -459,47 +459,90 @@ let countOrderStatus1 = () => {
 let createOrderDirectPayment = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log(data);
       let pu = await db.Customer.findOne({
         where: {
           phonenumber: data.phonenumber,
         },
-        attributes: ["email", "fullname", "phonenumber", "address"],
+        attributes: ["email", "fullname", "phonenumber", "address", "id"],
         nest: true,
         raw: false,
       });
       if (pu) {
         let product = data.product;
-        // let year = moment(new Date()).format("YYYY");
-        // let month = moment(new Date()).format("MM");
-        // let day = moment(new Date()).format("DD");
-        // let codeor = "O3D3R" + year + month + day + getRandomInt(10000);
-        // await db.Order.create({
-        //   code: codeor,
-        //   fullname: data.fullname,
-        //   email: pu.email,
-        //   cus_id: pu.id,
-        //   voucher_id: 1,
-        //   method_id: 3,
-        //   warehouse_id: data.warehouse_id,
-        //   status: 5,
-        //   Address: pu.Address,
-        //   phonenumber: pu.phonenumber,
-        //   paymentstatus: 2,
-        // }).then(function (x){});
-        await Promise.all(
-          product.map(async (x) => {
-            let p = await db.Warehouse_product.findOne({
-              where: { product_id: x.product_id, optionvalue: x.optionvalue },
-              raw: false,
-              nest: true,
-            });
-            for (let i = 0; i < data.amount; i++) {
-              let seri = "TPS" + year + month + day + getRandomInt(10000);
-            }
-            await db.Orderitem.create({});
-          })
-        );
+        let listOr = [];
+        let year = moment(new Date()).format("YYYY");
+        let month = moment(new Date()).format("MM");
+        let day = moment(new Date()).format("DD");
+        let codeor = "O3D3R" + year + month + day + getRandomInt(10000);
+        await db.Order.create({
+          code: codeor,
+          fullname: data.fullname,
+          email: pu.email,
+          cus_id: pu.id,
+          voucher_id: 1,
+          method_id: 3,
+          warehouse_id: data.warehouse_id,
+          status: 5,
+          Address: pu.address,
+          phonenumber: pu.phonenumber,
+          paymentstatus: 2,
+        }).then(async function (item) {
+          await Promise.all(
+            product.map(async (x) => {
+              let p = await db.Warehouse_product.findOne({
+                where: { product_id: x.product_id, optionvalue: x.optionvalue },
+                raw: false,
+                nest: true,
+              });
+              for (let i = 0; i < x.amount; i++) {
+                let seri = "TPS" + year + month + day + getRandomInt(10000);
+                let pp = {};
+                let pu = await db.Product.findOne({
+                  where: { id: x.product_id },
+                  raw: false,
+                  nest: true,
+                });
+                pp.price = pu.unitprice;
+                let o = x.optionvalue;
+                await Promise.all(
+                  o.map(async (y) => {
+                    let op = await db.Option_Product.findOne({
+                      where: { id: y, product_id: x.product_id },
+                      raw: false,
+                      nest: true,
+                    });
+                    if (!op) {
+                      resolve({
+                        errCode: 1,
+                        errMessage:
+                          "Your option : " +
+                          y +
+                          " with product " +
+                          x.product_id,
+                      });
+                    } else {
+                      pp.price = pp.price + op.price;
+                    }
+                  })
+                );
+                pp.serinumber = seri;
+                pp.name = p.name;
+                pp.order_id = item.id;
+                pp.product_id = x.product_id;
+                pp.amount = x.amount;
+                pp.optionValues = x.optionvalue;
+                pp.TotalQuantity = 1;
+                pp.TotalPrice = pp.price;
+                await listOr.push(pp);
+              }
+            })
+          );
+          await db.Orderitem.bulkCreate(listOr);
+          resolve({
+            errCode: 0,
+            errMessage: "Create Order Successfull: " + item.id,
+          });
+        });
       }
     } catch (error) {
       reject(error);
@@ -713,7 +756,49 @@ let updateOrderStatus4 = (id) => {
   });
 };
 
-//
+//-----------Chart (Thống kê)--------------------------------
+let countOrder = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let ordersta4 = await db.Order.count({
+        where: { status: 4 },
+        raw: false,
+        nest: true,
+      });
+      let price = 0;
+      let sumorder = await db.Orderitem.findAll({
+        include: [{ model: db.Order, as: "orderItem", where: { status: 4 } }],
+        raw: false,
+        nest: true,
+      });
+      if (sumorder && sumorder.length > 0) {
+        await Promise.all(
+          sumorder.map(async (x) => {
+            price = price + x.TotalPrice;
+          })
+        );
+      }
+      let order = await db.Order.count({
+        raw: false,
+        nest: true,
+      });
+      let product = await db.Orderitem.count({
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        ordersta4,
+        price,
+        order,
+        product,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 // get link momo
 let getMomoPaymentLink = async (req) => {
@@ -902,4 +987,5 @@ module.exports = {
   getRandomInt,
   countOrderStatus1,
   createOrderDirectPayment,
+  countOrder,
 };
