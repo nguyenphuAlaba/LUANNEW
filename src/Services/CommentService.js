@@ -147,6 +147,7 @@ let getCommentCustomer = (id) => {
     try {
       let comment = await db.Comment.findAll({
         where: { cus_id: id },
+        include: [{ model: db.CommentRespon, as: "CommentRespon1" }],
         raw: false,
         nest: true,
       });
