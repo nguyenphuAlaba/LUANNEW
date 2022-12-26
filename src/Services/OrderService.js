@@ -824,7 +824,34 @@ let countOrder = () => {
     }
   });
 };
+let orderFormMonth = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let order = await db.Order.findAll({
+        raw: false,
+        nest: true,
+      });
+      if (order && order.length > 0) {
+        await Promise.all(
+          order.map(async (item) => {
+            let day = moment(item.createdAt, "YYYY/MM/DD").date();
+            let month = moment(item.createdAt, "YYYY/MM/DD").month();
+            let year = moment(item.createdAt, "YYYY/MM/DD").year();
+            console.log(day, month, year);
+          })
+        );
+      }
 
+      resolve({
+        errCode: 0,
+        errMessage: "ok",
+        order,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 // get link momo
 let getMomoPaymentLink = async (req) => {
   var requestId = partnerCode + new Date().getTime();
@@ -996,6 +1023,7 @@ let handleOrderPayment = async (req) => {
   }
   return false;
 };
+
 module.exports = {
   getAllOrder,
   allOrderByStatus,
@@ -1013,4 +1041,5 @@ module.exports = {
   countOrderStatus1,
   createOrderDirectPayment,
   countOrder,
+  orderFormMonth,
 };

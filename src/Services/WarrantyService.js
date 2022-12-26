@@ -72,7 +72,7 @@ let createWarranty = (data) => {
               name: checkSeri.name,
               infor: data.infor,
               description: data.description,
-              product_id: data.product_id,
+              product_id: checkSeri.product_id,
               warranty_id: warranty.id,
               serinumber: data.serinumber,
               sta_id: sta.sta_id,

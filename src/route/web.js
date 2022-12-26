@@ -225,6 +225,10 @@ let initWebRoutes = (app) => {
     OrderControler.handleAllOrderByStatus
   );
   router.get("/api/Count-Order-chart/", OrderControler.handleCountOrder);
+  router.get(
+    "/api/get-all-order-in-month/",
+    OrderControler.handleOrderFormMonth
+  );
   router.post(
     "/api/create-order-user/",
     OrderControler.handleGetCreateOrderByUser
