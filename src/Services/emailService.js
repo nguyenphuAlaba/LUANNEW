@@ -264,7 +264,7 @@ let sendEmailgoodsreceived = async (dataSend, dataitem) => {
   });
 };
 let sendEmailWarranty = async (dataSend) => {
-  //   console.log(dataSend);
+  // console.log(dataSend);
   //   console.log(dataarray);
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({

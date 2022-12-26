@@ -538,6 +538,31 @@ let createOrderDirectPayment = (data) => {
             })
           );
           await db.Orderitem.bulkCreate(listOr);
+          var dateToday = moment(new Date()).format("YYYY-MM-DD");
+          var expiredate = moment(dateToday, "YYYY-MM-DD").add(1, "YEAR");
+          await db.Warranty.create({
+            code: item.code,
+            infor: "Đơn bảo hành",
+            description:
+              "Đơn bảo hành được tạo khi khách hàng đã nhận hàng thành công khi thanh toán trực tiếp tại website",
+            order_id: item.id,
+            cus_id: item.cus_id,
+            expire: expiredate,
+          }).then(function (y) {
+            if (y.id) {
+              // console.log(y);
+              // console.log(item.email);
+              let dataSend = {
+                code: y.code,
+                infor: y.infor,
+                description: y.description,
+                expire: expiredate,
+                email: item.email,
+              };
+              // console.log(dataSend);
+              emailService.sendEmailWarranty(dataSend);
+            }
+          });
           resolve({
             errCode: 0,
             errMessage: "Create Order Successfull: " + item.id,
