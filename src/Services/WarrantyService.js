@@ -28,7 +28,7 @@ let createWarranty = (data) => {
     try {
       var dateToday = moment(new Date()).format("YYYY-MM-DD");
       let warranty = await db.Warranty.findOne({
-        where: { code: { [Op.iLike]: data.orderCode } },
+        where: { order_id: data.order_id },
         raw: false,
         nest: true,
       });

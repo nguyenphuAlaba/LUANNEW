@@ -834,10 +834,11 @@ let orderFormMonth = () => {
       if (order && order.length > 0) {
         await Promise.all(
           order.map(async (item) => {
+            let dd = moment(item.createdAt).format("YYYY-MM-DD");
             let day = moment(item.createdAt, "YYYY/MM/DD").date();
             let month = moment(item.createdAt, "YYYY/MM/DD").month();
             let year = moment(item.createdAt, "YYYY/MM/DD").year();
-            console.log(day, month, year);
+            console.log(day, month, year, dd);
           })
         );
       }
