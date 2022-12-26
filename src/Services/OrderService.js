@@ -22,7 +22,7 @@ var redirectUrl = "http://localhost:3000/";
 // var ipnUrl = "https://57ce-2402-800-6371-a14a-ed0d-ccd6-cbe9-5ced.ngrok.io/api/handle-order";
 
 var notifyUrl =
-  "https://b89a-2402-800-6314-b7c1-8cbb-eea4-fb94-9689.ap.ngrok.io/api/handle-order/";
+  "https://8d32-2402-800-6315-30ae-fd1b-8ac2-bf92-6c1e.ap.ngrok.io/api/handle-order/";
 // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
 var requestType = "captureWallet";
 
@@ -786,13 +786,18 @@ let countOrder = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let ordersta4 = await db.Order.count({
-        where: { status: 4 },
+        where: { [Op.or]: [{ status: 4 }, { status: 5 }] },
         raw: false,
         nest: true,
       });
       let price = 0;
       let sumorder = await db.Orderitem.findAll({
-        include: [{ model: db.Order, as: "orderItem", where: { status: 4 } }],
+        include: [
+          {
+            model: db.Order,
+            as: "orderItem",
+          },
+        ],
         raw: false,
         nest: true,
       });
@@ -824,7 +829,7 @@ let countOrder = () => {
     }
   });
 };
-let orderFormMonth = () => {
+let orderFormMonth = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let order = await db.Order.findAll({
@@ -832,22 +837,43 @@ let orderFormMonth = () => {
         nest: true,
       });
       if (order && order.length > 0) {
+        let op = [];
+        op.count = 0;
+        op.price = 0;
+        op.order45 = 0;
         await Promise.all(
           order.map(async (item) => {
-            let dd = moment(item.createdAt).format("YYYY-MM-DD");
-            let day = moment(item.createdAt, "YYYY/MM/DD").date();
-            let month = moment(item.createdAt, "YYYY/MM/DD").month();
             let year = moment(item.createdAt, "YYYY/MM/DD").year();
-            console.log(day, month, year, dd);
+            if (year == data.year) {
+              op.count++;
+              let oritem = await db.Orderitem.findAll({
+                where: { order_id: item.id },
+                raw: false,
+                nest: true,
+              });
+              if (item.status == 4 || item.status == 5) {
+                op.order45++;
+              }
+              if (oritem && oritem.length > 0) {
+                await Promise.all(
+                  oritem.map(async (x) => {
+                    if (item.status == 4 || item.status == 5) {
+                      op.price = op.price + x.TotalPrice;
+                    }
+                  })
+                );
+              }
+            }
           })
         );
+        resolve({
+          errCode: 0,
+          errMessage: "ok",
+          ordernumber: op.count,
+          totalprice: op.price,
+          order45: op.order45,
+        });
       }
-
-      resolve({
-        errCode: 0,
-        errMessage: "ok",
-        order,
-      });
     } catch (error) {
       reject(error);
     }

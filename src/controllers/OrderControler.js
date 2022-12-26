@@ -1,6 +1,6 @@
 import db from "../models/index";
 import OrderService from "../Services/OrderService";
-const jsonFormat = require("../services/jsonFormat");
+const jsonFormat = require("../Services/jsonFormat");
 
 let handleGetAllOrder = async (request, response) => {
   try {
@@ -163,7 +163,7 @@ let handleCountOrder = async (request, response) => {
 };
 let handleOrderFormMonth = async (request, response) => {
   try {
-    let order = await OrderService.orderFormMonth();
+    let order = await OrderService.orderFormMonth(request.body);
     return response.status(200).json(order);
   } catch (error) {
     return response.status(400).json(error);
