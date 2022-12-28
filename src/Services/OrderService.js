@@ -785,7 +785,7 @@ let updateOrderStatus4 = (id) => {
 let getAllOrdersta1 = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      let order = await db.Order.findAll({
+      let order = await db.Order.count({
         where: {
           status: 1,
         },
