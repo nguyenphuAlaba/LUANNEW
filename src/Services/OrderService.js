@@ -855,83 +855,41 @@ let orderFormMonth = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let order = await db.Order.findAll({
-        raw: false,
-        nest: true,
-      });
-      let op = [];
-      op.count = 0;
-      op.price = 0;
-      op.order45 = 0;
-      if (order && order.length > 0) {
-        await Promise.all(
-          order.map(async (item) => {
-            let year = moment(item.createdAt, "YYYY/MM/DD").year();
-            if (year == data.year) {
-              op.count++;
-              let oritem = await db.Orderitem.findAll({
-                where: { order_id: item.id },
-                raw: false,
-                nest: true,
-              });
-              if (item.status == 4 || item.status == 5) {
-                op.order45++;
-              }
-              if (oritem && oritem.length > 0) {
-                await Promise.all(
-                  oritem.map(async (x) => {
-                    if (item.status == 4 || item.status == 5) {
-                      op.price = op.price + x.TotalPrice;
-                    }
-                  })
-                );
-              }
-            }
-          })
-        );
-      }
-      // for (let i = 1; i < 12; i++) {
-      let orderi = await db.Order.findAll({
         attributes: [
-          //   // [
-          //   //   db.Sequelize.fn("COUNT", db.Sequelize.col("Order.id")),
-          //   //   "TotalOrder",
-          //   // ],
-          //   // [
-          //   //   db.Sequelize.fn(
-          //   //     "date_trunc",
-          //   //     "MONTH",
-          //   //     db.Sequelize.col("Order.createdAt")
-          //   //   ),"Month",
-          //   // ]
-          //   // "id",
-
-          db.Sequelize.fn("date_trunc", "MONTH", db.Sequelize.col("createdAt")),
-          [db.Sequelize.fn("COUNT", db.Sequelize.col("id")), "OrderInMonth"],
-
-          // [db.Sequelize.col("Order.createdAt"), "Day"],
+          [
+            sequelize.fn("DATE_TRUNC", "month", sequelize.col("createdAt")),
+            "month",
+          ],
+          [sequelize.fn("COUNT", "id"), "value"],
         ],
-        where: { date_trunc: 11 },
-        // where: db.Sequelize.where(
-        //   db.Sequelize.fn("date_trunc", "MONTH", db.Sequelize.col("createdAt")),
-        //   11
-        // ),
-        group: "date_trunc",
+        // where: sequelize.where(sequelize.fn("date_part", 'year', sequelize.col('createdAt')), data.year),
+        group: [
+          sequelize.fn("date_trunc", "month", sequelize.col("createdAt")),
+        ],
+        order: [
+          [
+            sequelize.fn("date_trunc", "month", sequelize.col("createdAt")),
+            "ASC",
+          ],
+        ],
 
         raw: true,
         nest: true,
       });
-      console.log("aaaaaaaaaaaaaaaa");
-      console.log(orderi);
-      // }
+      if (order.length > 0) {
+        order.map((item) => {
+          item.month = moment(item.month).format("MMM");
+          item.value = +item.value;
+          return item;
+        });
+      }
       resolve({
         errCode: 0,
-        errMessage: "ok",
-        ordernumber: op.count,
-        totalprice: op.price,
-        order45: op.order45,
-        orderi,
+        errMessage: "Ok",
+        order,
       });
     } catch (error) {
+      console.log(error);
       reject(error);
     }
   });
