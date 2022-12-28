@@ -241,6 +241,10 @@ let initWebRoutes = (app) => {
     "/api/get-order-by-user/:id/",
     OrderControler.handleGetAllOrderByUser
   );
+  router.get(
+    "/api/get-all-order-status-1/",
+    OrderControler.handleGetAllOrdersta1
+  );
   router.delete(
     "/api/delete-order-by-Oder-id/:order_id/",
     OrderControler.handleDeleteOrder

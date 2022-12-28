@@ -169,6 +169,14 @@ let handleOrderFormMonth = async (request, response) => {
     return response.status(400).json(error);
   }
 };
+let handleGetAllOrdersta1 = async (request, response) => {
+  try {
+    let order = await OrderService.getAllOrdersta1();
+    return response.status(200).json(order);
+  } catch (error) {
+    return response.status(500).json(error);
+  }
+};
 module.exports = {
   handleGetAllOrder,
   handleAllOrderByStatus,
@@ -186,4 +194,5 @@ module.exports = {
   handleCreateOrderDirectPayment,
   handleCountOrder,
   handleOrderFormMonth,
+  handleGetAllOrdersta1,
 };

@@ -782,6 +782,26 @@ let updateOrderStatus4 = (id) => {
 };
 
 //-----------Chart (Thống kê)--------------------------------
+let getAllOrdersta1 = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let order = await db.Order.findAll({
+        where: {
+          status: 1,
+        },
+        raw: false,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        order,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 let countOrder = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -796,8 +816,10 @@ let countOrder = () => {
           {
             model: db.Order,
             as: "orderItem",
+            where: { [Op.or]: [{ status: 4 }, { status: 5 }] },
           },
         ],
+
         raw: false,
         nest: true,
       });
@@ -836,11 +858,11 @@ let orderFormMonth = (data) => {
         raw: false,
         nest: true,
       });
+      let op = [];
+      op.count = 0;
+      op.price = 0;
+      op.order45 = 0;
       if (order && order.length > 0) {
-        let op = [];
-        op.count = 0;
-        op.price = 0;
-        op.order45 = 0;
         await Promise.all(
           order.map(async (item) => {
             let year = moment(item.createdAt, "YYYY/MM/DD").year();
@@ -866,14 +888,49 @@ let orderFormMonth = (data) => {
             }
           })
         );
-        resolve({
-          errCode: 0,
-          errMessage: "ok",
-          ordernumber: op.count,
-          totalprice: op.price,
-          order45: op.order45,
-        });
       }
+      // for (let i = 1; i < 12; i++) {
+      let orderi = await db.Order.findAll({
+        attributes: [
+          //   // [
+          //   //   db.Sequelize.fn("COUNT", db.Sequelize.col("Order.id")),
+          //   //   "TotalOrder",
+          //   // ],
+          //   // [
+          //   //   db.Sequelize.fn(
+          //   //     "date_trunc",
+          //   //     "MONTH",
+          //   //     db.Sequelize.col("Order.createdAt")
+          //   //   ),"Month",
+          //   // ]
+          //   // "id",
+
+          db.Sequelize.fn("date_trunc", "MONTH", db.Sequelize.col("createdAt")),
+          [db.Sequelize.fn("COUNT", db.Sequelize.col("id")), "OrderInMonth"],
+
+          // [db.Sequelize.col("Order.createdAt"), "Day"],
+        ],
+        where: { date_trunc: 11 },
+        // where: db.Sequelize.where(
+        //   db.Sequelize.fn("date_trunc", "MONTH", db.Sequelize.col("createdAt")),
+        //   11
+        // ),
+        group: "date_trunc",
+
+        raw: true,
+        nest: true,
+      });
+      console.log("aaaaaaaaaaaaaaaa");
+      console.log(orderi);
+      // }
+      resolve({
+        errCode: 0,
+        errMessage: "ok",
+        ordernumber: op.count,
+        totalprice: op.price,
+        order45: op.order45,
+        orderi,
+      });
     } catch (error) {
       reject(error);
     }
@@ -1069,4 +1126,5 @@ module.exports = {
   createOrderDirectPayment,
   countOrder,
   orderFormMonth,
+  getAllOrdersta1,
 };
