@@ -1,14 +1,14 @@
 import db from "../models/index";
 import bcrypt from "bcryptjs";
-import { raw } from "body-parser";
+// import { raw } from "body-parser";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 var cron = require("node-cron");
 import moment from "moment";
 import emailService from "./emailService";
-var salt = bcrypt.genSaltSync(10);
-var cloudinary = require("cloudinary").v2;
+// var salt = bcrypt.genSaltSync(10);
+// var cloudinary = require("cloudinary").v2;
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);

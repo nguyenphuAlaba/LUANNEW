@@ -1,14 +1,14 @@
 import db, { sequelize } from "../models/index";
-import bcrypt from "bcryptjs";
-import { raw } from "body-parser";
-import Product from "../models/Product";
-import Option_Product from "../models/Option_Product";
-import { dataError } from "./jsonFormat";
+// import bcrypt from "bcryptjs";
+// import { raw } from "body-parser";
+// import Product from "../models/Product";
+// import Option_Product from "../models/Option_Product";
+// import { dataError } from "./jsonFormat";
 import emailService from "./emailService";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-var salt = bcrypt.genSaltSync(10);
+// var salt = bcrypt.genSaltSync(10);
 var cloudinary = require("cloudinary").v2;
 const multer = require("multer");
 cloudinary.config({

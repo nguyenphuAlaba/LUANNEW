@@ -76,6 +76,7 @@ let getMomoPaymentLink = async (req, res) => {
 };
 let handleOrderPayment = async (req, res) => {
   try {
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + req);
     const result = await OrderService.handleOrderPayment(req);
     return res
       .status(200)
@@ -155,7 +156,7 @@ let handleCreateOrderDirectPayment = async (request, response) => {
 };
 let handleCountOrder = async (request, response) => {
   try {
-    let Order = await OrderService.countOrder();
+    let Order = await OrderService.countOrder(request.body);
     return response.status(200).json(Order);
   } catch (error) {
     return response.status(400).json(error);

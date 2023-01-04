@@ -1,7 +1,7 @@
 import db, { sequelize } from "../models/index";
 import bcrypt from "bcryptjs";
-import { raw } from "body-parser";
-import { ifError } from "assert";
+// import { raw } from "body-parser";
+// import { ifError } from "assert";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
@@ -9,24 +9,24 @@ const crypto = require("crypto");
 const https = require("https");
 import emailService from "./emailService";
 import moment from "moment";
-import { totalmem } from "os";
-import { resolve } from "path";
+// import { totalmem } from "os";
+// import { resolve } from "path";
 //parameters
 var partnerCode = "MOMO";
 var accessKey = "F8BBA842ECF85";
 var secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
 var orderInfo = "pay with MoMo";
 
-var redirectUrl = "https://lvtn-client-nu.vercel.app/";
+var redirectUrl = "http://localhost:3000/";
 
 // var ipnUrl = "https://57ce-2402-800-6371-a14a-ed0d-ccd6-cbe9-5ced.ngrok.io/api/handle-order";
 
-var notifyUrl = "https://phuthanglvtn.onrender.com/api/handle-order/";
+var notifyUrl = "https://6df4-112-197-14-130.ap.ngrok.io/api/handle-order/";
 // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
 var requestType = "captureWallet";
 
-var salt = bcrypt.genSaltSync(10);
-var cloudinary = require("cloudinary").v2;
+// var salt = bcrypt.genSaltSync(10);
+// var cloudinary = require("cloudinary").v2;
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
@@ -49,7 +49,6 @@ let getAllOrder = () => {
             as: "OrderVoucher",
           },
         ],
-        order: ["status"],
         raw: false,
         nest: true,
       });
@@ -802,11 +801,74 @@ let getAllOrdersta1 = () => {
     }
   });
 };
-let countOrder = () => {
+// let countOrder = () => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       let ordersta4 = await db.Order.count({
+//         where: { [Op.or]: [{ status: 4 }, { status: 5 }] },
+//         raw: false,
+//         nest: true,
+//       });
+//       let price = 0;
+//       let sumorder = await db.Orderitem.findAll({
+//         include: [
+//           {
+//             model: db.Order,
+//             as: "orderItem",
+//             where: { [Op.or]: [{ status: 4 }, { status: 5 }] },
+//           },
+//         ],
+
+//         raw: false,
+//         nest: true,
+//       });
+//       if (sumorder && sumorder.length > 0) {
+//         await Promise.all(
+//           sumorder.map(async (x) => {
+//             price = price + x.TotalPrice;
+//           })
+//         );
+//       }
+//       let order = await db.Order.count({
+//         raw: false,
+//         nest: true,
+//       });
+//       let product = await db.Orderitem.count({
+//         raw: false,
+//         nest: true,
+//       });
+//       resolve({
+//         errCode: 0,
+//         errMessage: "Ok",
+//         ordersta4,
+//         price,
+//         order,
+//         product,
+//       });
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// };
+let countOrder = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let ordersta4 = await db.Order.count({
         where: { [Op.or]: [{ status: 4 }, { status: 5 }] },
+        raw: false,
+        nest: true,
+      });
+      console.log(data);
+      let ordera = await db.Order.count({
+        where: {
+          [Op.or]: [
+            {
+              createdAt: {
+                [Op.between]: [data.start, data.end],
+              },
+            },
+          ],
+        },
         raw: false,
         nest: true,
       });
@@ -845,6 +907,7 @@ let countOrder = () => {
         price,
         order,
         product,
+        ordera,
       });
     } catch (error) {
       reject(error);
@@ -902,6 +965,7 @@ let getMomoPaymentLink = async (req) => {
     where: { order_id: req.body.orderId },
     nest: true,
   });
+  // var redirectUrl = "http://localhost:3000/detailorder/" + req.body.orderId;
   req.body.amount = fOrder;
   //before sign HMAC SHA256 with format
   //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
@@ -1059,8 +1123,7 @@ let handleOrderPayment = async (req) => {
       returning: true,
       plain: true,
     });
-
-    // console.log(result);
+    console.log(result);
     return result;
   }
   return false;

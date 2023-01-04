@@ -1,13 +1,13 @@
-import db from "../models/index";
-import bcrypt from "bcryptjs";
-import { raw } from "body-parser";
-import Category from "../models/Category";
+import db, { sequelize } from "../models/index";
+// import bcrypt from "bcryptjs";
+// import { raw } from "body-parser";
+// import Category from "../models/Category";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 
-var salt = bcrypt.genSaltSync(10);
-var cloudinary = require("cloudinary").v2;
+// var salt = bcrypt.genSaltSync(10);
+// var cloudinary = require("cloudinary").v2;
 
 let getAllCategory = () => {
   return new Promise(async (resolve, reject) => {
@@ -150,6 +150,16 @@ let getCategory = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let Category = await db.Category.findAll({
+        // include: [
+        //   {
+        //     model: db.Product,
+        //     as: "categoryProduct",
+        //   },
+        // ],
+        // attributes: [
+        //   [sequelize.fn("count", "categoryProduct.category_id"), "value"],
+        // ],
+        // group: ["id"],
         raw: false,
         nest: true,
       });

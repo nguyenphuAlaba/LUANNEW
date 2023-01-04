@@ -1,13 +1,13 @@
 import db, { sequelize } from "../models/index";
-import bcrypt, { setRandomFallback } from "bcryptjs";
-import { raw } from "body-parser";
-import Product from "../models/Product";
-import Cartitem from "../models/Cartitem";
+// import bcrypt, { setRandomFallback } from "bcryptjs";
+// import { raw } from "body-parser";
+// import Product from "../models/Product";
+// import Cartitem from "../models/Cartitem";
 require("dotenv").config();
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-var salt = bcrypt.genSaltSync(10);
-var cloudinary = require("cloudinary").v2;
+// var salt = bcrypt.genSaltSync(10);
+// var cloudinary = require("cloudinary").v2;
 let getAllCart = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -86,7 +86,8 @@ let addProductToCart = (data) => {
                   resolve({
                     errCode: 6,
                     errMessage:
-                      "Your Option Not Enough Quantity " + warehouse.name,
+                      "Sản phẩm của bạn hiện không đủ số lượng trong : " +
+                      warehouse.name,
                   });
                 } else {
                   console.log("wa: " + wa.id);

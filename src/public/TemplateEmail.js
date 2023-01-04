@@ -133,7 +133,7 @@ let templateResetPass = (dataSend) => {
                                             <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
                                                 Để đặt lại mật khẩu của bạn, hãy nhấp vào liên kết sau và làm theo hướng dẫn.
                                             </p>
-                                            <a href="https://lvtn-client-nu.vercel.app/password?${dataSend.email}"
+                                            <a href="http://localhost:3000/password?${dataSend.email}"
                                                 style="background:#FF0000;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Reset
                                                 Password</a>
                                         </td>
@@ -316,7 +316,7 @@ let templateActiveAccount = (dataSend) => {
                                             <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
                                                 <table border="0" cellspacing="0" cellpadding="0">
                                                     <tr>
-                                                        <td align="center" style="border-radius: 3px;" bgcolor="#FF0000"><a href="https://lvtn-client-nu.vercel.app/active?userId=${dataSend.userId}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FF0000; display: inline-block;">Confirm Account</a></td>
+                                                        <td align="center" style="border-radius: 3px;" bgcolor="#FF0000"><a href="http://localhost:3000/active?userId=${dataSend.userId}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FF0000; display: inline-block;">Confirm Account</a></td>
                                                     </tr>
                                                 </table>
                                             </td>
@@ -847,7 +847,7 @@ color: #fff !important
             				<h2 style="color: #fff">Đề xuất sản phẩm mới</h2>
 
             			</div>
-<a class="btn-ticket" href="https://lvtn-client-nu.vercel.app/"> Đặt hàng ngay</a>
+<a class="btn-ticket" href="http://localhost:3000/"> Đặt hàng ngay</a>
                   <div class="heading-section heading-section-white">
                     <h1 style="margin-top: 50px; color: #fff; margin-bottom: 0;">${dataSend.name}</h1>
                     <span>${dataSend.ca}</span>

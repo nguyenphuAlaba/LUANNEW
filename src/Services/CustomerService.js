@@ -1,6 +1,6 @@
 import db from "../models/index";
 import bcrypt from "bcryptjs";
-import { raw } from "body-parser";
+// import { raw } from "body-parser";
 require("dotenv").config();
 import moment from "moment";
 var salt = bcrypt.genSaltSync(10);
