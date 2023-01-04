@@ -152,7 +152,8 @@ let addProductToCart = (data) => {
                       resolve({
                         errCode: 6,
                         errMessage:
-                          "Your Option Not Enough Quantity" + warehouse.name,
+                          "Sản phẩm của bạn hiện không đủ số lượng trong : " +
+                          warehouse.name,
                       });
                     } else {
                       await db.Cartitem.create({
@@ -226,7 +227,8 @@ let addProductToCart = (data) => {
                       resolve({
                         errCode: 6,
                         errMessage:
-                          "Your Option Not Enough Quantity" + warehouse.name,
+                          "Sản phẩm của bạn hiện không đủ số lượng trong : " +
+                          warehouse.name,
                       });
                     } else {
                       await db.Cartitem.create({
