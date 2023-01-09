@@ -156,8 +156,8 @@ let getProductDetail = (id) => {
                 optionValues: [],
                 // Warehousequan: [],
               });
-            console.log("item: " + item.name);
-            console.log("Option: " + item.optionValues);
+            // console.log("item: " + item.name);
+            // console.log("Option: " + item.optionValues);
             item.optionValues.push(o.ProductOption);
             // item.Warehousequan.push(o.ProductInWarehouse);
             console.log("item: " + item);

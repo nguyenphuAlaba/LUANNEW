@@ -414,7 +414,7 @@ let cancelOrder = (id) => {
       });
       if (Order) {
         if (Order.status == 1 || Order.status == 2) {
-          Order.status = 5;
+          Order.status = 6;
           await Order.save();
           resolve({
             errCode: 0,
@@ -858,19 +858,6 @@ let countOrder = (data) => {
         raw: false,
         nest: true,
       });
-      let ordera = await db.Order.count({
-        where: {
-          [Op.or]: [
-            {
-              createdAt: {
-                [Op.between]: [data.start, data.end],
-              },
-            },
-          ],
-        },
-        raw: false,
-        nest: true,
-      });
       let price = 0;
       let sumorder = await db.Orderitem.findAll({
         include: [
@@ -899,6 +886,29 @@ let countOrder = (data) => {
         raw: false,
         nest: true,
       });
+      //////////----------------COUNT ORDER BY OP BETWEEN
+      // let ordera = await db.Order.count({
+      //   where: {
+      //     [Op.or]: [
+      //       {
+      //         createdAt: {
+      //           [Op.between]: [data.start, data.end],
+      //         },
+      //       },
+      //     ],
+      //   },
+      //   raw: false,
+      //   nest: true,
+      // });
+      /////--------------COUNT ORDER BY STATUS
+      // let orderstc = await sequelize.query(
+      //   'SELECT "status", COUNT(code) AS OrderCount FROM "Order" AS "Order" GROUP BY "status" ORDER BY "status";',
+      //   {
+      //     type: sequelize.SELECT,
+      //     raw: false,
+      //     nest: true,
+      //   }
+      // );
       resolve({
         errCode: 0,
         errMessage: "Ok",
@@ -906,7 +916,8 @@ let countOrder = (data) => {
         price,
         order,
         product,
-        ordera,
+        // ordera,
+        // orderstc,
       });
     } catch (error) {
       reject(error);
@@ -959,7 +970,7 @@ let orderFormMonth = (data) => {
     }
   });
 };
-//test query
+///////////////////OBJECT TEST
 const objtest1 = {
   name: "phu",
   address: "180 cao lo",
@@ -994,6 +1005,8 @@ const arrayobjts = [
     name: "Khoa",
   },
 ];
+const arraynum = [10, 20, 30, 40];
+/////////// QUERY TEST
 let testquery = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -1016,6 +1029,7 @@ let testquery = (data) => {
         raw: true,
         nest: true,
       });
+      ///// TEST ASSSIGN
       let query2 = await Object.assign({}, objtest1, objtest2);
       console.log(query2);
       // let list = [];
@@ -1029,6 +1043,14 @@ let testquery = (data) => {
       // });
       // console.log(list);
       // console.log("Query 3: " + query3);
+
+      //// TEST REDUCE
+      // let query4 = await arraynum.reduce((r, o) => {
+      //   console.log("r: " + r);
+      //   console.log("o: " + o);
+      //   return r + o;
+      // });
+      // console.log(query4);
       resolve({
         errCode: 0,
         errMessage: "Ok",

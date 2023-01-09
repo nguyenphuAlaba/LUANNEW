@@ -1,3 +1,4 @@
+// THEO NAM
 let orderFormMonth = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -44,6 +45,81 @@ let orderFormMonth = (data) => {
     }
   });
 };
+// OP. BETWEEN
+let countOrder = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let ordersta4 = await db.Order.count({
+        where: { [Op.or]: [{ status: 4 }, { status: 5 }] },
+        raw: false,
+        nest: true,
+      });
+      let price = 0;
+      let sumorder = await db.Orderitem.findAll({
+        include: [
+          {
+            model: db.Order,
+            as: "orderItem",
+            where: { [Op.or]: [{ status: 4 }, { status: 5 }] },
+          },
+        ],
+
+        raw: false,
+        nest: true,
+      });
+      if (sumorder && sumorder.length > 0) {
+        await Promise.all(
+          sumorder.map(async (x) => {
+            price = price + x.TotalPrice;
+          })
+        );
+      }
+      let order = await db.Order.count({
+        raw: false,
+        nest: true,
+      });
+      let product = await db.Orderitem.count({
+        raw: false,
+        nest: true,
+      });
+      //////////----------------COUNT ORDER BY OP BETWEEN
+      let ordera = await db.Order.count({
+        where: {
+          [Op.or]: [
+            {
+              createdAt: {
+                [Op.between]: [data.start, data.end],
+              },
+            },
+          ],
+        },
+        raw: false,
+        nest: true,
+      });
+      /////--------------COUNT ORDER BY STATUS
+      let orderstc = await sequelize.query(
+        'SELECT "status", COUNT(code) AS OrderCount FROM "Order" AS "Order" GROUP BY "status" ORDER BY "status";',
+        {
+          type: sequelize.SELECT,
+          raw: false,
+          nest: true,
+        }
+      );
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        ordersta4,
+        price,
+        order,
+        product,
+        ordera,
+        orderstc,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 //test query
 let testquery = (data) => {
   return new Promise(async (resolve, reject) => {
@@ -67,6 +143,19 @@ let testquery = (data) => {
         raw: true,
         nest: true,
       });
+      let query2 = await Object.assign({}, objtest1, objtest2);
+      console.log(query2);
+      // let list = [];
+      // let query3 = await arrayobjts.reduce((r, o) => {
+      //   // console.log(r);
+      //   // console.log(o);
+      //   // console.log(r);
+      //   // console.log("R : " + r[0].name);
+      //   // list.push(r);
+      //   list.push(o);
+      // });
+      // console.log(list);
+      // console.log("Query 3: " + query3);
       resolve({
         errCode: 0,
         errMessage: "Ok",

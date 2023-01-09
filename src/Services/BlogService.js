@@ -1,5 +1,5 @@
 import db from "../models/index";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 // import { raw } from "body-parser";
 require("dotenv").config();
 const Sequelize = require("sequelize");
