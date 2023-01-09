@@ -1,5 +1,5 @@
 import db, { sequelize } from "../models/index";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 // import { raw } from "body-parser";
 // import { ifError } from "assert";
 require("dotenv").config();
@@ -21,7 +21,7 @@ var redirectUrl = "http://localhost:3000/";
 
 // var ipnUrl = "https://57ce-2402-800-6371-a14a-ed0d-ccd6-cbe9-5ced.ngrok.io/api/handle-order";
 
-var notifyUrl = "https://6df4-112-197-14-130.ap.ngrok.io/api/handle-order/";
+var notifyUrl = "https://e7d2-118-68-37-192.ap.ngrok.io/api/handle-order/";
 // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
 var requestType = "captureWallet";
 
@@ -858,7 +858,6 @@ let countOrder = (data) => {
         raw: false,
         nest: true,
       });
-      console.log(data);
       let ordera = await db.Order.count({
         where: {
           [Op.or]: [
@@ -925,7 +924,10 @@ let orderFormMonth = (data) => {
           ],
           [sequelize.fn("COUNT", "id"), "value"],
         ],
-        // where: sequelize.where(sequelize.fn("date_part", 'year', sequelize.col('createdAt')), data.year),
+        // where: sequelize.where(
+        //   sequelize.fn("date_part", "year", sequelize.col("createdAt")),
+        //   data.year
+        // ),
         group: [
           sequelize.fn("date_trunc", "month", sequelize.col("createdAt")),
         ],
@@ -953,6 +955,87 @@ let orderFormMonth = (data) => {
       });
     } catch (error) {
       console.log(error);
+      reject(error);
+    }
+  });
+};
+//test query
+const objtest1 = {
+  name: "phu",
+  address: "180 cao lo",
+  age: 21,
+  shool: "STU",
+};
+const objtest3 = {
+  name: "phu",
+  address: "180 cao lo",
+  phone: "+84938772416",
+};
+const objtest2 = {
+  name: "thang",
+  age: 21,
+  shool: "STU",
+};
+const arrayobjts = [
+  {
+    id: 1,
+    name: "Phu",
+  },
+  {
+    id: 2,
+    name: "Thang",
+  },
+  {
+    id: 3,
+    name: "Vuong",
+  },
+  {
+    id: 4,
+    name: "Khoa",
+  },
+];
+let testquery = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log(data);
+      let query = await sequelize.query(
+        'SELECT COUNT(category_id) FROM "Product" AS "Product" GROUP BY "category_id" ORDER BY "category_id";',
+        {
+          type: sequelize.SELECT,
+          raw: true,
+          nest: true,
+        }
+      );
+      let query1 = await db.Product.findAll({
+        attributes: [
+          [sequelize.col("category_id"), "Category"],
+          [Sequelize.fn("COUNT", Sequelize.col("category_id")), "SL"],
+        ],
+        group: "category_id",
+        // order: "category_id",
+        raw: true,
+        nest: true,
+      });
+      let query2 = await Object.assign({}, objtest1, objtest2);
+      console.log(query2);
+      // let list = [];
+      // let query3 = await arrayobjts.reduce((r, o) => {
+      //   // console.log(r);
+      //   // console.log(o);
+      //   // console.log(r);
+      //   // console.log("R : " + r[0].name);
+      //   // list.push(r);
+      //   list.push(o);
+      // });
+      // console.log(list);
+      // console.log("Query 3: " + query3);
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        query,
+        query1,
+      });
+    } catch (error) {
       reject(error);
     }
   });
@@ -1146,6 +1229,7 @@ module.exports = {
   countOrderStatus1,
   createOrderDirectPayment,
   countOrder,
+  testquery,
   orderFormMonth,
   getAllOrdersta1,
 };

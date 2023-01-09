@@ -156,13 +156,15 @@ let getProductDetail = (id) => {
                 optionValues: [],
                 // Warehousequan: [],
               });
+            console.log("item: " + item.name);
+            console.log("Option: " + item.optionValues);
             item.optionValues.push(o.ProductOption);
             // item.Warehousequan.push(o.ProductInWarehouse);
+            console.log("item: " + item);
             return r.set(key, item);
           }, new Map())
           .values(),
       ];
-
       try {
         let newArr = result[0];
         const resultValues = [
@@ -184,6 +186,7 @@ let getProductDetail = (id) => {
             }, new Map())
             .values(),
         ];
+
         // const resultQuantity = [
         //   ...newArr.Warehousequan.reduce((r, o) => {
         //     const key = o.id;
@@ -212,14 +215,14 @@ let getProductDetail = (id) => {
           errCode: 0,
           errMessage: "OK",
           data: obj,
-          // rawProduct,
+          rawProduct,
         });
       } catch (error) {
         console.log("error: ", error);
+        reject(error);
       }
-    } catch (e) {
-      console.log("e: ", e);
-      reject(e);
+    } catch (error) {
+      reject(error);
     }
   });
 };

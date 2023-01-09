@@ -178,6 +178,14 @@ let handleGetAllOrdersta1 = async (request, response) => {
     return response.status(500).json(error);
   }
 };
+let handleTestQuery = async (request, response) => {
+  try {
+    let order = await OrderService.testquery(request.body);
+    return response.status(200).json(order);
+  } catch (error) {
+    return response.status(500).json(error);
+  }
+};
 module.exports = {
   handleGetAllOrder,
   handleAllOrderByStatus,
@@ -196,4 +204,5 @@ module.exports = {
   handleCountOrder,
   handleOrderFormMonth,
   handleGetAllOrdersta1,
+  handleTestQuery,
 };

@@ -1,0 +1,80 @@
+let orderFormMonth = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let order = await db.Order.findAll({
+        attributes: [
+          [
+            sequelize.fn("DATE_TRUNC", "month", sequelize.col("createdAt")),
+            "month",
+          ],
+          [sequelize.fn("COUNT", "id"), "value"],
+        ],
+        // where: sequelize.where(
+        //   sequelize.fn("date_part", "year", sequelize.col("createdAt")),
+        //   data.year
+        // ),
+        group: [
+          sequelize.fn("date_trunc", "month", sequelize.col("createdAt")),
+        ],
+        order: [
+          [
+            sequelize.fn("date_trunc", "month", sequelize.col("createdAt")),
+            "ASC",
+          ],
+        ],
+
+        raw: true,
+        nest: true,
+      });
+      if (order.length > 0) {
+        order.map((item) => {
+          item.month = moment(item.month).format("MMM");
+          item.value = +item.value;
+          return item;
+        });
+      }
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        order,
+      });
+    } catch (error) {
+      console.log(error);
+      reject(error);
+    }
+  });
+};
+//test query
+let testquery = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log(data);
+      let query = await sequelize.query(
+        'SELECT COUNT(category_id) FROM "Product" AS "Product" GROUP BY "category_id" ORDER BY "category_id";',
+        {
+          type: sequelize.SELECT,
+          raw: true,
+          nest: true,
+        }
+      );
+      let query1 = await db.Product.findAll({
+        attributes: [
+          [sequelize.col("category_id"), "Category"],
+          [Sequelize.fn("COUNT", Sequelize.col("category_id")), "SL"],
+        ],
+        group: "category_id",
+        // order: "category_id",
+        raw: true,
+        nest: true,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+        query,
+        query1,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

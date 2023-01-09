@@ -251,6 +251,7 @@ let initWebRoutes = (app) => {
   );
   router.post("/api/get-momo-payment-link/", OrderControler.getMomoPaymentLink);
   router.post("/api/handle-order/", OrderControler.handleOrderPayment);
+  router.post("/api/test-query/", OrderControler.handleTestQuery);
   // ORDER UPDATE
   router.put(
     "/api/update-accept-order/:orderId/",
