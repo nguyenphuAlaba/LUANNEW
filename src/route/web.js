@@ -242,6 +242,10 @@ let initWebRoutes = (app) => {
     OrderControler.handleGetAllOrderByUser
   );
   router.get(
+    "/api/get-order-by-user-status/",
+    OrderControler.handleGetAllOrderByUserAndStatus
+  );
+  router.get(
     "/api/get-all-order-status-1/",
     OrderControler.handleGetAllOrdersta1
   );

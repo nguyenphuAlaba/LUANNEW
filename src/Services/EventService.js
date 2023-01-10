@@ -169,6 +169,8 @@ let getAllEvent = () => {
     }
   });
 };
+// * * * * * * là Mỗi giây
+// * 6 * * * là chạy vào lúc 6h AM mỗi ngày
 var quest = cron.schedule("* 6 * * *", async () => {
   var dateToday = moment(new Date()).format("MM-DD");
   let event = await db.Event.findOne({

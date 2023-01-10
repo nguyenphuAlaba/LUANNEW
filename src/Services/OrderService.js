@@ -404,6 +404,40 @@ let getAllOrderByUser = (user) => {
     }
   });
 };
+let getAllOrderByUserAndStatus = (user) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log(user);
+      let checkUser = await db.Customer.findOne({
+        where: { id: user.cus_id },
+        raw: false,
+        nest: true,
+      });
+      if (checkUser) {
+        let findOrder = await db.Order.findAll({
+          where: {
+            [Op.and]: [{ cus_id: user.cus_id }, { status: user.status }],
+          },
+          include: [{ model: db.Product, as: "OrderProductItem" }],
+          raw: false,
+          nest: true,
+        });
+        resolve({
+          errCode: 0,
+          errMessage: "OK",
+          findOrder,
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "Your User is not exist",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 let cancelOrder = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -1238,6 +1272,7 @@ module.exports = {
   getAllOrder,
   allOrderByStatus,
   getCreateOrderByUser,
+  getAllOrderByUserAndStatus,
   getDetailProduct,
   getAllOrderByUser,
   deleteOrder,

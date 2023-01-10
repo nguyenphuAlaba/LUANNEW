@@ -41,6 +41,14 @@ let handleGetAllOrderByUser = async (request, response) => {
     response.status(400).json(error);
   }
 };
+let handleGetAllOrderByUserAndStatus = async (request, response) => {
+  try {
+    let order = await OrderService.getAllOrderByUserAndStatus(request.body);
+    return response.status(200).json(order);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+};
 let handleDeleteOrder = async (request, response) => {
   try {
     let oderid = request.params.order_id;
@@ -189,6 +197,7 @@ let handleTestQuery = async (request, response) => {
 module.exports = {
   handleGetAllOrder,
   handleAllOrderByStatus,
+  handleGetAllOrderByUserAndStatus,
   handleGetCreateOrderByUser,
   handleGetAllOrderByUser,
   handleDeleteOrder,
