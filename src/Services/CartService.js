@@ -411,24 +411,43 @@ let plusMinusAmount = (data) => {
         });
       } else {
         if (data.key == "+") {
-          await sequelize.query(
-            'UPDATE "Cartitem" SET "amount" = :ss, "ttprice" = :tt WHERE "Cartitem"."id" = :ff;',
-            {
-              replacements: {
-                ff: data.cart_id,
-                ss: checkCart.amount + 1,
-                tt: (checkCart.ttprice =
-                  checkCart.price * (checkCart.amount + 1)),
-              },
-              type: sequelize.SELECT,
-              nest: true,
-              raw: false,
-            }
-          );
-          resolve({
-            errCode: 0,
-            errMessage: "Amount have been +1",
+          let flash = true;
+          let check = await db.Warehouse_product.findOne({
+            where: {
+              product_id: checkCart.product_id,
+              optionvalue: checkCart.optionvalue,
+            },
           });
+          if (checkCart.amount >= check.quantity) {
+            flash = false;
+            resolve({
+              errCode: 1,
+              errMessage:
+                "Số lượng sản phẩm trong kho chỉ còn " +
+                check.quantity +
+                " sản phẩm",
+            });
+          }
+          if (flash) {
+            await sequelize.query(
+              'UPDATE "Cartitem" SET "amount" = :ss, "ttprice" = :tt WHERE "Cartitem"."id" = :ff;',
+              {
+                replacements: {
+                  ff: data.cart_id,
+                  ss: checkCart.amount + 1,
+                  tt: (checkCart.ttprice =
+                    checkCart.price * (checkCart.amount + 1)),
+                },
+                type: sequelize.SELECT,
+                nest: true,
+                raw: false,
+              }
+            );
+            resolve({
+              errCode: 0,
+              errMessage: "Amount have been +1",
+            });
+          }
         }
         if (data.key == "-") {
           if (checkCart.amount == 1) {

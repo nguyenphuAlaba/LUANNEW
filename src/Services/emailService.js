@@ -179,7 +179,7 @@ let sendEmailVoucherEvent = async (dataSend) => {
   let info = await transporter.sendMail({
     from: '"PhuThangShop" <NguyenThienPhu@gmail.com>', // sender address
     to: dataSend.email, // list of receivers
-    subject: "Tặng voucher Khuyến mãi nhân dịp ", // Subject line
+    subject: "Tặng voucher Khuyến mãi nhân dịp " + dataSend.name, // Subject line
     html: `
         <p>Cửa hàng Phú Thắng xin gửi voucher giảm giá 5% nhân dịp: ${dataSend.name}</p>
         <h3>Mã khuyến mãi: ${dataSend.data.codeE}  Giảm giá: ${dataSend.data.disco}</h3>

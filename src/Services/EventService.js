@@ -13,7 +13,9 @@ import emailService from "./emailService";
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
-
+// * * * * * * là Mỗi giây
+// * 6 * * * là chạy vào lúc 6h AM mỗi ngày
+//sinh nhat
 var task = cron.schedule("* 6 * * *", async () => {
   var dateToday = moment(new Date()).format("MM-DD");
   let cus = await db.Customer.findAll({
